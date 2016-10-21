@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-
+                    allData="";
                     counter=0;
                     api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q="+text+"&max=30&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
                     HttpConnect httpConnect = new HttpConnect();
