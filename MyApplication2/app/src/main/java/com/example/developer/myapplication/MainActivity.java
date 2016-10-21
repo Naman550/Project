@@ -2,8 +2,13 @@ package com.example.developer.myapplication;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ButtonBarLayout;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -13,22 +18,41 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    String api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q=apple&max=5&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
+    String api1;
     InputStream inputStream = null;
     ArrayList<String> itemDetails = new ArrayList<String>();
     static int counter = 0;
+    String allData="";
+    EditText editText;
+    Button button;
+    String text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        editText = (EditText) findViewById(R.id.editText);
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                text = editText.getText().toString();
+                text=text.replace(" ","");
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+                show();
+            }
+        });
+    }
+        public void show(){
         Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 try {
+
+                    counter=0;
+                    api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q="+text+"&max=30&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
                     HttpConnect httpConnect = new HttpConnect();
                     inputStream = httpConnect.connect(api1);
 
@@ -39,23 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
                     int eventType = myparser.getEventType();
 
-                    Log.e("na-man", "" + XmlPullParser.START_DOCUMENT);
-
                     while (eventType != XmlPullParser.END_DOCUMENT) {
-
-//                        if(eventType == XmlPullParser.START_DOCUMENT) {
-//                            System.out.println("Start document");
-//                        }
-//                        else if(eventType == XmlPullParser.START_TAG) {
-//                               System.out.println("Start tag "+myparser.getName());
-//
-//                        }
-//                        else if(eventType == XmlPullParser.END_TAG) {
-//                              System.out.println("End tag "+myparser.getName());
-//                        }
-//                        else if(eventType == XmlPullParser.TEXT) {
-//                              System.out.println("Text "+myparser.getText());
-//                        }
                         if (eventType == XmlPullParser.START_DOCUMENT) {
                             System.out.println("Start document");
                             eventType = myparser.next();
@@ -71,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.e("list", "tag");
                                 System.out.println("0" + (eventType != XmlPullParser.END_DOCUMENT));
                                 System.out.println("1" + (eventType == XmlPullParser.START_TAG));
-                                System.out.println("2" + (myparser.getName().equals("item")));
+                                //   System.out.println("2" + (myparser.getName().equals("item")));
 
                             }
                             if (myparser.getName().equals("item")) {
@@ -79,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
                                 itemDetails.add(myparser.getName() + counter);
                                 eventType = myparser.next();
                                 Log.e("item", "item");
-                            }
-                           else if (myparser.getName().equals("group")) {
+                            } else if (myparser.getName().equals("group")) {
                                 itemDetails.add(myparser.getName());
                                 eventType = myparser.next();
                                 if (eventType == XmlPullParser.TEXT) {
@@ -90,8 +97,7 @@ public class MainActivity extends AppCompatActivity {
                                         eventType = myparser.next();
                                     }
                                 }
-                            }
-                          else  if (myparser.getName().equals("name")) {
+                            } else if (myparser.getName().equals("name")) {
                                 itemDetails.add(myparser.getName());
                                 eventType = myparser.next();
                                 if (eventType == XmlPullParser.TEXT) {
@@ -102,8 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                         //itemDetails.add("\n");
                                     }
                                 }
-                            }
-                          else  if (myparser.getName().equals("ndbno")) {
+                            } else if (myparser.getName().equals("ndbno")) {
                                 itemDetails.add(myparser.getName());
                                 eventType = myparser.next();
                                 if (eventType == XmlPullParser.TEXT) {
@@ -126,16 +131,35 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.i("naman1234", "" + e);
-                }
-                for (String ar : itemDetails) {
-                    System.out.println(ar);
 
                 }
+                for (String data : itemDetails) {
+                    System.out.println(data);
+                    allData += data;
+                }
+
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        TextView textView = (TextView) findViewById(R.id.textView);
+                        textView.setText(" ");
+                        textView.setText(allData);
+                        itemDetails.clear();
+                        itemDetails.removeAll(itemDetails);
+                    }
+                });
+
+
             }
         });
 
         thread.start();
+    }
+
+
+
 
     }
 
-}
+
