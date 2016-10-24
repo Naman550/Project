@@ -59,11 +59,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
+<<<<<<< HEAD
 
                     counter = 0;
                     allData = "";
                     itemDetails.clear();
                     api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q=" + text + "&max=30&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
+=======
+                    allData="";
+                    counter=0;
+                    api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q="+text+"&max=30&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
+>>>>>>> 6abef508402fa10eca15a6a1fcbb154e2cfcb7c5
                     HttpConnect httpConnect = new HttpConnect();
                     inputStream = httpConnect.connect(api1);
 
