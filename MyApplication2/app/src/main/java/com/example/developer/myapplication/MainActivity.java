@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 text = editText.getText().toString();
-                text = text.replace(" ", "");
+                text = text.replace(" ", "%20");
                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
                 show();
             }
