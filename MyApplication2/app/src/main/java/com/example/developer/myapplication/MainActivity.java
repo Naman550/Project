@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
                 text = editText.getText().toString();
                 text = text.replace(" ", "%20");
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
                 show();
             }
         });
@@ -59,89 +58,94 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-<<<<<<< HEAD
 
                     counter = 0;
                     allData = "";
                     itemDetails.clear();
                     api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q=" + text + "&max=30&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
-=======
-                    allData="";
-                    counter=0;
-                    api1 = "http://api.nal.usda.gov/ndb/search/?format=xml&q="+text+"&max=30&api_key=iOIKNSIzFXbKKdRDZv9zwwYePgJFy4gb5emFxsEI";
->>>>>>> 6abef508402fa10eca15a6a1fcbb154e2cfcb7c5
                     HttpConnect httpConnect = new HttpConnect();
                     inputStream = httpConnect.connect(api1);
-
-                    XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
-                    XmlPullParser myparser = xmlFactoryObject.newPullParser();
-
-                    myparser.setInput(inputStream, null);
-
-                    int eventType = myparser.getEventType();
-
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        if (eventType == XmlPullParser.START_DOCUMENT) {
-                            System.out.println("Start document");
-                            eventType = myparser.next();
-                            System.out.println("" + eventType);
-                            System.out.println("" + (eventType == XmlPullParser.START_TAG));
-                            System.out.println("" + (myparser.getName().equals("list")));
-
-
-                        } else if (eventType == XmlPullParser.START_TAG) {
-                            if (myparser.getName().equals("list")) {
-                                eventType = myparser.next();
-                                eventType = myparser.next();
-                                Log.e("list", "tag");
-                                System.out.println("0" + (eventType != XmlPullParser.END_DOCUMENT));
-                                System.out.println("1" + (eventType == XmlPullParser.START_TAG));
+                    Log.e("inputStream",""+inputStream);
+                    if(inputStream == null){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Turn on Your Internet Connection",Toast.LENGTH_SHORT).show();
 
                             }
-                            if (myparser.getName().equals("item")) {
-                                counter += 1;
-                                itemDetails.add(myparser.getName() + "-" + counter + "\n");
+                        });
+                         }
+                    else {Log.e("inputStream ",""+inputStream);
+                        XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
+                        XmlPullParser myparser = xmlFactoryObject.newPullParser();
+
+                        myparser.setInput(inputStream, null);
+
+                        int eventType = myparser.getEventType();
+
+                        while (eventType != XmlPullParser.END_DOCUMENT) {
+                            if (eventType == XmlPullParser.START_DOCUMENT) {
+                                System.out.println("Start document");
                                 eventType = myparser.next();
-                                Log.e("item", "item");
-                            } else if (myparser.getName().equals("group")) {
-                                itemDetails.add(myparser.getName() + "-");
-                                eventType = myparser.next();
-                                if (eventType == XmlPullParser.TEXT) {
-                                    itemDetails.add(myparser.getText() + "\n");
+                                System.out.println("" + eventType);
+                                System.out.println("" + (eventType == XmlPullParser.START_TAG));
+                                System.out.println("" + (myparser.getName().equals("list")));
+
+
+                            } else if (eventType == XmlPullParser.START_TAG) {
+                                if (myparser.getName().equals("list")) {
                                     eventType = myparser.next();
-                                    if (eventType == XmlPullParser.END_TAG) {
+                                    eventType = myparser.next();
+                                    Log.e("list", "tag");
+                                    System.out.println("0" + (eventType != XmlPullParser.END_DOCUMENT));
+                                    System.out.println("1" + (eventType == XmlPullParser.START_TAG));
+
+                                }
+                                if (myparser.getName().equals("item")) {
+                                    counter += 1;
+                                    itemDetails.add(myparser.getName() + "-" + counter + "\n");
+                                    eventType = myparser.next();
+                                    Log.e("item", "item");
+                                } else if (myparser.getName().equals("group")) {
+                                    itemDetails.add(myparser.getName() + "-");
+                                    eventType = myparser.next();
+                                    if (eventType == XmlPullParser.TEXT) {
+                                        itemDetails.add(myparser.getText() + "\n");
                                         eventType = myparser.next();
+                                        if (eventType == XmlPullParser.END_TAG) {
+                                            eventType = myparser.next();
+                                        }
+                                    }
+                                } else if (myparser.getName().equals("name")) {
+                                    itemDetails.add(myparser.getName() + "-");
+                                    eventType = myparser.next();
+                                    if (eventType == XmlPullParser.TEXT) {
+                                        itemDetails.add(myparser.getText() + "\n");
+                                        eventType = myparser.next();
+                                        if (eventType == XmlPullParser.END_TAG) {
+                                            eventType = myparser.next();
+                                            //itemDetails.add("\n");
+                                        }
+                                    }
+                                } else if (myparser.getName().equals("ndbno")) {
+                                    itemDetails.add(myparser.getName() + "-");
+                                    eventType = myparser.next();
+                                    if (eventType == XmlPullParser.TEXT) {
+                                        itemDetails.add(myparser.getText() + "\n");
+                                        eventType = myparser.next();
+                                        if (eventType == XmlPullParser.END_TAG) {
+                                            eventType = myparser.next();
+                                            itemDetails.add("\n\n\n");
+                                        }
                                     }
                                 }
-                            } else if (myparser.getName().equals("name")) {
-                                itemDetails.add(myparser.getName() + "-");
+                            } else if (eventType == XmlPullParser.END_TAG) {
                                 eventType = myparser.next();
-                                if (eventType == XmlPullParser.TEXT) {
-                                    itemDetails.add(myparser.getText() + "\n");
-                                    eventType = myparser.next();
-                                    if (eventType == XmlPullParser.END_TAG) {
-                                        eventType = myparser.next();
-                                        //itemDetails.add("\n");
-                                    }
-                                }
-                            } else if (myparser.getName().equals("ndbno")) {
-                                itemDetails.add(myparser.getName() + "-");
+                                Log.e("End123", " TAG");
+                            } else if (eventType == XmlPullParser.TEXT) {
                                 eventType = myparser.next();
-                                if (eventType == XmlPullParser.TEXT) {
-                                    itemDetails.add(myparser.getText() + "\n");
-                                    eventType = myparser.next();
-                                    if (eventType == XmlPullParser.END_TAG) {
-                                        eventType = myparser.next();
-                                        itemDetails.add("\n\n\n");
-                                    }
-                                }
+                                Log.e("TEXT - ", " TEXT");
                             }
-                        } else if (eventType == XmlPullParser.END_TAG) {
-                            eventType = myparser.next();
-                            Log.e("End123", " TAG");
-                        } else if (eventType == XmlPullParser.TEXT) {
-                            eventType = myparser.next();
-                            Log.e("TEXT - ", " TEXT");
                         }
                     }
                 } catch (Exception e) {
@@ -172,12 +176,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 String allData2[] = allData.split("\n\n\n");
-                Toast.makeText(MainActivity.this, allData2[position], Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this,NutritionValue.class);
                 String data = allData2[position];
                 String dataArray[] = data.split("ndbno-");
                 data = dataArray[1];
-                Toast.makeText(MainActivity.this, data, Toast.LENGTH_LONG).show();
                 intent.putExtra("ndbno",data);
                 startActivity(intent);
             }
