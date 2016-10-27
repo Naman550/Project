@@ -8,7 +8,7 @@ package dx.timesheet;
 
 /**
  *
- * @author Avnish
+ * @author dx
  */
 public class Config {
     public static final String HTTP = "http://";

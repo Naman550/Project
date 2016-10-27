@@ -256,6 +256,7 @@ public class JScanner extends JStruct {
 	 * Reset to defaults.
 	 */
 	public static void resetToDefaults() {
+            System.out.println("testing is done");
 		for (int id = 0; id < JRegistry.MAX_ID_COUNT; id++) {
 			JRegistry.clearFlags(id, 0xFFFFFFFF);
 		}

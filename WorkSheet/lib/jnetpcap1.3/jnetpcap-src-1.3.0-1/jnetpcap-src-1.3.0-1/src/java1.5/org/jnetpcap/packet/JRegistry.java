@@ -1044,6 +1044,7 @@ public final class JRegistry {
 			/*
 			 * Dump scanners and their configs
 			 */
+                        
 			for (int i = 0; i < A_MAX_ID_COUNT; i++) {
 				if (scanners[i] != null) {
 					out.format("scanner[%-2d] class=%-15s %s\n", i, lookupClass(i)

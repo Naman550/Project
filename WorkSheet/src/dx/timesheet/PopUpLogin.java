@@ -88,7 +88,7 @@ public class PopUpLogin {
     String[] status_array;
     String[] p_code;
     static String name, imgUrl, user_name;
-    String company_alias;
+    String company_alias="Dsx";
     public static String usr;
     String url = "http://www.designersx.com";
    
@@ -512,8 +512,8 @@ public class PopUpLogin {
 
 
         } catch (ClassNotFoundException | SQLException | IOException ex) {
-            hideLoaderDialog();
-            showInfoDialog("Connection error! Try again.");
+         //   hideLoaderDialog();
+            showInfoDialog("Connection error nam! Try again.");
             Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SigarException ex) {
             hideLoaderDialog();
@@ -523,7 +523,7 @@ public class PopUpLogin {
     }
 
     public void hideLoaderDialog() {
-        if (infD.isVisible()) {
+     if (infD.isVisible()) {
             infD.setVisible(false);
         }
     }
@@ -535,7 +535,6 @@ public class PopUpLogin {
                     showMainDialog();
                     showInfoDialog("Please click dialog below!");
                 } else {
-
                     signOutBlock("");
                 }
             }
@@ -607,7 +606,7 @@ public class PopUpLogin {
     public void loginListener() {
         interruptDialog = false;
         firstLogin = true;
-        System.out.println(firstLogin);
+        System.out.println(firstLogin+" ");
         try {
             try {
                 getMacAddress();
@@ -619,7 +618,6 @@ public class PopUpLogin {
             //   LoginPanel.txtPassword.setBorder(BorderFactory.createEmptyBorder());
             user_name = panel.txtUserName.getText();
             password = panel.txtPassword.getText();
-            company_alias=panel.txtCompanyAlias.getText();
                 
             if (user_name.equals("") || password.equals("") ) {
                 showInfoDialog("Empty Fields");
@@ -729,7 +727,16 @@ public class PopUpLogin {
         System.out.println(img);
         URL imgurl = new URL(img);
         System.out.println("imgurl is>> " + imgurl);
+        //hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+//       
+//        String imgurlmake=""+imgurl;//hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+//        imgurlmake=imgurlmake.substring(14);
+//        imgurlmake="http://"+imgurlmake;
+//        System.out.println(imgurlmake);
+//        URL imgurlmake1=new URL(imgurlmake);
+        
         user_image = ImageIO.read(imgurl);
+        System.out.println(user_image);
         Image resizedImage = user_image.getScaledInstance(TaskPanel.lblPic.getWidth(), TaskPanel.lblPic.getHeight(), Image.SCALE_SMOOTH);
         TaskPanel.lblPic.setIcon(new ImageIcon(resizedImage));
     }
@@ -2280,13 +2287,13 @@ public class PopUpLogin {
 
     void sendDataForTimesheet(String userid, String taskid, String status, String timesheetid, String comment) throws MalformedURLException, IOException {
         URL url11 = new URL(Config.HTTP+Config.DOMAIN + "/TimeSheets/sheet/" + userid + "/" + taskid + "/" + status + "/" + timesheetid + "/" + comment);
-        System.out.println("sendDataForTimesheet - "+url11);
+        System.out.println(url11);
         StringBuilder responseString = getStreamResponse(url11);
         timesheet_response = responseString.toString();
     }
     void sendDataForTimesheetToPause(String userid, String taskid, String status, String timesheetid, String comment,String time) throws MalformedURLException, IOException {
         URL url11 = new URL(Config.HTTP+Config.DOMAIN + "/TimeSheets/sheet/" + userid + "/" + taskid + "/" + status + "/" + timesheetid + "/" + comment +"/" + null +"/" +time);
-        System.out.println("sendDataForTimesheetToPause - "+url11);
+        System.out.println(url11);
         StringBuilder responseString = getStreamResponse(url11);
         timesheet_response = responseString.toString();
     }
@@ -2294,7 +2301,7 @@ public class PopUpLogin {
     public void sendPlayRequest(String userid, String taskid, String status) throws MalformedURLException, IOException, SQLException {
      
         URL url11 = new URL(Config.HTTP+Config.DOMAIN + "/TimeSheets/sheet/" + userid + "/" + taskid + "/" + status);
-        System.out.println("sendPlayRequest - "+url11);
+        System.out.println(url11);
         StringBuilder responseString = getStreamResponse(url11);
         timesheet_id = responseString.toString();
         timesheet_response = responseString.toString();
@@ -2303,7 +2310,7 @@ public class PopUpLogin {
     }
     public void sendDoneRequest(String userid, String taskid, String status,String subtasks_ids) throws MalformedURLException, IOException, SQLException {
         URL url11 = new URL(Config.HTTP+Config.DOMAIN + "/TimeSheets/sheet/" + userid + "/" + taskid + "/" + status +"/" + null+ "/" +null+"/" + subtasks_ids);
-        System.out.println("sendDoneRequest - "+url11);
+        System.out.println(url11);
         StringBuilder responseString = getStreamResponse(url11);
         timesheet_id = responseString.toString();
         timesheet_response = responseString.toString();
@@ -2313,8 +2320,8 @@ public class PopUpLogin {
 
     void requestPassword(String username) {
         try {
-            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "/users/remotereset/" + username);
-            System.out.println("requestPassword - "+url11);
+            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "users/remotereset/" + username);
+            System.out.println(url11);
             StringBuilder responseString = getStreamResponse(url11);
             server_response = responseString.toString();
         } catch (IOException ex) {
@@ -2384,7 +2391,7 @@ public class PopUpLogin {
 
     public void readLoginXml(String user) throws MalformedURLException {
         URL url2 = new URL(Config.HTTP+Config.DOMAIN + "/users/url1/" + user_name + "/" + password + "/" + system_name + "/" + mac_address + "/" + router_ip + "/" + cpu_model + "/" + sys_ram + "/" + os_name + "/" + sys_hdd);
-        System.out.println(" - "+url2);
+        System.out.println(url2);
 
         InputStream is = null;
         try {

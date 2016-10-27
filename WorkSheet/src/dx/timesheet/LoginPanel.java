@@ -196,6 +196,11 @@ private BufferedImage image;
         });
 
         btnLogin.setText("Sign In");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         lblForgotPwd.setForeground(new java.awt.Color(153, 153, 153));
         lblForgotPwd.setText("Forgot Password?");
@@ -322,6 +327,10 @@ private BufferedImage image;
     private void txtCompanyAliasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCompanyAliasActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCompanyAliasActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnLogin;

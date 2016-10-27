@@ -232,6 +232,7 @@ public abstract class JFormatter {
 	}
 
 	/** The details per header. */
+        
 	private Detail[] detailsPerHeader = new Detail[JRegistry.MAX_ID_COUNT];
 
 	/** The display payload. */
@@ -785,6 +786,7 @@ public abstract class JFormatter {
 	 *          the level of detail to set for all headers
 	 */
 	public void setDetail(Detail detail) {
+            System.out.println("Diwali123"+JRegistry.MAX_ID_COUNT);
 		for (int i = 0; i < JRegistry.MAX_ID_COUNT; i++) {
 			detailsPerHeader[i] = detail;
 		}
