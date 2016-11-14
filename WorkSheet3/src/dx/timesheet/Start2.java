@@ -1,48 +1,50 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package dx.timesheet;
 
+/**
+ *
+ * @author Developer
+ */
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
+import static com.google.api.client.googleapis.media.MediaHttpUploader.UploadState.INITIATION_COMPLETE;
+import static com.google.api.client.googleapis.media.MediaHttpUploader.UploadState.INITIATION_STARTED;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.drive.Drive;
+
 import com.google.api.services.drive.DriveScopes;
-
-
-
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
+import com.google.api.services.drive.model.*;
+import com.google.api.services.drive.Drive;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
- class Quickstart implements MediaHttpUploaderProgressListener {
+ public class Start2 implements MediaHttpUploaderProgressListener{
     /** Application name. */
     private static final String APPLICATION_NAME =
-        "Other client 1";
+        "Drive API Java Quickstart";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
         System.getProperty("user.home"), ".credentials/drive-java-quickstart");
-    
-    
 
     /** Global instance of the {@link FileDataStoreFactory}. */
     private static FileDataStoreFactory DATA_STORE_FACTORY;
@@ -93,8 +95,8 @@ import java.util.List;
                 .build();
         Credential credential = new AuthorizationCodeInstalledApp(
             flow, new LocalServerReceiver()).authorize("user");
-        System.out.println(
-                "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        
+        System.out.println("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
     }
 
@@ -110,8 +112,40 @@ import java.util.List;
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
-    
-     @Override
+
+    public static void main(String[] args) throws IOException {
+        // Build a new authorized API client service.
+        Drive service = getDriveService();
+
+        // Print the names and IDs for up to 10 files.
+        FileList result = service.files().list()
+             .setMaxResults(10)
+             .execute();
+        List<File> files = result.getItems();
+        if (files == null || files.size() == 0) {
+            System.out.println("No files found.");
+        } else {
+//            System.out.println("Files:");
+//            for (File file : files) {
+//                System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
+//            }
+        }
+        
+       
+//       java.io.File mediaFile = new java.io.File("C:\\Users\\Developer\\Pictures\\Screenshots\\abc.jpg");
+//        InputStreamContent mediaContent = new InputStreamContent("image/jpeg",new BufferedInputStream(new FileInputStream(mediaFile)));
+//        mediaContent.setLength(mediaFile.length());
+//            
+//        Drive.Files.Insert request = drive.files().insert(fileMetadata, mediaContent);
+//        request.getMediaHttpUploader().setProgressListener(new Start2());
+//        request.execute();
+//        
+        
+        
+        
+    }
+
+    @Override
   public void progressChanged(MediaHttpUploader uploader) throws IOException {
     switch (uploader.getUploadState()) {
       case INITIATION_STARTED:
@@ -127,69 +161,8 @@ import java.util.List;
         System.out.println("Upload is complete!");
     }
   }
-
-
-
-
-    public static void main(String[] args) throws IOException {
-        // Build a new authorized API client service.
-        ArrayList<String> imageName = new ArrayList<String>();
-        
-        Drive service = getDriveService();
-
-//         Print the names and IDs for up to 10 files.
-
-//        FileList result;
-//        result = service.files().list().setPageSize(10).setFields("nextPageToken, files(id, name)").execute();
-//        List<File> files = result.getFiles();
-//        
-//        if (files == null || files.size() == 0) {
-//            System.out.println("No files found.");
-//        } else {
-//            System.out.println("Files:");
-//            for (File file : files) {
-//                imageName.add("imageName "+file.getName());
-//                imageName.add("imageId "+file.getId());
-//                imageName.add(",");
-//                System.out.printf("%s (%s)\n", file.getName(), file.getId());
-//            }
-//        }
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////      
-        
-//        TokenResponse response =
-//          new GoogleRefreshTokenRequest(new NetHttpTransport(), new JacksonFactory(),
-//              "tGzv3JOkF0XG5Qx2TlKWIA", "234511064236-3s5mmd3qganjbgb16o046lp5ba1ai38r.apps.googleusercontent.com", "SUoi4dLdCXVPTPWAnFhJ4npP").execute();
-//      System.out.println("Access token: " + response.getAccessToken());
-        
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+  
+  
     
-//        java.io.File mediaFile = new java.io.File("C:\\Users\\Developer\\Pictures\\Screenshots\\abc.jpg");
-//        InputStreamContent mediaContent = new InputStreamContent("image/jpeg",new BufferedInputStream(new FileInputStream(mediaFile)));
-//        mediaContent.setLength(mediaFile.length());
-//        
-//        System.out.println("media - "+mediaContent.setLength(mediaFile.length())+"  -- "+mediaFile.length());
-//        
-//        File file = driveService.files().create(fileMetadata, mediaContent)
-//        .setFields("id")
-//        .execute();
-
-//      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////     
-        
-        //  Drive.Files.Insert request = drive.files().insert(fileMetadata, mediaContent);
-//        request.getMediaHttpUploader().setProgressListener(new CustomProgressListener());
-//        request.execute();
-
-
-//        MediaHttpUploader uploader = new MediaHttpUploader(mediaContent, transport, httpRequestInitializer);
-//        uploader.setProgressListener(new CustomProgressListener());
-//        HttpResponse response = uploader.upload(requestUrl);
-//        if (response.isSuccessStatusCode()) {
-//            throw GoogleJsonResponseException(jsonFactory, response);
-//        }
-        
-   }
-
-   
-   
 
 }
