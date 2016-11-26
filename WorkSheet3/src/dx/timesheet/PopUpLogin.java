@@ -8,6 +8,7 @@ package dx.timesheet;
  *
  * @author Me
  */
+import com.sun.java.swing.plaf.motif.MotifButtonListener;
 import static dx.timesheet.WaitingPanel.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -80,6 +81,7 @@ import org.xml.sax.SAXException;
 public class PopUpLogin {
 
     Border raisedBorder;
+    boolean test=false; 
     JPanel contentPane;
     private JFrame dialo;
     String email, password, host = "smtp.gmail.com", port = "465";
@@ -97,10 +99,10 @@ public class PopUpLogin {
     String router_ip, os_name, system_name, sys_ram, sys_hdd, cpu_model;
     String timesheet_response;
     String userName;
-    String userId, task_id, work_status, play_pause_comment, timesheet_id;
+    static String userId, task_id, work_status, play_pause_comment, timesheet_id;
     String[] status_array;
     String[] p_code;
-    String lTime, currentDate;
+    String lTime="", currentDate="",currentDate1="";
     static String name, imgUrl, user_name;
     String company_alias="Dsx";
     public static String usr;
@@ -112,6 +114,7 @@ public class PopUpLogin {
     int height2 = 0;
     static int height3 = 0;
     int count = 0;
+    boolean flag=true;
     int countPanels = 0;
     int countRecords = 0;
     int countInXml = 0;
@@ -151,8 +154,11 @@ public class PopUpLogin {
     Thread track_net_thread;
     ReviewDialog reviewDlg;
     ReadXml readxml = new ReadXml();
+    boolean nPause=false;
     LoaderDialog infD;
     ConfirmDialog cd;
+    ErrorDescription errorDescription;
+    SignOut signOut;
     ExtendDeadlineDialog ed;
     ProgressDialog prDialog;
     TrayIcon trayIcon;
@@ -169,6 +175,28 @@ public class PopUpLogin {
     static JLabel jLbl = new JLabel("");
     //   JXDatePicker picker = new JXDatePicker();
     //  Map<String, List<String>> subtask_map = new HashMap<String, List<String>>();
+    private boolean complete=false;
+    private String oid;
+    private boolean todo,reopen;
+    
+    public void fourButton(){
+    
+                 
+                PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                PanelPlayPause.lblPlay.setToolTipText("Start Task");
+
+                PanelPlayPause.lblReOpen.setIcon(new ImageIcon(this.getClass().getResource("/images/play2.png")));
+                PanelPlayPause.lblStop.setEnabled(false);
+                
+                PanelPlayPause.lblDone.setEnabled(false);
+                PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+              
+                
+                
+
+    }
+    
+    
     JSeparator seperator = new JSeparator(JSeparator.HORIZONTAL);
     private JFrame dialog = new JFrame() {
         /**
@@ -295,7 +323,7 @@ public class PopUpLogin {
         @Override
         public void run() {
             try {
-                sendDataForTimesheet(userId, task_id, "Progress", timesheet_id, "In^Progress");
+                sendDataForTimesheet(userId, task_id, "Progress", timesheet_id, "Progress");
             } catch (MalformedURLException ex) {
                 Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -430,8 +458,9 @@ public class PopUpLogin {
         try {
             //    UIManager.put("List.focusCellHighlightBorder", BorderFactory.createEmptyBorder());
             hd.createScreenshotDirectory();
+            System.out.println("NamanScreenShot");
             dbHandler.connect();
-            panel.txtCompanyAlias.setText(dbHandler.getAlias());
+            //panel.txtCompanyAlias.setText(dbHandler.getAlias());
             
             panel.lblAccount.setVisible(false);
             //        LoginPanel.txtUserName.addAncestorListener(new RequestFocusListener(true));
@@ -500,6 +529,8 @@ public class PopUpLogin {
             in2 = new InputDialog(dialog, true);
             pauseDialog = new PauseOptionDialog(dialog, true);
             cd = new ConfirmDialog(dialog, true);
+            errorDescription = new ErrorDescription(dialog, true);
+            signOut = new SignOut(dialog,true);
             ed = new ExtendDeadlineDialog(dialog, true);
             ed.setDialog(dialog);
             infD = new LoaderDialog(dialog, true);
@@ -591,7 +622,7 @@ public class PopUpLogin {
                         showMainDialog();
                         showInfoDialog("Please stop working task first!");
                     }
-                }
+                } 
             }
             if (e.getSource() == TrayIconUtility.show) {
                 showMainDialog();
@@ -803,6 +834,30 @@ public class PopUpLogin {
         panel.btnLogin.addKeyListener(kl);
         ForgotPwdPanel.btnSubmit.addKeyListener(kl);
         ForgotPwdPanel.txtEmail.addKeyListener(kl);
+    }
+    
+    public void uploadScreenShot(String parentId, String fileId) throws MalformedURLException{
+        
+       URL url =new URL(Config.HTTP+Config.DOMAIN+"Tasks/getScreen/"+userId+"/"+task_id+"/"+parentId+"/"+fileId);
+          System.out.println("NamanScreenShotUrlIsHere  -  "+url);
+         
+                  InputStream in = null;
+
+                  try {
+                      in = url.openStream();
+                  } catch (IOException ex) {
+                      Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+                  StringBuilder responseString;
+                  try {
+                      responseString = getStreamResponse(url);
+                      String response = responseString.toString();
+                      System.out.println("NamanScreenResponse - "+response);
+                  } catch (IOException ex) {
+                      System.out.println("An error occured in NamanScreenResponse: " + ex);
+                  }
+                    
+           
     }
 
     public StringBuilder getStreamResponse(URL url) throws IOException {
@@ -1061,19 +1116,40 @@ public class PopUpLogin {
                         String current_time = getElements(eElement, "time");
                         System.out.println(current_time);
                         String end_date = getElements(eElement, "task_end_date");
-                        int end = Integer.parseInt(start_date);
-                        System.out.println("namanEnddate - "+end_date);
+                        System.out.println("namanStartdate - "+end_date);
+                        int end,end1;
+                        if(start_date.equals("") || end_date.equals("")){
+                            currentDate="N/A";
+                            System.out.println("\n\ncurrentDate\n\n");
+                        }
+                        else{
+                            end = Integer.parseInt(end_date);
+                            end1 = Integer.parseInt(start_date);
+                            System.out.println("namanEnddate - "+end_date);
+                            currentDate = new SimpleDateFormat("dd-MMM-yyyy").format(new Date(end * 1000L));
+                            currentDate1 = new SimpleDateFormat("dd-MMM-yyyy").format(new Date(end1 * 1000L));
+                            System.out.println("namanEnddate - "+currentDate);
+                            nDate.add(currentDate +"\n\n\n");
+                            lTime = new SimpleDateFormat("h:mm a").format(new Date(end * 1000L));
+                            nTime.add(lTime + "\n\n\n");
+                        }
                         
-                        currentDate = new SimpleDateFormat("dd-MMM-yyyy").format(new Date(end * 1000L));
-                        System.out.println("namanEnddate - "+currentDate);
-                        nDate.add(currentDate +"\n\n\n");
-                        lTime = new SimpleDateFormat("h:mm a").format(new Date(end * 1000L));
-                        nTime.add(lTime + "\n\n\n");
                         String tracking = getElements(eElement, "tracking");
                         String screenshot = getElements(eElement, "screenshot");
                         String priority = getElements(eElement, "priority");
-                        String assigned_by = getElements(eElement, "assigned_by");
+                        final String oId = getElements(eElement, "old_task_id");
+                        final String toDo_status = getElements(eElement,"toDo_status");
+                        final String todo_task_id = getElements(eElement,"todo_task_id");
+                        PanelPlayPause.TodoId.setText(todo_task_id);
+                        final String toDo_description = getElements(eElement,"toDo_description");
+                        final String assigned_by = getElements(eElement, "assigned_by");
                         String status2 = getElements(eElement, "status");
+                        final String status3=status2;
+                        final String assignedby = getElements(eElement, "assigned_by");
+                        final String assignedto = getElements(eElement,"assignto");
+                        System.out.println("NamanAssigned_by - "+assignedby);
+                        System.out.println("NamanAssigned_To - "+assignedto);
+                        
                         System.out.println("Naman-Status- "+status2);
                         if(status2.equals("Progress")){
                             status2="Working";
@@ -1103,11 +1179,17 @@ public class PopUpLogin {
                                 stask.subtask_map.put(panelid, list);
                             }
 
-
-
-
                         }
 
+                        if(end_date.equals("") || start_date.equals("")){
+                        PanelPlayPause.taskProgressbar.setVisible(false);
+                        PanelPlayPause.jLabel1.setVisible(false);
+                        PanelPlayPause.lblDeadlineDate.setText("N/A");
+                        PanelPlayPause.lblDeadlineDate.setVisible(false);
+                        PanelPlayPause.lblExtentDeadline.setVisible(false);
+                        }
+                        
+                        else{
                         Double a = hd.getTaskProgress(start_date, end_date, current_time);
                         PanelPlayPause.lblDeadlineDate.setText(hd.printDate(end_date) +"  "+lTime);
                         if (a.intValue() <= 90) {
@@ -1124,28 +1206,103 @@ public class PopUpLogin {
                         } else {
                             System.out.println("Less than 100");
                         }
+                        
                         PanelPlayPause.taskProgressbar.setValue(a.intValue());
+                        }
+                        
                         PanelPlayPause.lblStatus.setText(status2);
                         PanelPlayPause.lblStatus.setVisible(false);
-                        // PanelPlayPause.lblTaskI
+                        // PanelPlayPase.lblTaskI
                         PanelPlayPause.lblTimesheetId.setText(tracking);
                         PanelPlayPause.lblTimesheetId.setVisible(false);
 
                         status_array[temp] = status2;
+                        //if(status2.equals("New")){status2="Stop";}
+                        //if(status2.equals("Progress")){status2="Working";}
                         switch (status2) {
+                            
+                            
+                            case "New":
+                                PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                                PanelPlayPause.lblStop.setEnabled(false);
+                                PanelPlayPause.lblDone.setEnabled(false);
+                                PanelPlayPause.lblPlay.setToolTipText("Start Task");
+                                 PanelPlayPause.lblReOpen.setVisible(false);
+                            break;
+                            case "ToDo":
+                                
+                                if(assignedto.equals("1")){
+                                    PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                                    PanelPlayPause.lblStop.setEnabled(false);
+                                    PanelPlayPause.lblPlay.setEnabled(false);
+                                    PanelPlayPause.lblPlay.setToolTipText("Start Task");
+                                    PanelPlayPause.lblReOpen.setIcon(new ImageIcon(this.getClass().getResource("/images/play2.png")));
+                                    PanelPlayPause.lblReOpen.setEnabled(false);
+                                    PanelPlayPause.lblDone.setEnabled(false);
+                                    PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+                                     
+                                    
+                                    
+                                }else{
+                                    todo=true;
+                                    PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                                    PanelPlayPause.lblStop.setEnabled(false);
+                                    PanelPlayPause.lblPlay.setToolTipText("Start Task");
+                                    PanelPlayPause.lblDone.setEnabled(false);
+                                    flag=false;
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                    
+                                 }
+                                
+                                
+                                break;
+                                
+                            case "Progress":
                             case "Working":
+                                
                                 working_task = true;
+                                
                                 PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
                                 PanelPlayPause.lblStop.setEnabled(true);
+                                PanelPlayPause.lblDone.setEnabled(true);
                                 PanelPlayPause.lblPlay.setToolTipText("Pause Task");
-                                //   panel1.setBackground(new Color(129,255,190));
                                 panel1.setBackground(new Color(236, 252, 244));
+                                
+                                if(assignedto.equals("1")){
+                                   
+                                    PanelPlayPause.lblReOpen.setIcon(new ImageIcon(this.getClass().getResource("/images/play2.png")));
+                                    PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+                                    
+                                }else{
+                                    
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                    
+                                 }
+                                
                                 break;
-                            case "Stop":
+                            case "Stop"://stop
+                                
                                 PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
                                 PanelPlayPause.lblStop.setEnabled(false);
                                 PanelPlayPause.lblPlay.setToolTipText("Start Task");
+                                
+                                if(assignedto.equals("1")){
+                                    
+                                    PanelPlayPause.lblReOpen.setIcon(new ImageIcon(this.getClass().getResource("/images/play2.png")));
+                                    PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+                                     
+                                    System.out.println("\n\n\n*********NamanArora Complete******* == "+complete);
+                                    
+                                }else{
+                                
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                    
+                                 }
+                                
+                                flag=true;
                                 break;
+                              
+                         
                             case "Pause":
                                 working_task = true;
                                 task_paused = true;
@@ -1153,28 +1310,95 @@ public class PopUpLogin {
                                 PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/pauseresume.png")));
                                 PanelPlayPause.lblStop.setEnabled(false);
                                 PanelPlayPause.lblPlay.setToolTipText("Resume Task");
-                                //   panel1.setBackground(new Color(129,255,190));
-                                panel1.setBackground(new Color(236, 252, 244));
-                                //  panel1.setBackground(new Color(144,238,144));
+                                panel1.setBackground(new Color(236, 252, 244));   
+                                
+                                if(assignedto.equals("1")){
+                
+                                    PanelPlayPause.lblReOpen.setIcon(new ImageIcon(this.getClass().getResource("/images/play2.png")));
+                                    PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+                                    PanelPlayPause.lblDone.setEnabled(true);
+                                    PanelPlayPause.lblDone.setToolTipText("Finish");
+
+                                }else{
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                   
+                                 }
+                                flag=true;
                                 break;
+                                
+                            case "Testing":
+                                
+                                if(assignedto.equals("1")){
+                                   
+                                    System.out.println("Testing");
+                                      // test=true;
+                                       fourButton();
+                                        flag=true;
+                                }else{
+                                  //  test=false;
+                                    PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                                    PanelPlayPause.lblStop.setEnabled(false);
+                                    PanelPlayPause.lblPlay.setEnabled(false);
+                                    PanelPlayPause.lblDone.setEnabled(false);
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                    PanelPlayPause.lblPlay.setToolTipText("Testing");
+                                    PanelPlayPause.lblStop.setToolTipText("Testing");
+                                    PanelPlayPause.lblDone.setToolTipText("Testing");
+                                   flag=false;
+                                    
+                                }
+                                
+                                //PanelPlayPause.lblDone.set
+                                
+                                break;
+                                
                             case "Done":
-                                PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
-                                PanelPlayPause.lblStop.setEnabled(false);
-                                PanelPlayPause.lblPlay.setEnabled(false);
-                                PanelPlayPause.lblDone.setEnabled(false);
+                                
+                                    PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                                    PanelPlayPause.lblStop.setEnabled(false);
+                                    PanelPlayPause.lblPlay.setEnabled(false);
+                                    PanelPlayPause.lblDone.setEnabled(false);
+                                 if(assignedto.equals("1")){
+                                   
+                                    PanelPlayPause.lblReOpen.setEnabled(false);
+                                   
+                                }else{
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                    
+                                }
+                                flag=false;
                                 break;
                         }
 
                         PanelPlayPause.lblTask.setText(client_code1 + ":" + project_code1 + ":" + task);
-                        if (task.length() > 30) {
+                        if (task.length() > 30 && !(status3.equals("ToDo")) ) {
                             PanelPlayPause.lblTask.setToolTipText("<html><p width=\"250px\">" 
                                     + task + "</p></html>");
                         }
-                        if (task.length() < 30) {
-                            PanelPlayPause.lblTask.setToolTipText(task);
+                        
+                        if (task.length() < 30 && !(status3.equals("ToDo"))) {
+                            PanelPlayPause.lblTask.setToolTipText(task);//toDo_description
                         }
-                        PanelPlayPause.lblAssigned.setText("<html><body>Priority : " +
-                                priority+"<br>TaskDate : "+currentDate+"</body></html>");
+                        
+                        if (toDo_description.length() > 30 && status3.equals("ToDo") ) {
+                            PanelPlayPause.lblTask.setToolTipText("<html><p width=\"250px\">" 
+                                    + toDo_description + "</p></html>");
+                        }
+                        
+                        if (toDo_description.length() < 30 && status3.equals("ToDo")) {
+                            PanelPlayPause.lblTask.setToolTipText(toDo_description);//toDo_description
+                        }
+                        
+                        
+                        
+                        if(end_date.equals("")){
+                         PanelPlayPause.lblAssigned.setText("<html><body>Priority : " +
+                                priority+"</body></html>");
+                        }
+                        else{
+                            PanelPlayPause.lblAssigned.setText("<html><body>Priority : " +
+                                priority+"<br>TaskDate : "+currentDate1+"</body></html>");
+                        }
                         System.out.println("priority - "+priority);
                         panel1.addMouseListener(new MouseListener() {
                             JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
@@ -1189,17 +1413,17 @@ public class PopUpLogin {
                                 //                     System.out.println("Text On Label1 at this Panel is : " + lbl.getText().toString());
                                 //            JLabel lbl1 = (JLabel) panel1.getComponent(0);
                                 //            System.out.println(panel1.getComponent(0).getName().toString());
-                                System.out.println("Name of c1 is " + panel1.getComponent(1).getName());
-                                System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
-                                System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
-                                System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
-                                System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
-                                System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
-                                System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
-                                System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
-                                System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
-                                System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
-                                System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
+//                                System.out.println("Name of c1 is " + panel1.getComponent(1).getName());
+//                                System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
+//                                System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
+//                                System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
+//                                System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
+//                                System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
+//                                System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
+//                                System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
+//                                System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
+//                                System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
+//                                System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
                                 //       System.out.println("Name is"+panel1.getComponent(10).getName());
                             }
 
@@ -1218,6 +1442,11 @@ public class PopUpLogin {
                                     panel1.setBackground(new Color(240, 240, 240));
                                 }
 
+                                if (lblStatus1.getText().toString().equals("Testing")) {
+                                    panel1.setBackground(new Color(240, 240, 240));
+                                }
+
+                                
                                 Point p = panel1.getLocation();
                                 int x = (int) p.getX();
                                 int y = (int) p.getY();
@@ -1234,6 +1463,10 @@ public class PopUpLogin {
                                 if (lblStatus1.getText().toString().equals("Stop")) {
                                     panel1.setBackground(Color.white);
                                 }
+                                
+                                 if (lblStatus1.getText().toString().equals("Testing")) {
+                                    panel1.setBackground(Color.white);
+                                }
                                 //         abt.setVisible(false);
                             }
                         });
@@ -1246,6 +1479,7 @@ public class PopUpLogin {
                                 JLabel lbl_status1 = (JLabel) panel1.getComponent(1);
                                 JLabel lbl_task = (JLabel) panel1.getComponent(11);
 
+                                
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
 
@@ -1255,6 +1489,21 @@ public class PopUpLogin {
                                     //   td.setLocationRelativeTo(dialog);
                                     //    td.setDetailedTask(task);
                                     //    td.startTimer();
+                                    //if(sta)
+                                     if(assignedto.equals("1")){
+                                        //complete=true;
+                                        flag=true;
+                                    }
+                                    System.out.println("ssssddddffrewqwwqwq"+lbl_status1.getText());
+                                    if(lbl_status1.getText().equals("New") || lbl_status1.getText().equals("Testing") || lbl_status1.getText().equals("ToDo")){
+                                        flag=false;
+                                    }else{
+                                        flag=true;
+                                    }
+                                    
+                                    
+                                    
+                                    if(flag){
                                     String panelid = panel1.getName().toString();
                                     task_id = panelid;
                                     System.out.println("task_id is : " + task_id);
@@ -1263,24 +1512,53 @@ public class PopUpLogin {
                                     cd.setLocationRelativeTo(dialog);
                                     cd.setInfo("Do you want to Finish task?");
                                     cd.setVisible(true);
+                                    
+                                    if(assignedto.equals("1")){
+                                        complete=true;
+                                        
+                                    }
+                                    
                                     String c = cd.getInput();
                                     if (interruptDialog) {
                                         c = "";
                                     }
                                     if (c.equals("yes")) {
                                         
+                                        if(complete){
+                                            System.out.println("taskid-"+task_id);
+                                            System.out.println("userid-"+userId);
+                                            System.out.println("comment-Done");
+                                            System.out.println("status-Done");
+                                            System.out.println("old id -"+oId);
+                                            
+                                            bDoneNComplete(userId,task_id,"Done","Done",oId,assigned_by);
+                                            showInfoDialog("Done Successful");
+                                            try {
+                                                refresh();
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                            System.out.println("\n\ndoneeeeeeeeeeeeeee\n\n");
+                                            complete=false;
+                                        }
+                                        else
+                                if(!(assignedto.equals("1"))){
                                         System.out.println("Name of c1 is " + panel1.getComponent(1).getName());
-                                System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
-                                System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
-                                System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
-                                System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
-                                System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
-                                System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
-                                System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
-                                System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
-                                System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
-                                System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
+                                        System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
+                                        System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
+                                        System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
+                                        System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
+                                        System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
+                                        System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
+                                        System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
+                                        System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
+                                        System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
+                                        System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
+                                        System.out.println("Name of c11 is " + panel1.getComponent(12).getName());
+                                        System.out.println("Name of c11 is " + panel1.getComponent(13).getName());
                                         
+                                        
+
                                         JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
                                         System.out.println("namanLblStatus "+lblStatus1);
                                         String stts = lblStatus1.getText().toString();
@@ -1341,6 +1619,7 @@ public class PopUpLogin {
                                                     if(!"task_not_stopped".equals(work_status)){
                                                            userId = main_userid;
                                                     work_status = "Done";
+                                                        System.out.println("makeReviewAndFinish1");
                                                      makeReviewAndFinish(stts,subtasks_id,"has_subtasks","review_required");
                                                     }
                                                  }else{
@@ -1348,6 +1627,7 @@ public class PopUpLogin {
                                                 allSelected=true;
                                                 userId = main_userid;
                                                 work_status = "Done";
+                                                System.out.println("makeReviewAndFinish2");
                                                 makeReviewAndFinish(stts,subtasks_id,"has_subtasks","review_required");
                                                 
                                                 }
@@ -1364,15 +1644,18 @@ public class PopUpLogin {
                                                    if(!"task_not_stopped".equals(work_status)){
                                                     userId = main_userid;
                                                     work_status = "Stop";
+                                                    System.out.println("makeReviewAndFinish3");
                                                      makeReviewAndFinish(stts,subtasks_id,"has_subtasks","no_review_required");
                                                     }
                                                  }else{
                                                 userId = main_userid;
                                                 work_status = "Stop"; 
+                                                System.out.println("makeReviewAndFinish4");
                                                 makeReviewAndFinish(stts,subtasks_id,"has_subtasks","no_review_required"); 
                                                     }
                                                     
                                                
+                                                    
                                             }else{
                                                 showInfoDialog("No Task Selected");
                                             }
@@ -1384,10 +1667,19 @@ public class PopUpLogin {
                                     }else{
                                                 userId = main_userid;
                                                 work_status = "Done";
+                                                System.out.println("makeReviewAndFinish5");
                                                 makeReviewAndFinish(stts,task_id,"no_subtasks","review_required");
                                     }
                                         }
+                                        
+                                        
                                     }
+                                
+                                else{
+                                    
+                                }
+                                    }
+                                }
                                 }
 
                                 @Override
@@ -1405,7 +1697,12 @@ public class PopUpLogin {
                                         panel1.setBackground(new Color(240, 240, 240));
                                         System.out.println("Color set on ondone");
                                     }
-
+                                    
+                                     if (lbl_status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(new Color(240, 240, 240));
+                                        System.out.println("Color set on ondone");
+                                    }
+                                    panel1.setBackground(new Color(240, 240, 240));
                                     lbl_Done.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                 }
 
@@ -1414,7 +1711,11 @@ public class PopUpLogin {
                                     if (lbl_status1.getText().toString().equals("Stop")) {
                                         panel1.setBackground(Color.white);
                                     }
-
+                                     if (lbl_status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    panel1.setBackground(Color.white);
                                     lbl_Done.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                 }
 
@@ -1422,6 +1723,13 @@ public class PopUpLogin {
 
                                 public void makeReviewAndFinish(String stts,String taskid,String mode,String review) {
                                     try {
+                                        if(!(todo_task_id.equals("0"))){
+                                            
+                                            System.out.println("asdfggggggggggggggggggggg");
+                                            new ReadXml().getUserList2(todo_task_id);
+                                        }
+                                        
+                                        
                                         System.out.println("Review@|@");
                                         System.out.println(stts+taskid+mode+review);
                                         if("review_required".equals(review)){
@@ -1509,22 +1817,92 @@ public class PopUpLogin {
                              lbl_InfoIcon.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                              }
                              });*/
+                        //}
+//                      if(flag==false){
+//                                
+//                        PanelPlayPause.lblDone.addMouseListener(new MouseListener() {
+//                                JLabel lbl_Done = (JLabel) panel1.getComponent(6);
+//                                JLabel lblPlayPause = (JLabel) panel1.getComponent(4);
+//                                JLabel lbl_Stop = (JLabel) panel1.getComponent(5);
+//                                JLabel lbl_status1 = (JLabel) panel1.getComponent(1);
+//                                JLabel lbl_task = (JLabel) panel1.getComponent(11);
+//                            @Override
+//                            public void mouseClicked(MouseEvent e) {
+//                                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                            }
+//
+//                            @Override
+//                                public void mousePressed(MouseEvent e) {
+//                                }
+//
+//                                @Override
+//                                public void mouseReleased(MouseEvent e) {
+//                                }
+//
+//                                @Override
+//                                public void mouseEntered(MouseEvent e) {
+//                                    System.out.println("Mouse Entered");
+//                                    if (lbl_status1.getText().toString().equals("Stop")) {
+//                                        panel1.setBackground(new Color(240, 240, 240));
+//                                        System.out.println("Color set on ondone");
+//                                    }
+//
+//                                    lbl_Done.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//                                }
+//
+//                                @Override
+//                                public void mouseExited(MouseEvent e) {
+//                                    if (lbl_status1.getText().toString().equals("Stop")) {
+//                                        panel1.setBackground(Color.white);
+//                                    }
+//
+//                                    lbl_Done.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+//                                }
+//
+//                        });
+//                      }
 
+                        
 
-                            MouseListener mListener = new MouseListener() {
+                            MouseListener  mListener = new MouseListener() {
+                                
                                 JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
-                                JLabel lblTasks = (JLabel) panel1.getComponent(11);
+                                JLabel lblTasks = (JLabel) panel1.getComponent(12);
                                 JLabel lblPlus = (JLabel) panel1.getComponent(10);
                                 JLabel lblDate = (JLabel) panel1.getComponent(9);
+                                //8 -- lblDeadline
+                                //6 -- lblDone
+                                //5 -- lblStop
+                                //4 -- lblPlay
+                                //3 -- AssignedBy
+                                JLabel lblReOpen = (JLabel) panel1.getComponent(11);
+                                JLabel lblReOpen1 = (JLabel) panel1.getComponent(6);
+                                JLabel lblReOpen2 = (JLabel) panel1.getComponent(3);
+                                
+                                
                                 String task_id = panel1.getName().toString();
 
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
+                                    System.out.println("namanClickedMouse");
+                                    System.out.println("lblTasks  -- "+lblTasks);
+                                    System.out.println("lblReOpen  -- "+lblReOpen);
+                                    System.out.println("lblReOpen1  -- "+lblReOpen1);
+                                    System.out.println("lblReOpen2 -- "+lblReOpen2);
+                                    
+                                    System.out.println("e.getSource -- "+e.getSource());
                                     if (e.getSource() == lblTasks) {
                                         String task = lblTasks.getText().toString();
                                         String status= lblStatus1.getText().toString();
                                         String date = lblDate.getText().toString();
                                         
+                                    if(assignedto.equals("1")){
+                                        if(status.equals("Testing")){
+                                        
+                                        }
+                                        else
+                                       status="Testing-"+status;
+                                    }
                                         
                                         td = new TaskDetailDialog(dialog, true);
                                         td.setLocationRelativeTo(dialog);
@@ -1564,26 +1942,46 @@ public class PopUpLogin {
 
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
+                                     System.out.println("namanEnetrMouse");
+                                      panel1.setBackground(new Color(240, 240, 240));
                                     if (lblStatus1.getText().toString().equals("Stop")) {
+                                        panel1.setBackground(new Color(240, 240, 240));
+                                    }
+                                    
+                                    if (lblStatus1.getText().toString().equals("Testing")) {
                                         panel1.setBackground(new Color(240, 240, 240));
                                     }
 
                                     if (e.getSource() == lblTasks) {
                                         lblTasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                     }
+                                    
+//                                    if (e.getSource() == lblReOpen) {
+//                                        lblReOpen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//                                    }
+                                    
                                     if (e.getSource() == lblPlus) {
                                         lblPlus.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                     }
                                 }
                                 @Override
                                 public void mouseExited(MouseEvent e) {
+                                     System.out.println("namanExitMouse");
+                                     panel1.setBackground(Color.white);
                                     if (lblStatus1.getText().toString().equals("Stop")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (lblStatus1.getText().toString().equals("Testing")) {
                                         panel1.setBackground(Color.white);
                                     }
 
                                     if (e.getSource() == lblTasks) {
                                         lblTasks.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                     }
+//                                     if (e.getSource() == lblReOpen) {
+//                                        lblReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+//                                    }
                                     if (e.getSource() == lblPlus) {
                                         lblPlus.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                     }
@@ -1605,48 +2003,19 @@ public class PopUpLogin {
 
                             PanelPlayPause.lblTask.addMouseListener(mListener);
                             PanelPlayPause.lblExtentDeadline.addMouseListener(mListener);
-                            /*   PanelPlayPause.lblTask.addMouseListener(new MouseListener() {
-                             JLabel lblTasks = (JLabel) panel1.getComponent(11);
-
-                             @Override
-                             public void mouseClicked(MouseEvent e) {
-
-                             String task = lblTasks.getText().toString();
-                             td = new TaskDetailDialog(dialog, true);
-                             td.setLocationRelativeTo(dialog);
-                             td.setDetailedTask(task);
-                             td.startTimer();
-                             }
-
-                             @Override
-                             public void mousePressed(MouseEvent e) {
-                             }
-
-                             @Override
-                             public void mouseReleased(MouseEvent e) {
-                             }
-
-                             @Override
-                             public void mouseEntered(MouseEvent e) {
-                             panel1.setBackground(new Color(240, 240, 240));
-                             lblTasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                             }
-
-                             @Override
-                             public void mouseExited(MouseEvent e) {
-                             panel1.setBackground(Color.white);
-                             lblTasks.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                             }
-                             });*/
+                            //PanelPlayPause.lblReOpen.addMouseListener(mListener);
+                           
                             PanelPlayPause.lblPlay.addMouseListener(new MouseListener() {
                                 JLabel lblPlayPause = (JLabel) panel1.getComponent(4);
                                 JLabel lbl_Stop = (JLabel) panel1.getComponent(5);
                                 JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
+                                JLabel lblDone2 =(JLabel) panel1.getComponent(6);
 
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
 
                                     String panelid;
+                                    System.out.println("lblDone2  ---->> "+lblDone2);
                                     panelid = panel1.getName().toString();
                                     task_id = panelid;
                                     //                           System.out.println("Container of this element is : " + panelid);
@@ -1662,17 +2031,40 @@ public class PopUpLogin {
                                     //     JLabel lbl_Stop = (JLabel) panel1.getComponent(5);
                                     String stts = lblStatus1.getText().toString();
                                     System.out.println("Status st this row is>> " + stts);
+                                    
                                     System.out.println("Working task is >> " + working_task);
                                     System.out.println("Paused task is>> " + task_paused);
                                     
-                                    if (stts.equals("Working")) {
+                                    if(assignedto.equals("1")){
+                                        System.out.println("sssssssssssssssssssssssssssssssss");
+                                        test=true;
+                                    }
+                                    else{
+                                        System.out.println("svvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+                                        test=false;
+                                    }
+                                    
+                                    if(stts.equals("New") ){// || stts.equals("ToDo")){
+                                    stts="Stop";
+                                    }
+                                    
+                                    if(toDo_status.equals("1") && stts.equals("ToDo")){
+                                        stts="Stop";
+                                    }
+                                   
+                                    
+                                    if (stts.equals("Working") || stts.equals("Progress")) {
                                         pauseDialog.setLocationRelativeTo(dialog);
+                                        System.out.println("\n\nInside Working....\n\n\n");
                                         pauseDialog.setVisible(true);
                                         play_pause_comment = pauseDialog.getPauseString();
+                                        System.out.println("\n\nInside Working....\n\n\n");
                                         String time = pauseDialog.getExpectedTime();
+                                        System.out.println("\n\nInside Working....\n\n\n");
                                         System.out.println("Expected time is>> " + time);
                                         if (!pauseDialog.isVisible() && !play_pause_comment.equals("")) {
                                             try {
+                                                System.out.println("\n\nInside WorkingWorking....\n\n\n");
                                                 //                                 System.out.println(play_pause_comment);
                                                 //                   userId = dbHandler.getUserId();
                                                 userId = main_userid;
@@ -1682,6 +2074,8 @@ public class PopUpLogin {
                                                 //                                System.out.println(main_timeid);
                                                 work_status = "Pause";
                                                 String time_id = dbHandler.getTimeId();
+                                                System.out.println("\n\n\n\n*********************************************");
+                                                System.out.println("\n\ntime_id -- "+time_id);
                                                 String task_id = dbHandler.getTaskId();
                                                 String user_id = dbHandler.getUserId();
                                                 //  showInfoDialog(time_id+""+task_id+""+user_id);
@@ -1727,7 +2121,15 @@ public class PopUpLogin {
                                     }
                                     if (stts.equals("Stop") && (working_task || task_paused)) {
                                         showInfoDialog("Please Stop another working task!");
+                                        System.out.println("2059-Stop->Please Stop another working task");
                                     }
+                                    
+                                    if (stts.equals("Testing") && test && (working_task || task_paused)) {
+                                        System.out.println("2063-testing->Please Stop another working task");
+                                        showInfoDialog("Please Stop another working task!");
+                                    }
+                                    
+                                    
                                     if ((stts.equals("Stop") && !working_task) || (stts.equals("Pause") && task_paused)) {
                                         String info = "";
                                         cd.setLocationRelativeTo(dialog);
@@ -1738,6 +2140,7 @@ public class PopUpLogin {
                                         if (stts.equals("Pause")) {
                                             info = "Task resumed";
                                             cd.setInfo("Do you want to Resume task?");
+                                            nPause=true;
                                         }
                                         cd.setVisible(true);
                                         String c = cd.getInput();
@@ -1745,13 +2148,69 @@ public class PopUpLogin {
                                             c = "";
                                         }
                                         if (c.equals("yes")) {
-                                            try {
+                                            
+                                    
+                                                if(nPause){
+                                                    
+                                                    System.out.println("\n\n\n********88Inside Pause*********** \n\n\n");
+                                                   try {   
+                                                            //         userId = dbHandler.getUserId();
+                                                    userId = main_userid;
+                                                    //                            System.out.println(main_userid);
+                                                   
+                                                    work_status = "Progress";
+                                                    String time_id=dbHandler.getTimeId();
+                                                         System.out.println("NNTimeId  --  "+time_id);
+                                                         System.out.println("NNUserId -- "+userId);
+                                                         System.out.println("NNTaskId --  "+task_id);
+                                                         
+                                                    //sendPlayRequest(userId, task_id, work_status);
+                                                    sendDataForTimesheet(userId, task_id, "Progress", time_id, "");
+                                                    lbl_Stop.setEnabled(true);
+                                                    
+                                                    lblDone2.setEnabled(true);
+                                                    // lblTimesheet.setText(timesheet_id);
+                                                    lblStatus1.setText(work_status);
+                                                    lblPlayPause.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
+                                                    working_task = true;
+                                                    //   panel1.setBackground(new Color(129,255,190));
+                                                    panel1.setBackground(new Color(236, 252, 244));
+                                                    //      panel1.setBackground(new Color(144,238,144));
+                                                    showInfoDialog(info);
+                                                    lblPlayPause.setToolTipText("Pause task");
+                                                    } catch (SQLException ex) {
+                                                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+                                                    catch (IOException ex) {
+                                                    //   work_status = "Stop";
+                                                        showInfoDialog("Connection error! Please try again.");
+                                                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                                   }
+                                                   
+                                                   if (working_task) {
+                                                        win.setWorkingStatus(true);
+                                                        worker = Executors.newSingleThreadScheduledExecutor();
+                                                       // worker.scheduleWithFixedDelay(updateTimesheetThread, 0, 10, TimeUnit.MINUTES);
+                                                   if (lblTimesheet.getText().toString().equals("1")) {
+                                                        screeShotListener = Executors.newSingleThreadScheduledExecutor();
+                                                        screeShotListener.schedule(tracking_thread, 10, TimeUnit.SECONDS);
+                                                        //     tracker_thread  new Thread(win.doEvery10).start();
+                                                   }
+
+                                                 }
+                                                   
+                                                   nPause=false;
+                                                }else{
+                                                    
+                                                    
+                                                try {
                                                 //         userId = dbHandler.getUserId();
                                                 userId = main_userid;
                                                 //                            System.out.println(main_userid);
                                                 work_status = "Working";
                                                 sendPlayRequest(userId, task_id, work_status);
                                                 lbl_Stop.setEnabled(true);
+                                                lblDone2.setEnabled(true);
                                                 // lblTimesheet.setText(timesheet_id);
                                                 lblStatus1.setText(work_status);
                                                 lblPlayPause.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
@@ -1761,10 +2220,12 @@ public class PopUpLogin {
                                                 //      panel1.setBackground(new Color(144,238,144));
                                                 showInfoDialog(info);
                                                 lblPlayPause.setToolTipText("Pause task");
+                                                String time_id = dbHandler.getTimeId();
                                                 dbHandler.setTimeId(timesheet_id, userId, task_id);
                                             } catch (SQLException ex) {
                                                 Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
-                                            } catch (IOException ex) {
+                                            }
+                                            catch (IOException ex) {
                                                 //   work_status = "Stop";
                                                 showInfoDialog("Connection error! Please try again.");
                                                 Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
@@ -1780,9 +2241,135 @@ public class PopUpLogin {
                                                 }
 
                                             }
+                                    }
                                         }
                                         interruptDialog = false;
                                     }
+                                    
+                                    
+                                    
+                                   else  if ((stts.equals("Testing") && test && !working_task) || (stts.equals("Pause") && task_paused)) {
+                                        String info = "";
+                                        cd.setLocationRelativeTo(dialog);
+                                        System.out.println("dddddddddddddddddddddddddddddddddddddddddddddddddd");
+                                        if (stts.equals("Testing")) {
+                                            info = "Task started";
+                                            System.out.println("inside testinggggg");
+                                            cd.setInfo("Do you want to Start task?");
+                                        }
+                                        if (stts.equals("Pause")) {
+                                            info = "Task resumed";
+                                            System.out.println("Hellllllllllllllllllooooooooo");
+                                            nPause=true;
+                                            cd.setInfo("Do you want to Resume task?");
+                                            
+                                        }
+                                        cd.setVisible(true);
+                                        String c = cd.getInput();
+                                        if (interruptDialog) {
+                                            c = "";
+                                        }
+                                        
+                                        if(c.equals("no")){System.out.println("sseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");test=false;}
+                                        
+                                        if (c.equals("yes")) {
+                                                     if(nPause){
+                                                    
+                                                    System.out.println("\n\n\n********88Inside Pause*********** \n\n\n");
+                                                   try {   
+                                                            //         userId = dbHandler.getUserId();
+                                                    userId = main_userid;
+                                                    //                            System.out.println(main_userid);
+                                                   
+                                                    work_status = "Progress";
+                                                    String time_id=dbHandler.getTimeId();
+                                                         System.out.println("NNTimeId  --  "+time_id);
+                                                         System.out.println("NNUserId -- "+userId);
+                                                         System.out.println("NNTaskId --  "+task_id);
+                                                         
+                                                    //sendPlayRequest(userId, task_id, work_status);
+                                                    sendDataForTimesheet(userId, task_id, "Progress", time_id, "");
+                                                    lbl_Stop.setEnabled(true);
+                                                    lblDone2.setEnabled(true);
+                                                    // lblTimesheet.setText(timesheet_id);
+                                                    lblStatus1.setText(work_status);
+                                                    lblPlayPause.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
+                                                    working_task = true;
+                                                    //   panel1.setBackground(new Color(129,255,190));
+                                                    panel1.setBackground(new Color(236, 252, 244));
+                                                    //      panel1.setBackground(new Color(144,238,144));
+                                                    showInfoDialog(info);
+                                                    lblPlayPause.setToolTipText("Pause task");
+                                                    } catch (SQLException ex) {
+                                                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+                                                    catch (IOException ex) {
+                                                    //   work_status = "Stop";
+                                                        showInfoDialog("Connection error! Please try again.");
+                                                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                                   }
+                                                   
+                                                   if (working_task) {
+                                                        win.setWorkingStatus(true);
+                                                        worker = Executors.newSingleThreadScheduledExecutor();
+                                                       // worker.scheduleWithFixedDelay(updateTimesheetThread, 0, 10, TimeUnit.MINUTES);
+                                                   if (lblTimesheet.getText().toString().equals("1")) {
+                                                        screeShotListener = Executors.newSingleThreadScheduledExecutor();
+                                                        screeShotListener.schedule(tracking_thread, 10, TimeUnit.SECONDS);
+                                                        //     tracker_thread  new Thread(win.doEvery10).start();
+                                                   }
+
+                                                 }
+                                                   
+                                                   nPause=false;
+                                                }else{
+                                                    
+                                                    
+                                                try {
+                                                //         userId = dbHandler.getUserId();
+                                                userId = main_userid;
+                                                //                            System.out.println(main_userid);
+                                                work_status = "Working";
+                                                sendPlayRequest(userId, task_id, work_status);
+                                                lbl_Stop.setEnabled(true);
+                                                lblDone2.setEnabled(true);
+                                                // lblTimesheet.setText(timesheet_id);
+                                                lblStatus1.setText(work_status);
+                                                lblPlayPause.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
+                                                working_task = true;
+                                                //   panel1.setBackground(new Color(129,255,190));
+                                                panel1.setBackground(new Color(236, 252, 244));
+                                                //      panel1.setBackground(new Color(144,238,144));
+                                                showInfoDialog(info);
+                                                lblPlayPause.setToolTipText("Pause task");
+                                                String time_id = dbHandler.getTimeId();
+                                                dbHandler.setTimeId(timesheet_id, userId, task_id);
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                            catch (IOException ex) {
+                                                //   work_status = "Stop";
+                                                showInfoDialog("Connection error! Please try again.");
+                                                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                            if (working_task) {
+                                                win.setWorkingStatus(true);
+                                                worker = Executors.newSingleThreadScheduledExecutor();
+                                                worker.scheduleWithFixedDelay(updateTimesheetThread, 0, 10, TimeUnit.MINUTES);
+                                                if (lblTimesheet.getText().toString().equals("1")) {
+                                                    screeShotListener = Executors.newSingleThreadScheduledExecutor();
+                                                    screeShotListener.schedule(tracking_thread, 10, TimeUnit.SECONDS);
+                                                    //     tracker_thread  new Thread(win.doEvery10).start();
+                                                }
+
+                                            }
+                                    }
+                                            ////
+                                        } else{test=false;}
+                                        interruptDialog = false;
+                                    }
+                                    
+                                    
                                     //                         System.out.println("Time id of this panel is : " + lblTimesheet.getText().toString());
                                     //    JLabel lbl2 = (JLabel) panel.getComponent(3);
                                     //   lbl2.setIcon(new ImageIcon(this.getClass().getResource("/dx/timesheet/pause.png")));
@@ -1802,6 +2389,13 @@ public class PopUpLogin {
                                         panel1.setBackground(new Color(240, 240, 240));
                                         System.out.println("Color set");
                                     }
+                                    
+                                    if (lblStatus1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(new Color(240, 240, 240));
+                                        System.out.println("Color set");
+                                    }
+                                     panel1.setBackground(new Color(240, 240, 240));
+                                    
                                     lblPlayPause.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                 }
 
@@ -1817,10 +2411,98 @@ public class PopUpLogin {
                                     if (lblStatus1.getText().toString().equals("Stop")) {
                                         panel1.setBackground(Color.white);
                                     }
+                                    
+                                    if (lblStatus1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    panel1.setBackground(Color.white);
 
                                     lblPlayPause.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                 }
                             });
+                            
+                            
+                            PanelPlayPause.lblReOpen.addMouseListener(new MouseListener() {
+                                JLabel lbl_ReOpen = (JLabel) panel1.getComponent(11);
+                                JLabel status1 = (JLabel) panel1.getComponent(1);
+                                
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                
+                               boolean tru=false;
+                                
+                                System.out.println("NamanAroraMouseClicked---->>>>>"+status1.getText());
+                                
+                                 if((status1.getText().equals("ToDo")) || (status1.getText().equals("Testing")) ){
+                                     tru=false;
+                                 }else{tru=true;}
+                                
+                                if(tru){
+                                String panelid = panel1.getName().toString();
+                                    task_id = panelid;
+                                System.out.println("NamanAroraMouseClicked");
+                                
+                                //er.setDialog(dialog);
+                               
+                                System.out.println("oid----->>>>>>"+oId);
+                                errorDescription.setLocationRelativeTo(dialog);
+                                
+                                errorDescription.setVisible(true);
+                                String comments=errorDescription.getComments();
+                                System.out.println("\n\n\n************************"+task_id+"************************\n\n\n");
+                               
+                                String fla=errorDescription.getFlag();
+                                if(fla.equals("false")){
+                                    
+                                }else{
+                                    showInfoDialog("ReOpen Successful");
+                                    bDoneNComplete(userId,task_id,"ToDo",comments,oId,assigned_by);
+                                    
+                                }
+                                try {
+                                        refresh();
+                                    } catch (SQLException ex) {
+                                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                
+                                }
+                                 
+                            }
+
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+                                    System.out.println("NamanArora-mousePressed");
+                            }
+
+                            @Override
+                            public void mouseReleased(MouseEvent e) {
+                                 System.out.println("NamanArora-mouseReleased");
+                            }
+
+                            @Override
+                            public void mouseEntered(MouseEvent e) {
+                                System.out.println("NamanArora-mouseEntered\n"+lbl_ReOpen);
+                                
+                                 panel1.setBackground(new Color(240, 240, 240));
+                                        System.out.println("Color set");
+                               // PanelPlayPause.lblReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                                //lbl_ReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                                lbl_ReOpen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                //lbl_ReOpen.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                            }
+
+                            @Override
+                            public void mouseExited(MouseEvent e) {
+                                System.out.println("NamanArora-mouseExited");
+                                lbl_ReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                                //lbl_ReOpen.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                //Color set on ondone
+                                 panel1.setBackground(Color.white);
+                            }
+                            
+                        });
+                            
+                            
                             PanelPlayPause.lblStop.addMouseListener(new MouseListener() {
                                 JLabel lbl_Stop = (JLabel) panel1.getComponent(5);
                                 JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
@@ -1841,6 +2523,7 @@ public class PopUpLogin {
 
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
+                                     panel1.setBackground(new Color(240, 240, 240));
                                     if (lblStatus1.getText().toString().equals("Stop")) {
                                         panel1.setBackground(new Color(240, 240, 240));
                                     }
@@ -1850,6 +2533,7 @@ public class PopUpLogin {
 
                                 @Override
                                 public void mouseExited(MouseEvent e) {
+                                    panel1.setBackground(Color.white);
                                     if (lblStatus1.getText().toString().equals("Stop")) {
                                         panel1.setBackground(Color.white);
                                     }
@@ -1901,9 +2585,11 @@ public class PopUpLogin {
         JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
         //                       System.out.println("Status of this panel is : " + lblStatus1.getText().toString());
         JLabel lblTimesheet = (JLabel) panel1.getComponent(2);
+        JLabel toId = (JLabel) panel1.getComponent(13);
         String stts = lblStatus1.getText().toString();
+        String tId = toId.getText().toString();
         System.out.println("NamanArora - "+stts);
-        if (stts.equals("Working") && tag.equals("Stop")) {
+        if ((stts.equals("Progress") || stts.equals("Working")) && tag.equals("Stop")) {
             cd.setLocationRelativeTo(dialog);
             cd.setInfo("Do you want to stop task?");
             cd.setVisible(true);
@@ -1915,19 +2601,26 @@ public class PopUpLogin {
                 stopOrDone(lblStatus1, lbl_PlayPause, lbl_Stop, done);
             }
             interruptDialog = false;
-        } else if (stts.equals("Working") && tag.equals("Done")) {
+        } else if ((stts.equals("Progress") || stts.equals("Working")) && tag.equals("Done")) {
                
             work_status="task_not_stopped";
             if (stopOrDone(lblStatus1, lbl_PlayPause, lbl_Stop, done)) {
                 System.out.println("doneeeeee" + done);
                 System.out.println("Task stopped!!!");
                 userId = main_userid;
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 
                 work_status = "Done";
                 System.out.println("doneeeeee" + done);
                 if("no_subtask".equals(subtask)){                                  // if no subtasks 
                     try {
+                        
+                         if(!(tId.equals("0"))){
+                                            
+                            System.out.println("asdfggggggggggggggggggggg");
+                            new ReadXml().getUserList2(tId);
+                        }
+                        
                     System.out.println("doneeeeee" + done);
                     reviewDlg.setTaskId(task_id);
                     reviewDlg.setLocationRelativeTo(dialog);
@@ -2166,16 +2859,18 @@ public class PopUpLogin {
                 showLoaderDialog2();
             }
             if (e.getSource() == TaskPanel.lblSignOut2) {
-//                SignOut signOut = new SignOut(dialo, done);
-//                boolean sign = signOut.sign();
-//                if(sign==true){signOutBlock("");}
-//                else{try {
-//                   
-//                    } catch (Exception ex) {
-//                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-//}
-                signOutBlock("");
+                
+                signOut.setLocationRelativeTo(dialog);
+                signOut.setVisible(true);
+               
+                boolean sign = signOut.flagResult();
+                System.out.println("sssssssss+++"+sign);
+                if(sign==true){
+                    signOutBlock("");
+//                
+                }
+                else{}
+               // signOutBlock("");
             }
             if (e.getSource() == TaskPanel.lblRefreshMain) {
 
@@ -2314,22 +3009,28 @@ public class PopUpLogin {
         }
     };
 
-    public void signOutBlock(String exit_tag) {
+    public  void signOutBlock(String exit_tag) {
         
         try {
+            System.out.println("Enter111");
             if (working_task) {
                 showMainDialog();
                 showInfoDialog("Please stop working task first!");
             } else {
                 
+                  System.out.println("Enter222");
+                  
+                  
                 if(true){System.out.println("yes");}
                 else{System.out.println("no");}
                 if (!task_reader_thread.isShutdown()) {
                     // refresh_worker.shutdownNow();
                     task_reader_thread.shutdownNow();
+                      System.out.println("Enter333");
                 }
 
                 if (cd.isVisible()) {
+                    System.out.println("Enter444");
                     cd.setVisible(false);
                     interruptDialog = true;
                 }
@@ -2397,6 +3098,62 @@ public class PopUpLogin {
         timesheet_response = responseString.toString();
         System.out.println("Naman_sendDataForTimesheetToPause-timesheet_response"+timesheet_response);
     }
+    
+    void bDoneNComplete(String userid, String taskid, String status, String comment,String oId, String assign )  {
+        try {
+            double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "TimeSheets/markDone/" + userid + "/" + taskid + "/" + status + "/" + comment + "/" + oId +"/"+assign+"?"+k+"naman"+i);
+            System.out.println("NamanbDoneNComplete"+url11);
+            StringBuilder responseString;
+            try {
+                responseString = getStreamResponse(url11);
+                timesheet_response = responseString.toString();
+                 System.out.println("Naman_bDoneNComplete-timesheet_response"+timesheet_response);
+            } catch (IOException ex) {
+                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    public void sendErrorDescription(final String a){
+        System.out.println("aaaaaa--> "+a);
+        Thread t1 =new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("userid-"+userId);
+                System.out.println("taskid-"+task_id);
+                System.out.println("userid-"+"TODO");
+                System.out.println("userid-"+a);
+                //System.out.println("userid-"+oId);
+            }
+        });
+        t1.start();
+    }
+    
+     void bToDo(String userid, String taskid, String status, String comment,String oId, String assign )  {
+        try {
+            double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "TimeSheets/markDone/" + userid + "/" + taskid + "/" + status + "/" + comment + "/" + oId +"/"+assign+"?"+k+"naman"+i);
+            System.out.println("NamanbDoneNComplete"+url11);
+            StringBuilder responseString;
+            try {
+                responseString = getStreamResponse(url11);
+                timesheet_response = responseString.toString();
+                 System.out.println("Naman_bDoneNComplete-timesheet_response"+timesheet_response);
+            } catch (IOException ex) {
+                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void sendPlayRequest(String userid, String taskid, String status) throws MalformedURLException, IOException, SQLException {
         
@@ -2427,8 +3184,9 @@ public class PopUpLogin {
 
     void requestPassword(String username) {
         try {
-            
-            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "users/remotereset/" + username);
+            double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "users/remotereset/" + username+"?"+k+"naman"+i);
             System.out.println("NaRequestPassword"+url11);
             StringBuilder responseString = getStreamResponse(url11);
             server_response = responseString.toString();

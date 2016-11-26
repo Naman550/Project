@@ -204,7 +204,7 @@ public class ReviewDialog extends javax.swing.JDialog {
     class BackgroundWorker extends SwingWorker<Integer, Integer> {
         @Override
         protected Integer doInBackground() throws Exception {
-            printValues(listUserReview.getSelectedIndex());
+        printValues(listUserReview.getSelectedIndex());
         String userid=ReadXml.mylist.get(listUserReview.getSelectedIndex()).keySet().toString();
        userid=userid.replaceAll("\\[", "").replaceAll("\\]", "");
         String response=null;
@@ -212,7 +212,7 @@ public class ReviewDialog extends javax.swing.JDialog {
         System.out.println("UserId is>> "+userid+"task_id is>> "+task_id); 
         
         try {
-            response=rd.sendReview(userid,task_id);
+            response=rd.sendReview(userid,task_id,PopUpLogin.userId);
         }  catch (IOException ex) {
             Logger.getLogger(ReviewDialog.class.getName()).log(Level.SEVERE, null, ex);
         } 

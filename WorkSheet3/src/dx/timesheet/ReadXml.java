@@ -48,6 +48,7 @@ public class ReadXml {
     static String response1 = "";
     Activity usermap = new Activity();
     String[] users;
+    static String nTaskId; 
     String[] u;
     DefaultListModel listmodel = new DefaultListModel();
     ArrayList<String> s = new ArrayList<String>();
@@ -64,14 +65,20 @@ public class ReadXml {
             listmodel.clear();
             mylist.clear();
             InputStream in = null;
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             URL userUrl = new URL(DOMAIN + "users/getusers"+"?"+k+"naman"+i);
             System.out.println("abcdefgh - "+userUrl);
             in = userUrl.openStream();
+            
             Document doc = parse(in);
+            System.out.println("fffff"+doc);
             doc.getDocumentElement().normalize();
             NodeList listOfUsers = doc.getElementsByTagName("user");
             System.out.println("Total users : " + listOfUsers.getLength());
             users = new String[listOfUsers.getLength()];
+            
+            
+            
             for (int temp = 0; temp < listOfUsers.getLength(); temp++) {
                 Node nNode = listOfUsers.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -101,6 +108,85 @@ public class ReadXml {
                     //   System.out.println("Listmodel is"+s.get(temp));
                 }
             }
+            
+
+            System.out.println("Length s is>>" + s.size());
+            String[] u = new String[s.size()];
+            //    u = s.toArray(u);
+            //    System.out.println("Length s is>>"+s.size());
+            //    System.out.println("Length u is>>"+u.length);
+            //  setUsers(s);
+
+            //      u = new String[s.size()];
+            //      u = s.toArray(u);
+            //      System.out.println("Length s is>>"+u.length);
+        } catch (IOException ex) {
+            Logger.getLogger(ReadXml.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //  return u;
+        //  rd=new ReviewDialog(null, true);
+        printHashmap();
+        //    printHashmap();
+        ReviewDialog.listUserReview.setModel(listmodel);
+
+        //  rd.setValuesinList(mylist);
+    }
+    
+    
+    
+    public void getUserList2(String id) {
+            nTaskId=id;
+        try {
+            double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+            listmodel.clear();
+            mylist.clear();
+            InputStream in = null;
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            URL userUrl = new URL(DOMAIN + "users/getusers/"+id+"?"+k+"naman"+i);
+            System.out.println("abcdefgh - "+userUrl);
+            in = userUrl.openStream();
+            
+            Document doc = parse(in);
+            System.out.println("fffff"+doc);
+            doc.getDocumentElement().normalize();
+            NodeList listOfUsers = doc.getElementsByTagName("user");
+            System.out.println("Total users : " + listOfUsers.getLength());
+            users = new String[listOfUsers.getLength()];
+            
+            
+            
+            for (int temp = 0; temp < 1; temp++) {
+                Node nNode = listOfUsers.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+
+                    NodeList node_id = eElement.getElementsByTagName("id");
+                    Element e_id = (Element) node_id.item(0);
+                    final String id1 = e_id.getChildNodes().item(0).getNodeValue();
+                    System.out.println("user id is>>" + id1);
+
+                    NodeList node_name = eElement.getElementsByTagName("name");
+                    Element e_name = (Element) node_name.item(0);
+                    final String name = e_name.getChildNodes().item(0).getNodeValue();
+                    System.out.println("user name is>>" + name);
+
+                    mylist.add(new HashMap<String, String>() {
+                        {
+                            put(id1, name);
+                        }
+                    });
+                    //   rd.setValuesinList(new HashMap<String,String>(){{put(id,name);}},temp);
+                    //   usermap.addUserToList(id, name);
+                    //       usermap.addUserToModel(name);
+                    //  users[temp]=name;
+                    //     addUser(name);
+                    listmodel.addElement(name);
+                    //   System.out.println("Listmodel is"+s.get(temp));
+                }
+            }
+            
 
             System.out.println("Length s is>>" + s.size());
             String[] u = new String[s.size()];
@@ -125,21 +211,7 @@ public class ReadXml {
         //  rd.setValuesinList(mylist);
     }
 
-    public void sendLink(String userid, String taskid, String link, String percentage) throws MalformedURLException, IOException {
-        URL userUrl = new URL(DOMAIN + "tasks/getScreen/" + userid + "/" + taskid + "/" + link + "/" + percentage);
-        System.out.print("Link url is>> " + userUrl);
-        InputStream in = null;
-
-        in = userUrl.openStream();
-
-        StringBuilder response = new StringBuilder();
-        byte[] respBuffer = new byte[4096];
-        while (in.read(respBuffer) >= 0) {
-            response.append(new String(respBuffer).trim());
-        }
-        System.out.print("Link response is>> " + response);
-    }
-
+   
     public String sendDeadlineRequest(String userid, String taskid, String date) throws IOException {
         URL url = new URL(DOMAIN + "tasks/extend/" + userid + "/" + taskid + "/" + date);
         System.out.println("extend url is>> " + url);
@@ -330,8 +402,8 @@ public class ReadXml {
         return response;
     }
 
-    public String sendReview(String user_id, String task_id) throws MalformedURLException, IOException {
-        String u = DOMAIN + "projectReviews/add/" + user_id + "/" + task_id;
+    public String sendReview(String user_id, String task_id, String loginUserId) throws MalformedURLException, IOException {
+        String u = DOMAIN + "projectReviews/add/" + user_id + "/" + task_id +"/"+loginUserId+"/"+nTaskId;
         System.out.println("projectReviews1 - "+u);
         URL url = new URL(u);
         System.out.println("projectReviews2 - "+u);

@@ -19,8 +19,8 @@ import com.google.api.client.googleapis.media.MediaHttpUploader;
 import static com.google.api.client.googleapis.media.MediaHttpUploader.UploadState.INITIATION_COMPLETE;
 import static com.google.api.client.googleapis.media.MediaHttpUploader.UploadState.INITIATION_STARTED;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
@@ -28,8 +28,6 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.Drive;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,8 +59,7 @@ import java.util.List;
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/drive-java-quickstart
      */
-    private static final List<String> SCOPES =
-        Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
+   private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE);
 
     static {
         try {
@@ -82,7 +79,7 @@ import java.util.List;
     public static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
-            Quickstart.class.getResourceAsStream("client_secret.json");
+            Start2.class.getResourceAsStream("client_secret.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
@@ -117,7 +114,12 @@ import java.util.List;
         // Build a new authorized API client service.
         Drive service = getDriveService();
 
-        // Print the names and IDs for up to 10 files.
+       
+        
+       
+       
+        
+         // Print the names and IDs for up to 10 files.
         FileList result = service.files().list()
              .setMaxResults(10)
              .execute();
@@ -125,24 +127,42 @@ import java.util.List;
         if (files == null || files.size() == 0) {
             System.out.println("No files found.");
         } else {
-//            System.out.println("Files:");
-//            for (File file : files) {
-//                System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
-//            }
+            System.out.println("Files:");
+            for (File file : files) {
+                System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
+            }
         }
-        
-       
-//       java.io.File mediaFile = new java.io.File("C:\\Users\\Developer\\Pictures\\Screenshots\\abc.jpg");
-//        InputStreamContent mediaContent = new InputStreamContent("image/jpeg",new BufferedInputStream(new FileInputStream(mediaFile)));
-//        mediaContent.setLength(mediaFile.length());
-//            
-//        Drive.Files.Insert request = drive.files().insert(fileMetadata, mediaContent);
-//        request.getMediaHttpUploader().setProgressListener(new Start2());
-//        request.execute();
-//        
-        
-        
-        
+               
+    }
+    
+    private static File insertFile(Drive service, String title, String description,
+        String parentId, String mimeType, String filename) {
+      // File's metadata.
+      File body = new File();
+      body.setTitle(title);
+      body.setDescription(description);
+      body.setMimeType(mimeType);
+
+      // Set the parent folder.
+      if (parentId != null && parentId.length() > 0) {
+        body.setParents(
+            Arrays.asList(new ParentReference().setId(parentId)));
+      }
+
+      // File's content.
+      java.io.File fileContent = new java.io.File(filename);
+      FileContent mediaContent = new FileContent(mimeType, fileContent);
+      try {
+        File file = service.files().insert(body, mediaContent).execute();
+
+        // Uncomment the following line to print the File ID.
+        System.out.println("File ID: " + file.getId());
+
+        return file;
+      } catch (IOException e) {
+        System.out.println("An error occured: " + e);
+        return null;
+      }
     }
 
     @Override

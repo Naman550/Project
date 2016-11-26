@@ -36,9 +36,11 @@ import java.util.Arrays;
         HttpTransport httpTransport = new NetHttpTransport( );
         JsonFactory jsonFactory = new JacksonFactory( );
 
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder( httpTransport, jsonFactory, CLIENT_ID, CLIENT_SECRET, Arrays.asList( DriveScopes.DRIVE ) ).setAccessType( "online" ).setApprovalPrompt( "auto" ).build( );
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder( httpTransport, jsonFactory, 
+                CLIENT_ID, CLIENT_SECRET, Arrays.asList( DriveScopes.DRIVE ) ).setAccessType( "online" ).setApprovalPrompt( "auto" ).build( );
 
-        System.out.println("xxxxx : "  + DriveScopes.DRIVE);
+        System.out.println("DriveScopes : "  + DriveScopes.DRIVE);
+        System.out.println("FLOW : "  + flow);
 
         String url = flow.newAuthorizationUrl( ).setRedirectUri( REDIRECT_URI ).build( );
         System.out.println( "Please open the following URL in your browser then type the authorization code:" );
@@ -48,26 +50,18 @@ import java.util.Arrays;
         System.out.println( " Code " + code );
         
         GoogleTokenResponse response = flow.newTokenRequest( code ).setRedirectUri( REDIRECT_URI ).execute( );
+        System.out.println("Response - "+response);
         GoogleCredential credential = new GoogleCredential( ).setFromTokenResponse( response );
 
         // Create a new authorized API client
         Drive service = new Drive.Builder( httpTransport, jsonFactory, credential ).build( );
 
-        insertFile(service, "Test File Drive", "This is a test file","" ,"text/plain" ,"C:\\Users\\Developer\\Pictures\\abc.txt");
+        File file=insertFile(service, "Naman", "This is a test file","" ,"image/jpeg" ,"C:\\Users\\Developer\\Pictures\\abc.jpg");
+        System.out.println("NAman  -  "+file);
 
       }
 
-    /**
-     * Insert new file.
-     *
-     * @param service Drive API service instance.
-     * @param title Title of the file to insert, including the extension.
-     * @param description Description of the file to insert.
-     * @param parentId Optional parent folder's ID.
-     * @param mimeType MIME type of the file to insert.
-     * @param filename Filename of the file to insert.
-     * @return Inserted file metadata if successful, {@code null} otherwise.
-     */
+    
     private static File insertFile(Drive service, String title, String description,
         String parentId, String mimeType, String filename) {
       // File's metadata.
@@ -86,9 +80,9 @@ import java.util.Arrays;
       java.io.File fileContent = new java.io.File(filename);
       FileContent mediaContent = new FileContent(mimeType, fileContent);
       try {
+          
         File file = service.files().insert(body, mediaContent).execute();
 
-        // Uncomment the following line to print the File ID.
         System.out.println("File ID: " + file.getId());
 
         return file;

@@ -99,15 +99,15 @@ public class HardwareDetails {
 
     public void createScreenshotDirectory() {
         
-        File theDir = new File("C:\\xdata");
+        File theDir = new File("C:\\Init");
         if (!theDir.exists()) {
             System.out.println("creating directory: " + "TimesheetFiles");
             boolean result = theDir.mkdir();
-            //  if(result) {    
-            //     System.out.println("DIR created");  
-            //  }else{
-            //       System.out.println("DIR created"); 
-            //   }
+              if(result) {    
+                 System.out.println("DIR created");  
+              }else{
+                   System.out.println("DIR not created"); 
+               }
         }
         deleteAllScreenshots();
     }
@@ -292,21 +292,17 @@ public class HardwareDetails {
             
             image = resize(image, 1280, 960);
             String str = formatter.format(now.getTime());
-            ImageIO.write(image, "jpg", new File("C://xdata/" + str + ".jpg"));
+            ImageIO.write(image, "jpg", new File("C://Init/" + str + ".jpg"));
             //   upload(new URL("www.asd.com"),new File());
             System.out.println("Screnshot taken");
             System.out.println("Session token is>> (" + mySessionToken + ")");
+            System.out.println("qwerty  - "+PopUpLogin.user_name);
+            String folderName = PopUpLogin.user_name;
             
+            FinalUpload upload = new FinalUpload();
+            upload.main(str,folderName); 
             
-           mySessionToken="";
-            mySessionToken = getSessionToken();
-            //     } else {
-            //          mySessionToken = renewSessionToken(mySessionToken);
-            //     }
-         //   showInfoDialog("Session present");
-            if(!mySessionToken.equals("")){
-                   uploadImageToMediafire(mySessionToken, new File("C://xdata//" + str + ".jpg"), userid + "_" + str + ".jpg", percentage);
-            }
+          
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
@@ -314,24 +310,20 @@ public class HardwareDetails {
             }
             //        deleteScreenshot(new File("h://Screenshots/"+str+".jpg"));
         } catch (Exception ex) {
-       //     showInfoDialog("Exception in certificates");
-      //      ex.printStackTrace();
-            PrintWriter writer = null;
-            try {
-                writer = new PrintWriter("c://error_log.txt", "UTF-8");
+           PrintWriter writer = null;
+            try {File ff=new File("C:\\error_log.txt");
+                writer = new PrintWriter("C:\\error_log.txt", "UTF-8");
             } catch (    FileNotFoundException | UnsupportedEncodingException ex1) {
                 Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex1);
             }
             ex.printStackTrace(writer);
           
-          //  writer.println("The first line");
-        //    writer.println("The second line");
-            writer.close();
+           writer.close();
         } 
     }
 
     public void deleteAllScreenshots() {
-        File file = new File("C:\\xdata");
+        File file = new File("C:\\Init");
         String[] myFiles;
         if (file.isDirectory()) {
             myFiles = file.list();
@@ -362,191 +354,7 @@ public class HardwareDetails {
         return dimg;
     }
 
-    public static void upload(URL url, File file) throws IOException, URISyntaxException {
-        HttpClient client = new DefaultHttpClient(); //The client object which will do the upload
-        HttpPost httpPost = new HttpPost(url.toURI()); //The POST request to send
-        FileBody fileB = new FileBody(file);
-        MultipartEntity request = new MultipartEntity(); //The HTTP entity which will holds the different body parts, here the file
-        request.addPart("file", fileB);
-        httpPost.setEntity(request);
-        HttpResponse response = client.execute(httpPost); //Once the upload is complete (successful or not), the client will return a response given by the server
-        if (response.getStatusLine().getStatusCode() == 200) { //If the code contained in this response equals 200, then the upload is successful (and ready to be processed by the php code)
-            System.out.println("Upload successful !");
-        } else {
-            System.out.println("Upload Failed !");
-        }
-    }
 
-    public String getSessionToken() throws  Exception {
-        String token = null;
-    //    try {
-            byte[] sig = encrypt(signatureString);
-            String signature = byteArrayToHexString(sig);
-            System.out.println("Signature is>> " + signature);
-            //     String urlSessionToken = ;
-            URL urlSessionToken = new URL("https://www.mediafire.com/api/1.5/user/get_session_token.php?email=" +
-                    user_name + "&password=" + password + "&application_id=" + app_id + "&signature=" + signature+"&token_version=2");
-
-            //Login token code
-            System.out.println("Url for session token is>> " + urlSessionToken);
-            InputStream is = null;
-         //   HttpsURLConnection
-            URLConnection con=urlSessionToken.openConnection();
-            HttpsURLConnection conn1 = null;
-       /*     if (con instanceof HttpsURLConnection) {
-                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<HTTPS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
-             conn1 = (HttpsURLConnection) urlSessionToken.openConnection();
-
-             conn1.setHostnameVerifier(new HostnameVerifier() {
-             public boolean verify(String hostname, SSLSession session) {
-               return true;
-             }
-            });
-            }*/
-            
-            is = con.getInputStream();
-            token=readDocument(is, "session_token");
-            System.out.println("Token is>> " + token);
-      //  } catch (Exception ex) {
-      //      mySessionToken = "";
-     //       Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex);
-      //  }
-        return token;
-    }
-
-    public String renewSessionToken(String oldtoken) {
-        String token = null;
-        try {
-            //   String urlToRenewToken="http://www.mediafire.com/api/user/renew_session_token.php?session_token="+oldtoken;
-            URL urlToRenewToken = new URL("https://www.mediafire.com/api/user/renew_session_token.php?session_token=" + oldtoken);
-            InputStream is = null;
-            is = urlToRenewToken.openStream();
-            token=readDocument(is, "session_token");
-            System.out.println("Token is>> " + token);
-
-        } catch (IOException ex) {
-            mySessionToken = "";
-            Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return token;
-    }
-
-    public void uploadImageToMediafire(String token, File file, String fllename,String percentage) throws IOException {
-
-        try {
-            // Upload
-            String urlServer = "http://www.mediafire.com/api/1.5/upload/upload.php?session_token="+ token;
-            fileInputStream = new FileInputStream(file);
-            URL url2 = new URL(urlServer);
-            
-          //  System.out.println("Url"+url2);
-            
-            connection = (HttpURLConnection) url2.openConnection();
-            // Allow Inputs & Outputs
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
-            // Enable POST method
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("Content-Type",
-                    "multipart/form-data;boundary=" + boundary);
-            outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\""
-                    + fllename + "\"" + lineEnd);
-            outputStream.writeBytes(lineEnd);
-            bytesAvailable = fileInputStream.available();
-            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            buffer = new byte[bufferSize];
-            // Read file
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            while (bytesRead > 0) {
-                //     Log.w("----while (bytesRead > 0)---", " ");
-
-                outputStream.write(buffer, 0, bufferSize);
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            }
-            outputStream.writeBytes(lineEnd);
-            outputStream.writeBytes(twoHyphens + boundary + twoHyphens
-                    + lineEnd);
-            // Responses from the server (code and message)
-            serverResponseCode = connection.getResponseCode();
-            serverResponseMessage = connection.getResponseMessage();
-            System.out.println("serverResponseCode is>> " + serverResponseCode);
-            System.out.println("serverResponseMessage is>> " + serverResponseMessage);
-            fileInputStream.close();
-            outputStream.flush();
-            outputStream.close();
-            InputStream is2 = connection.getInputStream();
-            System.out.println("namanS"+is2);
-            Document doc = parse(is2);
-            System.out.println("namanS"+doc);
-            doc.getDocumentElement().normalize();
-            NodeList listOfCodes = doc.getElementsByTagName("response");
-            System.out.println("namanS"+listOfCodes);
-            int totalTags = listOfCodes.getLength();
-            
-            NodeList nodelist_uploadkey = doc.getElementsByTagName("key");
-            System.out.println("namanS9999"+nodelist_uploadkey);
-            
-            Node node_uploadkey = nodelist_uploadkey.item(0);
-            System.out.println("namanS9999"+node_uploadkey);
-            String uploadkey = node_uploadkey.getFirstChild().getNodeValue().toString();
-            System.out.println("uploadkey is>> " + uploadkey);
-            //    mySessionToken=renewSessionToken(token);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            String quickKey = getQuickKey(uploadkey, mySessionToken, fllename);
-
-            //   System.out.println("Quick key is>> "+quickKey);
-            //      StringBuilder response = new StringBuilder();
-            //      byte[] respBuffer = new byte[4096];
-            //     while (is2.read(respBuffer) >= 0) {
-            //        response.append(new String(respBuffer).trim());
-            //     }
-
-            String link=getFileLink(quickKey, mySessionToken);
-            
-            String[] part=link.split(".com/");
-            String part2=part[1];
-            System.out.println("Broken url is>> " + part2);
-            
-            part2=part2.replaceAll("\\/", "^");
-            
-            is2.close();
-            DatabaseHandler dbHandler=new DatabaseHandler();
-            String timeid="",taskid = "",userid = "";
-            try {
-             //   dbHandler.connect();
-                 timeid=PopUpLogin.dbHandler.getTimeId();
-                taskid=PopUpLogin.dbHandler.getTaskId();
-               userid=PopUpLogin.dbHandler.getUserId();
-            
-           
-            } catch (SQLException ex) {
-                Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        //    showInfoDialog("us"+userid+"/ta"+taskid+"/ti"+timeid);
-             rd.sendLink(userid,taskid,part2,percentage);
-            //      System.out.println(response.toString());
-        }  finally {
-            try {
-                fileInputStream.close();
-            } catch (IOException ex) {
-                Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-
-
-    }
 
    public void showInfoDialog(String Info) {
         InfoDialog inf = new InfoDialog(null, true);
@@ -556,41 +364,12 @@ public class HardwareDetails {
     }
     
     public String getQuickKey(String upload_key, String session_token, String name) throws IOException {
-        URL urlQuickKey = new URL("http://www.mediafire.com/api/upload/poll_upload.php?session_token=" + session_token + "&key=" + upload_key + "&filename=" + name);
-        System.out.println("SUrl is>> " + urlQuickKey);
-
-        connection = (HttpURLConnection) urlQuickKey.openConnection();
-
-        InputStream is = connection.getInputStream();
-        String quickkey=readDocument(is, "quickkey");
-
-        //      StringBuilder response = new StringBuilder();
-        //      byte[] respBuffer = new byte[4096];
-        //      while (is.read(respBuffer) >= 0) {
-        //         response.append(new String(respBuffer).trim());
-        //      }
-        //      System.out.println("response is>> " + response.toString());
-        is.close();
-        return quickkey;
+      
+        return null;
     }
 
     public String getFileLink(String quick_key, String session_token) throws IOException {
-        URL urlQuickKey = new URL("http://www.mediafire.com/api/file/get_links.php?session_token=" + session_token + "&quick_key=" + quick_key + "&link_type=" + "view");
-        System.out.println("ssUrl is>> " + urlQuickKey);
-
-        connection = (HttpURLConnection) urlQuickKey.openConnection();
-
-        InputStream is = connection.getInputStream();
-        String link=readDocument(is, "view");
-        //    System.out.println("Link is>> " + quickkey);
-        //      StringBuilder response = new StringBuilder();
-        //      byte[] respBuffer = new byte[4096];
-        //      while (is.read(respBuffer) >= 0) {
-        //         response.append(new String(respBuffer).trim());
-        //      }
-        //      System.out.println("response is>> " + response.toString());
-        is.close();
-        return link;
+   return null;//link
     }
     public String readDocument(InputStream is,String tagname){
         Document doc = parse(is);

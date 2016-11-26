@@ -21,6 +21,7 @@ public class PanelPlayPause extends javax.swing.JPanel {
         initComponents();
         final Dimension size = lblTask.getPreferredSize();
         lblTask.setMinimumSize(size);
+        TodoId.setVisible(false);
         lblTask.setPreferredSize(size);
     }
 
@@ -51,6 +52,8 @@ public class PanelPlayPause extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         lblDeadlineDate = new javax.swing.JLabel();
         lblExtentDeadline = new javax.swing.JLabel();
+        lblReOpen = new javax.swing.JLabel();
+        TodoId = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
@@ -103,6 +106,14 @@ public class PanelPlayPause extends javax.swing.JPanel {
         lblExtentDeadline.setToolTipText("Extend Deadline");
         lblExtentDeadline.setName("lblPlus"); // NOI18N
 
+        lblReOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/play.png")));
+        lblReOpen.setToolTipText("Finish Task");
+        lblReOpen.setName("lblDone"); // NOI18N
+
+        TodoId.setFont(new java.awt.Font("Tahoma", 0, 5)); // NOI18N
+        TodoId.setEnabled(false);
+        TodoId.setName("lblTimeid"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,11 +133,11 @@ public class PanelPlayPause extends javax.swing.JPanel {
                                                 .addGap(18, 18, 18)
                                                 .addComponent(lblTimesheetId))
                                             .addComponent(lblAssigned, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(51, 51, 51)
+                                        .addGap(0, 0, 0)
                                         .addComponent(lblPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGap(10, 10, 10)
                                         .addComponent(lblStop)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGap(10, 10, 10)
                                         .addComponent(lblDone))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,11 +148,18 @@ public class PanelPlayPause extends javax.swing.JPanel {
                                                 .addComponent(lblDeadlineDate)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(lblExtentDeadline)))
+                                .addGap(10, 10, 10)
+                                .addComponent(lblReOpen)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTask)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(22, 57, Short.MAX_VALUE))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(TodoId)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,26 +184,34 @@ public class PanelPlayPause extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblStop)
                             .addComponent(lblPlay)
-                            .addComponent(lblDone)))
+                            .addComponent(lblDone)
+                            .addComponent(lblReOpen)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblExtentDeadline)))
                 .addGap(7, 7, 7)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(TodoId)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         lblPlay.getAccessibleContext().setAccessibleDescription("Play");
         lblStop.getAccessibleContext().setAccessibleDescription("Finish");
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JLabel jLabel1;
+    public static javax.swing.JLabel TodoId;
+    public static javax.swing.JLabel jLabel1;
     public javax.swing.JSeparator jSeparator1;
     public static javax.swing.JLabel lblAssigned;
     public static javax.swing.JLabel lblDeadlineDate;
     public static javax.swing.JLabel lblDone;
     public static javax.swing.JLabel lblExtentDeadline;
     public static javax.swing.JLabel lblPlay;
+    public static javax.swing.JLabel lblReOpen;
     public static javax.swing.JLabel lblStatus;
     public static javax.swing.JLabel lblStop;
     public static javax.swing.JLabel lblTask;

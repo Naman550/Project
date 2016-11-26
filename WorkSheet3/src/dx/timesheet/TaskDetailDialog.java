@@ -52,7 +52,7 @@ public class TaskDetailDialog extends javax.swing.JDialog {
    //      lblDetailedTask.setText("<html><p width=\"168px\">" + lblDetailedTask.getText()+ s + "</p></html>");
             }
     //    lblDetailedTask.setText("<html><b>Task Description:</b></br><p width=\"168px\">" + text + "</p></html>");
-        if(status.equals("Working")){
+        if(status.equals("Working") || status.equals("Progress") || status.equals("Testing-Working")){
          lblDetailedTask.setText("<html><p width=\"168px\"><b>Description - </b>" + text + ""
                  + "</p></p></br><b>DeadLine</b> - "+date+"<p></br><b> Status </b>- <font color=green>"+status+"</font>"
                  + "</p>"
@@ -60,7 +60,7 @@ public class TaskDetailDialog extends javax.swing.JDialog {
         }
     
         else
-        if(status.equals("Pause")){
+        if(status.equals("Pause") || status.equals("Testing-Pause")){
          lblDetailedTask.setText("<html><p width=\"168px\"><b>Description - </b>" + text + "</p></br><b>DeadLine </b>- "+date+"</br><p><b> Status </b>- <font color=orange>"+status+"</font></p></html>");
         }
         else{

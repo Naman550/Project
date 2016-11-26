@@ -13,6 +13,6 @@ package dx.timesheet;
 public class Config {
     public static final String HTTP = "http://";
         public static final String DOMAIN = "pms.trimonks.com/";
-  //  private final String DOMAIN4 = "http://"+"abc.com"+".pms.trimonks.com/";
+  
 
 }

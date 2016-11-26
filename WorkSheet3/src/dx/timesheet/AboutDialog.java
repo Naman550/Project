@@ -29,7 +29,7 @@ public class AboutDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         lblLink.setText("<HTML><U>http://www.designersx.com<U><HTML>");
-        lblCopyright.setText("<HTML>Copyright &copy 2013 DesignersX<HTML>");
+        lblCopyright.setText("<HTML>Copyright &copy 2016 DesignersX<HTML>");
         lblClose.addMouseListener(ml);
         lblLink.addMouseListener(ml);
         panelAbout.addMouseListener(ml);
@@ -139,9 +139,9 @@ public class AboutDialog extends javax.swing.JDialog {
 
         iconInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/logo.png"))); // NOI18N
 
-        jLabel1.setText("1.0.0");
+        jLabel1.setText("1.1.0");
 
-        lblCopyright.setText("Copyright \\u00A9 2013 DesignersX");
+        lblCopyright.setText("Copyright \\u00A9 2016 DesignersX");
 
         lblLink.setForeground(new java.awt.Color(0, 0, 102));
         lblLink.setText("www.designersx.com");

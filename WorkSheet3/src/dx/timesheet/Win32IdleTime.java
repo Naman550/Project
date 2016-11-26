@@ -105,9 +105,7 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
 
     public void sleepThread(final long millis) {
         
-            Runnable run = new Runnable() {
-                @Override
-                public void run() {
+           
                         try{
                     Thread.sleep(millis);
                 }
@@ -116,8 +114,7 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                        Thread.currentThread().interrupt();
                        Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-            };    
+            
     }  
     public interface Kernel32 extends StdCallLibrary {
 
@@ -183,8 +180,9 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
         State2 state1 = State2.UNKNOWN1;
   //      DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         long endTime = System.currentTimeMillis()+10000;
-        System.out.println(endTime);
+        System.out.println("NamanEndTime - "+endTime);
                long startTime=System.currentTimeMillis();
+               System.out.println("NamanStartTime - "+startTime);
                String one_or_zero="";
                Double total_zeros=0.0;
                Double total_ones=0.0;
@@ -197,18 +195,21 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                 }
             int j=1;
             Double one=0.0;
-            while (j <= 10) {
+            while (j <= 30) {
                 if(threadInterrupet || !PopUpLogin.working_task){
                     System.out.println("Break on enter j");
                     break;
                 }
-                sleepThread(1000);
+                //sleepThread(50000);
                  int idleSec1 = getIdleTimeMillisWin32() / 1000;
+                 System.out.println("NamanIdleSec1  -  "+idleSec1);
             State2 newState =
                     idleSec1 < 2 ? State2.ONLINE1 :State2.IDLE1;
+            
+                System.out.println("NamanNewState  -  "+newState);
                 if (newState.equals(State2.ONLINE1)) {
                     one_or_zero = "1";
-                    System.out.println("1");
+                    System.out.println("one_or_zero -- 1");
                     one=1.0;
                 }
                 if (newState.equals(State2.IDLE1) && (one_or_zero.equals("0") || one_or_zero.equals(""))) {
@@ -229,9 +230,12 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                 System.out.println("Break on exit j");
                     break;
                 }
+            System.out.println("Nbefore total_ones till now is>> "+total_ones);
             total_ones=total_ones+one;
-            System.out.println("total_ones till now is>> "+total_ones);
-            if(i==10){
+            
+            System.out.println("NAfter total_ones till now is>> "+total_ones);
+            System.out.println("one till now is>> "+one);
+            if(i==50){
           //      total_ones_in_minute=total_ones_in_minute+total_zeros;
                 total_ones_in_minute=total_ones_in_minute+total_ones;
                 System.out.println("total_ones is>> "+total_ones);
@@ -244,14 +248,17 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                 total_zeros=0.0;
                 total_ones=0.0;
                 one_or_zero="";
-                
+                System.out.println("\n\n\n......Thread Going To Sleep.......\n\n\n");
+                 sleepThread(50000);
                 if(!threadInterrupet || PopUpLogin.working_task){
                    try {
                     hd.getScreenShot(usr,String.valueOf(percenteage.intValue()));
                 } catch (AWTException ex) {
                     Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                sleepThread(5000);  
+                    
+               
+                
                 }
                
             }

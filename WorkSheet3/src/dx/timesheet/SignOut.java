@@ -28,21 +28,23 @@ public class SignOut extends javax.swing.JDialog {
         
     }
         
-    public boolean sign(){
+//    public boolean sign(){
+//    
+//        SignOut dialog = new SignOut(new javax.swing.JFrame(), true);
+//        dialog.setVisible(true);
+//        dialog.setLocationRelativeTo(TaskPanel.panelforScrollPane);
+//        dialog.setAlwaysOnTop(true);
+//        dialog.setFocusableWindowState(true);
+//        
+//        
+//        return false;
+//        
+//        
+//    
+//    }
     
-        SignOut dialog = new SignOut(new javax.swing.JFrame(), true);
-        dialog.setVisible(true);
-        dialog.setLocationRelativeTo(TaskPanel.panelforScrollPane);
-        dialog.setAlwaysOnTop(true);
-        dialog.setFocusableWindowState(true);
-        
-        if(flag1){
-        return true;
-        }else{
-        return false;
-        }
-        
-    
+    public boolean flagResult(){
+        return flag1;
     }
 
     /**
@@ -163,7 +165,7 @@ public class SignOut extends javax.swing.JDialog {
 
     private void btnNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNoActionPerformed
         
-        flag2=false;
+        flag1=false;
         dispose();
     }//GEN-LAST:event_btnNoActionPerformed
 
@@ -177,7 +179,7 @@ public class SignOut extends javax.swing.JDialog {
        // dialog.setLocation(55,55);
         dialog.setLocation(150, 150);
         dialog.setAlwaysOnTop(true);
-       // dialog.setFocusableWindowState(true);
+        dialog.setFocusableWindowState(true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnNo;
