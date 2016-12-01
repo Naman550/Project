@@ -50,110 +50,7 @@ public class TaskPanel extends javax.swing.JPanel {
     setMinimumSize(size);
     setMaximumSize(size);
     setSize(size);
-       /* panelforScrollPane.setLayout(new BorderLayout());
-
-        panelSubTaskContainer = new JPanel(new GridBagLayout());
-        panelSubTaskContainer.setBackground(Color.white);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        JPanel scrollpanel = new JPanel();
-        scrollpanel.setBackground(Color.white);
-
-        panelSubTaskContainer.add(scrollpanel, gbc);
-        JScrollPane sPane = new JScrollPane(panelSubTaskContainer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        sPane.getVerticalScrollBar().setUnitIncrement(6);
-        sPane.getVerticalScrollBar().setPreferredSize(new Dimension(7, 0));
-        panelforScrollPane.add(sPane);
-        
-        JButton add = new JButton("Add");
-        add.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final JPanel panel = new PanelPlayPause();
-                //         panel.add(new JLabel("Hello"));
-                //        panel.add(new JButton("Hello"));
-                //        panel.add(new JButton("Exit"));
-                panel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-                GridBagConstraints gbc = new GridBagConstraints();
-
-                gbc.gridwidth = GridBagConstraints.REMAINDER;
-                gbc.weightx = 1;
-                gbc.fill = GridBagConstraints.HORIZONTAL;
-                panelSubTaskContainer.add(panel, gbc, count);
-                panel.setName("panel" + count);
-                count += 1;
-
-                panel.addMouseListener(new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        String pName = panel.getName().toString();
-                        System.out.println(panel.getName().toString());
-                        System.out.println("Name of Label at this Panel is : " + panel.getComponent(0).getName());
-                        Component c = panel.getComponent(0);
-                        JLabel lbl = (JLabel) panel.getComponent(0);
-                        System.out.println("Text On Label at this Panel is : " + lbl.getText().toString());
-                    }
-
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                    }
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                    }
-
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        panel.setBackground(new Color(240, 240, 240));
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        panel.setBackground(Color.white);
-                    }
-                });
-                try {
-                    PanelPlayPause.lblPlay.addMouseListener(new MouseListener() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            String s = panel.getName().toString();
-                            System.out.println("Container of this element is : " + s);
-                        }
-
-                        @Override
-                        public void mousePressed(MouseEvent e) {
-                        }
-
-                        @Override
-                        public void mouseReleased(MouseEvent e) {
-                        }
-
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            panel.setBackground(new Color(240, 240, 240));
-                        }
-
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            panel.setBackground(Color.white);
-                        }
-                    });
-                } catch (Exception ex) {
-                }
-                panelforScrollPane.validate();
-                panelforScrollPane.repaint();
-            }
-        });
-
-        panelforScrollPane.add(add, BorderLayout.SOUTH);*/
-
-
-
-        //        PanelPlayPause.lblPlay.addMouseListener(playPauseListener);
-
-
+     
     }
     @Override
     public void paintComponent(Graphics g) {
@@ -176,73 +73,73 @@ public class TaskPanel extends javax.swing.JPanel {
         return ret;
     }
 
-    public void readPlayPauseTasksFromXml() {
-        InputStream in = null;
-        try {
-            URL xmlUrl = new URL("http://pms.trimonks.com/sahil/projpier/index.php/login/xml/lakhan");
-            in = xmlUrl.openStream();
-            Document doc = parse(in);
-            doc.getDocumentElement().normalize();
-            System.out.println("Root element of this doc is "
-                    + doc.getDocumentElement().getNodeName());
-            NodeList listOfCodes = doc.getElementsByTagName("tasks");
-            int totalTasks = listOfCodes.getLength();
-            System.out.println("Total no of Tasks : " + totalTasks);
-            for (int temp = 0; temp < listOfCodes.getLength(); temp++) {
-                
-                Node nNode = listOfCodes.item(temp);
-                String stf = nNode.getNodeValue();
-                System.out.println("\nCurrent Element :" + nNode.getNodeName());
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    //       System.out.println("Atribute client : " + eElement.getAttributes().getNamedItem("client_code"));
-                    ///     String code = eElement.getAttribute("id");
-                    NodeList nodelist = eElement.getElementsByTagName("task_id");
-                    Element task_id = (Element) nodelist.item(0);
-                    System.out.println("Code Name : " + task_id.getNodeName());
-                    System.out.println("Attributes : " + task_id.getChildNodes().item(0).getNodeValue());
-
-                    NodeList nodelist1 = eElement.getElementsByTagName("client_code");
-                    Element cl_code = (Element) nodelist1.item(0);
-                    System.out.println("Code Name : " + cl_code.getNodeName());
-                    System.out.println("Attributes : " + cl_code.getChildNodes().item(0).getNodeValue());
-
-                    NodeList nodelist2 = eElement.getElementsByTagName("project_code");
-                    Element pr_code = (Element) nodelist2.item(0);
-                    System.out.println("Code Name : " + pr_code.getNodeName());
-                    System.out.println("Attributes : " + pr_code.getChildNodes().item(0).getNodeValue());
-
-                    NodeList nodelist3 = eElement.getElementsByTagName("task");
-                    Element task1 = (Element) nodelist3.item(0);
-                    System.out.println("Code Name : " + task1.getNodeName());
-                    System.out.println("Attributes : " + task1.getChildNodes().item(0).getNodeValue());
-
-                    NodeList nodelist4 = eElement.getElementsByTagName("priority");
-                    Element priority = (Element) nodelist4.item(0);
-                    System.out.println("Code Name : " + priority.getNodeName());
-                    System.out.println("Attributes : " + priority.getChildNodes().item(0).getNodeValue());
-
-                    NodeList nodelist5 = eElement.getElementsByTagName("assigned_by");
-                    Element assigned_by = (Element) nodelist5.item(0);
-                    System.out.println("Code Name : " + assigned_by.getNodeName());
-                    System.out.println("Attributes : " + assigned_by.getChildNodes().item(0).getNodeValue());
-
-                    NodeList nodelist6 = eElement.getElementsByTagName("status");
-                    Element status1 = (Element) nodelist6.item(0);
-                    System.out.println("Code Name : " + status1.getNodeName());
-                    System.out.println("Attributes : " + status1.getChildNodes().item(0).getNodeValue());
-                }
-            }
-        } catch (IOException | DOMException ex) {
-        } finally {
-            try {
-                in.close();
-            } catch (IOException ex) {
-                System.out.print("jtesting");
-                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
+//    public void readPlayPauseTasksFromXml() {
+//        InputStream in = null;
+//        try {
+//            URL xmlUrl = new URL("http://pms.trimonks.com/sahil/projpier/index.php/login/xml/naman/lakhan");
+//            in = xmlUrl.openStream();
+//            Document doc = parse(in);
+//            doc.getDocumentElement().normalize();
+//            System.out.println("Root element of this doc is "
+//                    + doc.getDocumentElement().getNodeName());
+//            NodeList listOfCodes = doc.getElementsByTagName("tasks");
+//            int totalTasks = listOfCodes.getLength();
+//            System.out.println("Total no of Tasks : " + totalTasks);
+//            for (int temp = 0; temp < listOfCodes.getLength(); temp++) {
+//                
+//                Node nNode = listOfCodes.item(temp);
+//                String stf = nNode.getNodeValue();
+//                System.out.println("\nCurrent Element :" + nNode.getNodeName());
+//                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+//                    Element eElement = (Element) nNode;
+//                    //       System.out.println("Atribute client : " + eElement.getAttributes().getNamedItem("client_code"));
+//                    ///     String code = eElement.getAttribute("id");
+//                    NodeList nodelist = eElement.getElementsByTagName("task_id");
+//                    Element task_id = (Element) nodelist.item(0);
+//                    System.out.println("Code Name : " + task_id.getNodeName());
+//                    System.out.println("Attributes : " + task_id.getChildNodes().item(0).getNodeValue());
+//
+//                    NodeList nodelist1 = eElement.getElementsByTagName("client_code");
+//                    Element cl_code = (Element) nodelist1.item(0);
+//                    System.out.println("Code Name : " + cl_code.getNodeName());
+//                    System.out.println("Attributes : " + cl_code.getChildNodes().item(0).getNodeValue());
+//
+//                    NodeList nodelist2 = eElement.getElementsByTagName("project_code");
+//                    Element pr_code = (Element) nodelist2.item(0);
+//                    System.out.println("Code Name : " + pr_code.getNodeName());
+//                    System.out.println("Attributes : " + pr_code.getChildNodes().item(0).getNodeValue());
+//
+//                    NodeList nodelist3 = eElement.getElementsByTagName("task");
+//                    Element task1 = (Element) nodelist3.item(0);
+//                    System.out.println("Code Name : " + task1.getNodeName());
+//                    System.out.println("Attributes : " + task1.getChildNodes().item(0).getNodeValue());
+//
+//                    NodeList nodelist4 = eElement.getElementsByTagName("priority");
+//                    Element priority = (Element) nodelist4.item(0);
+//                    System.out.println("Code Name : " + priority.getNodeName());
+//                    System.out.println("Attributes : " + priority.getChildNodes().item(0).getNodeValue());
+//
+//                    NodeList nodelist5 = eElement.getElementsByTagName("assigned_by");
+//                    Element assigned_by = (Element) nodelist5.item(0);
+//                    System.out.println("Code Name : " + assigned_by.getNodeName());
+//                    System.out.println("Attributes : " + assigned_by.getChildNodes().item(0).getNodeValue());
+//
+//                    NodeList nodelist6 = eElement.getElementsByTagName("status");
+//                    Element status1 = (Element) nodelist6.item(0);
+//                    System.out.println("Code Name : " + status1.getNodeName());
+//                    System.out.println("Attributes : " + status1.getChildNodes().item(0).getNodeValue());
+//                }
+//            }
+//        } catch (IOException | DOMException ex) {
+//        } finally {
+//            try {
+//                in.close();
+//            } catch (IOException ex) {
+//                System.out.print("jtesting");
+//                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//    }
     
     class ImagePanel extends JPanel {
 

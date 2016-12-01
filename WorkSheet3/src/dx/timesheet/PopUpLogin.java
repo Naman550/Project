@@ -83,6 +83,7 @@ public class PopUpLogin {
     Border raisedBorder;
     boolean test=false; 
     JPanel contentPane;
+    boolean onHoldFlag=false;
     private JFrame dialo;
     String email, password, host = "smtp.gmail.com", port = "465";
     String client_code, project_code, task, start_time, date, end_time, status;
@@ -131,7 +132,7 @@ public class PopUpLogin {
     static boolean userIdle = false;
     static boolean loginStatus = false;
     static boolean working_task = false;
-    boolean task_paused = false;
+    static boolean task_paused = false;
     boolean done = false;
     EncryptPwd encrypt = new EncryptPwd();
     private final static Sigar sigar = new Sigar();
@@ -144,7 +145,7 @@ public class PopUpLogin {
     static DatabaseHandler dbHandler = new DatabaseHandler();
     TaskAddedDialog taskDialog = new TaskAddedDialog(null, true);
     TrackPacket trc = new TrackPacket();
-    TaskDetailDialog td;
+    TaskDetailDialog td; 
     HardwareDetails hd = new HardwareDetails();
     InputDialog in2;
     PauseOptionDialog pauseDialog;
@@ -153,9 +154,11 @@ public class PopUpLogin {
     Thread tracker_thread;
     Thread track_net_thread;
     ReviewDialog reviewDlg;
+    boolean kOnHold=false;
     ReadXml readxml = new ReadXml();
     boolean nPause=false;
     LoaderDialog infD;
+    OnHoldMsg onHoldMsg;
     ConfirmDialog cd;
     ErrorDescription errorDescription;
     SignOut signOut;
@@ -190,6 +193,7 @@ public class PopUpLogin {
                 
                 PanelPlayPause.lblDone.setEnabled(false);
                 PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+                PanelPlayPause.lblReOpen.setEnabled(false);
               
                 
                 
@@ -531,6 +535,7 @@ public class PopUpLogin {
             cd = new ConfirmDialog(dialog, true);
             errorDescription = new ErrorDescription(dialog, true);
             signOut = new SignOut(dialog,true);
+            onHoldMsg = new OnHoldMsg(dialog,true);
             ed = new ExtendDeadlineDialog(dialog, true);
             ed.setDialog(dialog);
             infD = new LoaderDialog(dialog, true);
@@ -950,6 +955,7 @@ public class PopUpLogin {
                     //      showInfoDialog("track_net_thread started");
                     //     firstLogin=false;
                 }
+                    //      showInfoDialog("track_net_thread started");
             } catch (Exception e) {
                 hideLoaderDialog();
                 showInfoDialog("Connection error!try again!");
@@ -1028,7 +1034,7 @@ public class PopUpLogin {
 
     public void readPlayPauseTask(String username, String pwd) {
         readxml.getUserList();                                       //read users from xml for review
-        working_task = false;
+        
         System.out.println("Naman is here");
         TaskPanel.panelforScrollPane.setLayout(new BorderLayout());
         TaskSubPanel.panelSubTaskContainer = new JPanel(new GridBagLayout());
@@ -1044,6 +1050,7 @@ public class PopUpLogin {
         sPane.getVerticalScrollBar().setUnitIncrement(6);
         sPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         sPane.setBorder(BorderFactory.createEmptyBorder());
+        
         TaskPanel.panelforScrollPane.add(sPane);
         Long currentTimeStamp = hd.getCurrentTimestamp();
 
@@ -1146,6 +1153,7 @@ public class PopUpLogin {
                         String status2 = getElements(eElement, "status");
                         final String status3=status2;
                         final String assignedby = getElements(eElement, "assigned_by");
+                        final String holdReason = getElements(eElement, "hold_reason");
                         final String assignedto = getElements(eElement,"assignto");
                         System.out.println("NamanAssigned_by - "+assignedby);
                         System.out.println("NamanAssigned_To - "+assignedto);
@@ -1222,12 +1230,33 @@ public class PopUpLogin {
                         switch (status2) {
                             
                             
+                            case "onHold":
+                                working_task = false;
+                                task_paused = false;
+                                PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
+                                PanelPlayPause.lblStop.setEnabled(false);
+                                PanelPlayPause.lblDone.setEnabled(false);
+                                System.out.println("sdfgghhhhhhhhhhh------>>>>>>>>"+holdReason);
+                                PanelPlayPause.lblPlay.setToolTipText(""+holdReason);
+                                
+                                 if(assignedto.equals("1")){
+                                   
+                                    PanelPlayPause.lblReOpen.setIcon(new ImageIcon(this.getClass().getResource("/images/play2.png")));
+                                    PanelPlayPause.lblReOpen.setEnabled(false);
+                                    PanelPlayPause.lblReOpen.setToolTipText("Re-Open Task");
+                                    
+                                }else{
+                                    PanelPlayPause.lblReOpen.setVisible(false);
+                                }
+                                 break;
+                            
                             case "New":
+                                
                                 PanelPlayPause.lblPlay.setIcon(new ImageIcon(this.getClass().getResource("/images/play.png")));
                                 PanelPlayPause.lblStop.setEnabled(false);
                                 PanelPlayPause.lblDone.setEnabled(false);
                                 PanelPlayPause.lblPlay.setToolTipText("Start Task");
-                                 PanelPlayPause.lblReOpen.setVisible(false);
+                                PanelPlayPause.lblReOpen.setVisible(false);
                             break;
                             case "ToDo":
                                 
@@ -1390,6 +1419,16 @@ public class PopUpLogin {
                         }
                         
                         
+                        if (holdReason.length() > 30 && status3.equals("onHold") ) {
+                            PanelPlayPause.lblTask.setToolTipText("<html><p width=\"250px\">" 
+                                    + holdReason + "</p></html>");
+                        }
+                        
+                        if (holdReason.length() < 30 && status3.equals("onHold")) {
+                            PanelPlayPause.lblTask.setToolTipText(holdReason);//toDo_description
+                        }
+                        
+                        
                         
                         if(end_date.equals("")){
                          PanelPlayPause.lblAssigned.setText("<html><body>Priority : " +
@@ -1406,25 +1445,7 @@ public class PopUpLogin {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 String pName = panel1.getName().toString();
-                                //                      System.out.println(panel1.getName().toString());
-                                //                       System.out.println("Name of Label at thtoStringis Panel is : " + panel1.getComponent(0).getName());
-                                //           JLabel lbl = (JLabel) panel1.getComponent(0);
-                                //           Component c = lbl.getRootPane();
-                                //                     System.out.println("Text On Label1 at this Panel is : " + lbl.getText().toString());
-                                //            JLabel lbl1 = (JLabel) panel1.getComponent(0);
-                                //            System.out.println(panel1.getComponent(0).getName().toString());
-//                                System.out.println("Name of c1 is " + panel1.getComponent(1).getName());
-//                                System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
-//                                System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
-//                                System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
-//                                System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
-//                                System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
-//                                System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
-//                                System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
-//                                System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
-//                                System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
-//                                System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
-                                //       System.out.println("Name is"+panel1.getComponent(10).getName());
+                               
                             }
 
                             @Override
@@ -1438,36 +1459,54 @@ public class PopUpLogin {
                             @Override
                             public void mouseEntered(MouseEvent e) {
                                 //           abt.setVisible(true);
-                                if (lblStatus1.getText().toString().equals("Stop")) {
-                                    panel1.setBackground(new Color(240, 240, 240));
-                                }
+                               JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
 
-                                if (lblStatus1.getText().toString().equals("Testing")) {
-                                    panel1.setBackground(new Color(240, 240, 240));
-                                }
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
 
                                 
                                 Point p = panel1.getLocation();
                                 int x = (int) p.getX();
                                 int y = (int) p.getY();
                                 System.out.println(x + " " + y);
-                                //        JLabel lbl = (JLabel) panel1.getComponent(0);
-                                //       Component c = lbl.getRootPane();
-                                //            abt.setLocation(screenRect.width - (dialog.getWidth() + abt.getWidth()),y);
+                               
                             }
 
                             @Override
                             public void mouseExited(MouseEvent e) {
 
 
-                                if (lblStatus1.getText().toString().equals("Stop")) {
-                                    panel1.setBackground(Color.white);
-                                }
+                                JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
                                 
-                                 if (lblStatus1.getText().toString().equals("Testing")) {
-                                    panel1.setBackground(Color.white);
-                                }
-                                //         abt.setVisible(false);
                             }
                         });
                         try {
@@ -1483,19 +1522,12 @@ public class PopUpLogin {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
 
-                                    //   JLabel lblTasks = (JLabel) panel1.getComponent(9);
-                                    //    String task=lblTasks.getText().toString();
-                                    //   td=new TaskDetailDialog(dialog, true);
-                                    //   td.setLocationRelativeTo(dialog);
-                                    //    td.setDetailedTask(task);
-                                    //    td.startTimer();
-                                    //if(sta)
+                                    
                                      if(assignedto.equals("1")){
-                                        //complete=true;
                                         flag=true;
                                     }
                                     System.out.println("ssssddddffrewqwwqwq"+lbl_status1.getText());
-                                    if(lbl_status1.getText().equals("New") || lbl_status1.getText().equals("Testing") || lbl_status1.getText().equals("ToDo")){
+                                    if(lbl_status1.getText().equals("New") || lbl_status1.getText().equals("Testing") || lbl_status1.getText().equals("ToDo") || lbl_status1.getText().equals("onHold")){
                                         flag=false;
                                     }else{
                                         flag=true;
@@ -1543,21 +1575,21 @@ public class PopUpLogin {
                                         }
                                         else
                                 if(!(assignedto.equals("1"))){
-                                        System.out.println("Name of c1 is " + panel1.getComponent(1).getName());
-                                        System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
-                                        System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
-                                        System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
-                                        System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
-                                        System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
-                                        System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
-                                        System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
-                                        System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
-                                        System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
-                                        System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
-                                        System.out.println("Name of c11 is " + panel1.getComponent(12).getName());
-                                        System.out.println("Name of c11 is " + panel1.getComponent(13).getName());
-                                        
-                                        
+//                                        System.out.println("Name of c1 is " + panel1.getComponent(1).getName());
+//                                        System.out.println("Name of c2 is " + panel1.getComponent(2).getName());
+//                                        System.out.println("Name of c3 is " + panel1.getComponent(3).getName());
+//                                        System.out.println("Name of c4 is " + panel1.getComponent(4).getName());
+//                                        System.out.println("Name of c5 is " + panel1.getComponent(5).getName());
+//                                        System.out.println("Name of c6 is " + panel1.getComponent(6).getName());
+//                                        System.out.println("Name of c7 is " + panel1.getComponent(7).getName());
+//                                        System.out.println("Name of c8 is " + panel1.getComponent(8).getName());
+//                                        System.out.println("Name of c9 is " + panel1.getComponent(9).getName());
+//                                        System.out.println("Name of c10 is " + panel1.getComponent(10).getName());
+//                                        System.out.println("Name of c11 is " + panel1.getComponent(11).getName());
+//                                        System.out.println("Name of c11 is " + panel1.getComponent(12).getName());
+//                                        System.out.println("Name of c11 is " + panel1.getComponent(13).getName());
+//                                        
+//                                        
 
                                         JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
                                         System.out.println("namanLblStatus "+lblStatus1);
@@ -1693,29 +1725,50 @@ public class PopUpLogin {
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
                                     System.out.println("Mouse Entered");
-                                    if (lbl_status1.getText().toString().equals("Stop")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
-                                        System.out.println("Color set on ondone");
+                                     JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
                                     }
                                     
-                                     if (lbl_status1.getText().toString().equals("Testing")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
-                                        System.out.println("Color set on ondone");
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
                                     }
-                                    panel1.setBackground(new Color(240, 240, 240));
+
+                                    //panel1.setBackground(new Color(240, 240, 240));
                                     lbl_Done.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                 }
 
                                 @Override
                                 public void mouseExited(MouseEvent e) {
-                                    if (lbl_status1.getText().toString().equals("Stop")) {
-                                        panel1.setBackground(Color.white);
+                                     JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
                                     }
-                                     if (lbl_status1.getText().toString().equals("Testing")) {
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
                                         panel1.setBackground(Color.white);
                                     }
                                     
-                                    panel1.setBackground(Color.white);
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+
+                                    
+                                  //  panel1.setBackground(Color.white);
                                     lbl_Done.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                 }
 
@@ -1772,109 +1825,18 @@ public class PopUpLogin {
                                     }
                                 }
                             });
-                            /*    PanelPlayPause.lblTaskInfoIcon.addMouseListener(new MouseListener() {
-                             JLabel lbl_InfoIcon = (JLabel) panel1.getComponent(10);
-
-                             @Override
-                             public void mouseClicked(MouseEvent e) {
-                             readxml.getUserList();
-                             //   readxml.getListModel();
-                             String panelid = panel1.getName().toString();
-                             task_id = panelid;
-                             try {
-                             Thread.sleep(2000);
-                             } catch (InterruptedException ex) {
-                             Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
-                             }
-                             reviewDlg.setTaskId(task_id);
-                             reviewDlg.setLocationRelativeTo(dialog);
-                             ReviewDialog.listUserReview.setSelectedIndex(0);
-                             reviewDlg.setVisible(true);
-                             if (ReadXml.response1.equals("ok")) {
-                             showInfoDialog("Review Successful");
-                             } else {
-                             showInfoDialog("Review Failed");
-                             }
-                             }
-
-                             @Override
-                             public void mousePressed(MouseEvent e) {
-                             }
-
-                             @Override
-                             public void mouseReleased(MouseEvent e) {
-                             }
-
-                             @Override
-                             public void mouseEntered(MouseEvent e) {
-                             panel1.setBackground(new Color(240, 240, 240));
-                             lbl_InfoIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                             }
-
-                             @Override
-                             public void mouseExited(MouseEvent e) {
-                             panel1.setBackground(Color.white);
-                             lbl_InfoIcon.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                             }
-                             });*/
-                        //}
-//                      if(flag==false){
-//                                
-//                        PanelPlayPause.lblDone.addMouseListener(new MouseListener() {
-//                                JLabel lbl_Done = (JLabel) panel1.getComponent(6);
-//                                JLabel lblPlayPause = (JLabel) panel1.getComponent(4);
-//                                JLabel lbl_Stop = (JLabel) panel1.getComponent(5);
-//                                JLabel lbl_status1 = (JLabel) panel1.getComponent(1);
-//                                JLabel lbl_task = (JLabel) panel1.getComponent(11);
-//                            @Override
-//                            public void mouseClicked(MouseEvent e) {
-//                                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//                            }
-//
-//                            @Override
-//                                public void mousePressed(MouseEvent e) {
-//                                }
-//
-//                                @Override
-//                                public void mouseReleased(MouseEvent e) {
-//                                }
-//
-//                                @Override
-//                                public void mouseEntered(MouseEvent e) {
-//                                    System.out.println("Mouse Entered");
-//                                    if (lbl_status1.getText().toString().equals("Stop")) {
-//                                        panel1.setBackground(new Color(240, 240, 240));
-//                                        System.out.println("Color set on ondone");
-//                                    }
-//
-//                                    lbl_Done.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//                                }
-//
-//                                @Override
-//                                public void mouseExited(MouseEvent e) {
-//                                    if (lbl_status1.getText().toString().equals("Stop")) {
-//                                        panel1.setBackground(Color.white);
-//                                    }
-//
-//                                    lbl_Done.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//                                }
-//
-//                        });
-//                      }
-
-                        
-
+                            
                             MouseListener  mListener = new MouseListener() {
                                 
                                 JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
                                 JLabel lblTasks = (JLabel) panel1.getComponent(12);
                                 JLabel lblPlus = (JLabel) panel1.getComponent(10);
                                 JLabel lblDate = (JLabel) panel1.getComponent(9);
-                                //8 -- lblDeadline
-                                //6 -- lblDone
-                                //5 -- lblStop
-                                //4 -- lblPlay
-                                //3 -- AssignedBy
+                                //8 -- namlblDeadline
+                                //6 -- namlblDone
+                                //5 -- namlblStop
+                                //4 -- namlblPlay
+                                //3 -- namAssignedBy
                                 JLabel lblReOpen = (JLabel) panel1.getComponent(11);
                                 JLabel lblReOpen1 = (JLabel) panel1.getComponent(6);
                                 JLabel lblReOpen2 = (JLabel) panel1.getComponent(3);
@@ -1943,13 +1905,23 @@ public class PopUpLogin {
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
                                      System.out.println("namanEnetrMouse");
-                                      panel1.setBackground(new Color(240, 240, 240));
-                                    if (lblStatus1.getText().toString().equals("Stop")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
+                                     // panel1.setBackground(new Color(240, 240, 240));
+                                    JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
                                     }
                                     
-                                    if (lblStatus1.getText().toString().equals("Testing")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
                                     }
 
                                     if (e.getSource() == lblTasks) {
@@ -2010,12 +1982,13 @@ public class PopUpLogin {
                                 JLabel lbl_Stop = (JLabel) panel1.getComponent(5);
                                 JLabel lblStatus1 = (JLabel) panel1.getComponent(1);
                                 JLabel lblDone2 =(JLabel) panel1.getComponent(6);
-
+                                JLabel lblDone =(JLabel) panel1.getComponent(11);
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
 
                                     String panelid;
                                     System.out.println("lblDone2  ---->> "+lblDone2);
+                                    System.out.println("lblDone2  ---->> "+lblDone);
                                     panelid = panel1.getName().toString();
                                     task_id = panelid;
                                     //                           System.out.println("Container of this element is : " + panelid);
@@ -2050,6 +2023,13 @@ public class PopUpLogin {
                                     
                                     if(toDo_status.equals("1") && stts.equals("ToDo")){
                                         stts="Stop";
+                                        
+                                    }
+                                    
+                                    if(stts.equals("onHold")){
+                                        stts="Stop";
+                                        kOnHold=true;
+                                        
                                     }
                                    
                                     
@@ -2149,6 +2129,7 @@ public class PopUpLogin {
                                         }
                                         if (c.equals("yes")) {
                                             
+                                               
                                     
                                                 if(nPause){
                                                     
@@ -2169,6 +2150,7 @@ public class PopUpLogin {
                                                     lbl_Stop.setEnabled(true);
                                                     
                                                     lblDone2.setEnabled(true);
+                                                    
                                                     // lblTimesheet.setText(timesheet_id);
                                                     lblStatus1.setText(work_status);
                                                     lblPlayPause.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
@@ -2202,7 +2184,34 @@ public class PopUpLogin {
                                                    nPause=false;
                                                 }else{
                                                     
-                                                    
+                                                    if(kOnHold){
+                                                     
+                                                        onHoldMsg.setLocationRelativeTo(dialog);
+                                                        
+                                                        onHoldMsg.setVisible(true);
+                                                        onHoldMsg.textArea1.setText("");
+                                                        String comments=onHoldMsg.getComments();
+                                                        System.out.println("\n\n\n************************"+task_id+"************************\n\n\n");
+
+                                                        String fla=onHoldMsg.getFlag();
+                                                        if(fla.equals("false")){
+
+                                                        }else{
+                                                            
+                                                            bOnHold(task_id,comments,"Progress");
+                                                            showInfoDialog("Task Started Successful");
+
+                                                        }
+                                                        try {
+                                                                refresh();
+                                                            } catch (SQLException ex) {
+                                                                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                                                            }
+                                                        
+                                                        System.out.println("Helloooooo");
+                                                        kOnHold=false;
+                                                    }
+                                                  else  {
                                                 try {
                                                 //         userId = dbHandler.getUserId();
                                                 userId = main_userid;
@@ -2241,6 +2250,7 @@ public class PopUpLogin {
                                                 }
 
                                             }
+                                    }
                                     }
                                         }
                                         interruptDialog = false;
@@ -2335,6 +2345,7 @@ public class PopUpLogin {
                                                 lblDone2.setEnabled(true);
                                                 // lblTimesheet.setText(timesheet_id);
                                                 lblStatus1.setText(work_status);
+                                                lblDone.setEnabled(true);
                                                 lblPlayPause.setIcon(new ImageIcon(this.getClass().getResource("/images/pause.png")));
                                                 working_task = true;
                                                 //   panel1.setBackground(new Color(129,255,190));
@@ -2385,16 +2396,25 @@ public class PopUpLogin {
 
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
-                                    if (lblStatus1.getText().toString().equals("Stop")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
-                                        System.out.println("Color set");
+                                    
+                                    JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
                                     }
                                     
-                                    if (lblStatus1.getText().toString().equals("Testing")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
-                                        System.out.println("Color set");
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
                                     }
-                                     panel1.setBackground(new Color(240, 240, 240));
+                                    // panel1.setBackground(new Color(240, 240, 240));
                                     
                                     lblPlayPause.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                 }
@@ -2402,20 +2422,24 @@ public class PopUpLogin {
                                 @Override
                                 public void mouseExited(MouseEvent e) {
                                     JLabel status1 = (JLabel) panel1.getComponent(1);
-                                    if (status1.getText().toString().equals("Working") || status1.getText().toString().equals("Pause")) {
+                                    
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
                                         //   panel1.setBackground(new Color(129,255,190));
                                         //    
                                         panel1.setBackground(new Color(236, 252, 244));
 
                                     }
-                                    if (lblStatus1.getText().toString().equals("Stop")) {
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
                                         panel1.setBackground(Color.white);
                                     }
                                     
-                                    if (lblStatus1.getText().toString().equals("Testing")) {
+                                    if (status1.getText().toString().equals("Testing")) {
                                         panel1.setBackground(Color.white);
                                     }
-                                    panel1.setBackground(Color.white);
+                                    //panel1.setBackground(Color.white);
 
                                     lblPlayPause.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                 }
@@ -2433,7 +2457,7 @@ public class PopUpLogin {
                                 
                                 System.out.println("NamanAroraMouseClicked---->>>>>"+status1.getText());
                                 
-                                 if((status1.getText().equals("ToDo")) || (status1.getText().equals("Testing")) ){
+                                 if((status1.getText().equals("ToDo")) || (status1.getText().equals("Testing")) || status1.getText().equals("onHold") ){
                                      tru=false;
                                  }else{tru=true;}
                                 
@@ -2448,6 +2472,7 @@ public class PopUpLogin {
                                 errorDescription.setLocationRelativeTo(dialog);
                                 
                                 errorDescription.setVisible(true);
+                                errorDescription.textArea1.setText("");
                                 String comments=errorDescription.getComments();
                                 System.out.println("\n\n\n************************"+task_id+"************************\n\n\n");
                                
@@ -2455,8 +2480,11 @@ public class PopUpLogin {
                                 if(fla.equals("false")){
                                     
                                 }else{
-                                    showInfoDialog("ReOpen Successful");
+                                    
                                     bDoneNComplete(userId,task_id,"ToDo",comments,oId,assigned_by);
+                                    showInfoDialog("ToDo Successful");
+                                    working_task=false;
+                                        task_paused=false;
                                     
                                 }
                                 try {
@@ -2482,8 +2510,21 @@ public class PopUpLogin {
                             @Override
                             public void mouseEntered(MouseEvent e) {
                                 System.out.println("NamanArora-mouseEntered\n"+lbl_ReOpen);
-                                
-                                 panel1.setBackground(new Color(240, 240, 240));
+                                JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || status1.getText().toString().equals("Pause")) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                // panel1.setBackground(new Color(240, 240, 240));
                                         System.out.println("Color set");
                                // PanelPlayPause.lblReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                 //lbl_ReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -2497,7 +2538,26 @@ public class PopUpLogin {
                                 lbl_ReOpen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                                 //lbl_ReOpen.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                                 //Color set on ondone
-                                 panel1.setBackground(Color.white);
+                                 //panel1.setBackground(Color.white);
+                                 
+                                  JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                 
                             }
                             
                         });
@@ -2523,9 +2583,23 @@ public class PopUpLogin {
 
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
-                                     panel1.setBackground(new Color(240, 240, 240));
-                                    if (lblStatus1.getText().toString().equals("Stop")) {
-                                        panel1.setBackground(new Color(240, 240, 240));
+                                    // panel1.setBackground(new Color(240, 240, 240));
+                                    JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (status1.getText().toString().equals("Testing")) {
+                                        panel1.setBackground(Color.white);
                                     }
 
                                     lbl_Stop.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -2533,8 +2607,22 @@ public class PopUpLogin {
 
                                 @Override
                                 public void mouseExited(MouseEvent e) {
-                                    panel1.setBackground(Color.white);
-                                    if (lblStatus1.getText().toString().equals("Stop")) {
+                                   // panel1.setBackground(Color.white);
+                                   JLabel status1 = (JLabel) panel1.getComponent(1);
+                                    if (status1.getText().toString().equals("Working") || 
+                                            status1.getText().toString().equals("Pause") || 
+                                            status1.getText().toString().equals("Progress")
+                                            ) {
+                                        //   panel1.setBackground(new Color(129,255,190));
+                                        //    
+                                        panel1.setBackground(new Color(236, 252, 244));
+
+                                    }
+                                    if (status1.getText().toString().equals("Stop") || status1.getText().toString().equals("onHold")) {
+                                        panel1.setBackground(Color.white);
+                                    }
+                                    
+                                    if (status1.getText().toString().equals("Testing")) {
                                         panel1.setBackground(Color.white);
                                     }
                                     lbl_Stop.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -2587,6 +2675,7 @@ public class PopUpLogin {
         JLabel lblTimesheet = (JLabel) panel1.getComponent(2);
         JLabel toId = (JLabel) panel1.getComponent(13);
         String stts = lblStatus1.getText().toString();
+        System.out.println("llllll ---->>>>>"+stts);
         String tId = toId.getText().toString();
         System.out.println("NamanArora - "+stts);
         if ((stts.equals("Progress") || stts.equals("Working")) && tag.equals("Stop")) {
@@ -2601,7 +2690,7 @@ public class PopUpLogin {
                 stopOrDone(lblStatus1, lbl_PlayPause, lbl_Stop, done);
             }
             interruptDialog = false;
-        } else if ((stts.equals("Progress") || stts.equals("Working")) && tag.equals("Done")) {
+        }  else if ((stts.equals("Progress") || stts.equals("Working")) && tag.equals("Done")) {
                
             work_status="task_not_stopped";
             if (stopOrDone(lblStatus1, lbl_PlayPause, lbl_Stop, done)) {
@@ -2645,8 +2734,6 @@ public class PopUpLogin {
                 }
                 
             }
-
-
 
         }
 
@@ -2772,42 +2859,14 @@ public class PopUpLogin {
             if (e.getSource() == panel.lblClose || e.getSource() == TaskPanel.lblClose3 || e.getSource() == WaitingPanel.lblClose2 || e.getSource() == ForgotPwdPanel.lblClose2) {
 
                 dialog.setVisible(false);
-                /*     if (working_task) {
-                 showInfoDialog("Please pause working task first!");
-                 }else{
-                 ExitDialog extdlg=new ExitDialog(dialog, true);
-                 extdlg.setLocationRelativeTo(dialog);
-                 extdlg.setVisible(true);
-                 String decision=extdlg.getInput();
-                 System.out.println(decision);
-                 switch (decision) {
-                 case "yes":
-                 timer2.setInitialDelay(0);
-                 timer2.setDelay(10);
-                 timer2.start();
-                 break;
-                 case "no":
-                
-                 break;
-                 case "tray":
-                 timer3.setInitialDelay(0);
-                 timer3.setDelay(10);
-                 timer3.start();
-                 break;
-                 } 
-                 }*/
+               
             }
             if (e.getSource() == trayIcons.trayIcon) {
-                //         dialog.show();
-                //     IconifyUtilityClass.restore(dialog);
+               
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     showMainDialog();
                 }
-                //     if (SwingUtilities.isRightMouseButton(e)) {
-                //       stask.setLocationRelativeTo(dialog);
-                //       stask.setVisible(true);
-                //    }
-
+              
             }
         }
 
@@ -3104,6 +3163,27 @@ public class PopUpLogin {
             double i=random.nextDouble()+random.nextDouble();
             k+=1;
             URL url11 = new URL(Config.HTTP+Config.DOMAIN + "TimeSheets/markDone/" + userid + "/" + taskid + "/" + status + "/" + comment + "/" + oId +"/"+assign+"?"+k+"naman"+i);
+            System.out.println("NamanbDoneNComplete"+url11);
+            StringBuilder responseString;
+            try {
+                responseString = getStreamResponse(url11);
+                timesheet_response = responseString.toString();
+                 System.out.println("Naman_bDoneNComplete-timesheet_response"+timesheet_response);
+            } catch (IOException ex) {
+                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    void bOnHold(String taskid, String comment, String status)  {
+        try {
+            double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+            URL url11 = new URL(Config.HTTP+Config.DOMAIN + "Tasks/startHoldTask/" + taskid + "/" + comment + "/" + status +"?"+k+"naman"+i);
             System.out.println("NamanbDoneNComplete"+url11);
             StringBuilder responseString;
             try {

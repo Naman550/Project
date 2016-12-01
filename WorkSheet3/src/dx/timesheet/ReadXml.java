@@ -336,8 +336,10 @@ public class ReadXml {
         //   String username=dbhandler.getUserName();
         URL xmlUrl = new URL(DOMAIN + "users/getXml/" + usrname + "/" + pwd+"?"+k+"naman"+i);
         StringBuilder response_builder = getStreamResponse(xmlUrl);
-        System.out.print("response is>> " + response_builder.toString());
+        System.out.print("oooooooooooooooresponse is>> " + response_builder.toString());
         server_response = response_builder.toString();
+        System.out.println("oooooooooooooooresponse_builder"+response_builder); 
+        System.out.println("ooooooooooooooorserver_response"+server_response);
         if ("sorry".equals(server_response)) {
             totalTasks = 0;
         } else {
@@ -346,7 +348,7 @@ public class ReadXml {
             doc.getDocumentElement().normalize();
             NodeList listOfTasks = doc.getElementsByTagName("tasks");
             totalTasks = listOfTasks.getLength();
-            System.out.println(totalTasks);
+            System.out.println("oooooooooooooooresponse"+totalTasks);
         }
         return totalTasks;
 
@@ -391,8 +393,9 @@ public class ReadXml {
     }
 
     public String sendDataForTimesheet(String userid, String taskid, String status, String timesheetid, String comment) throws MalformedURLException, IOException {
-        
-        String u = DOMAIN + "TimeSheets/getSheet/" + userid + "/" + taskid + "/" + status + "/" + timesheetid + "/" + comment;
+         double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+        String u = DOMAIN + "TimeSheets/getSheet/" + userid + "/" + taskid + "/" + status + "/" + timesheetid + "/" + comment+"?"+k+"hello"+i;
         System.out.print(u);
         URL url = new URL(u);
         System.out.println(u);
@@ -403,7 +406,9 @@ public class ReadXml {
     }
 
     public String sendReview(String user_id, String task_id, String loginUserId) throws MalformedURLException, IOException {
-        String u = DOMAIN + "projectReviews/add/" + user_id + "/" + task_id +"/"+loginUserId+"/"+nTaskId;
+        double i=random.nextDouble()+random.nextDouble();
+            k+=1;
+        String u = DOMAIN + "projectReviews/add/" + user_id + "/" + task_id +"/"+loginUserId+"/"+nTaskId+"?"+k+"hello"+i;
         System.out.println("projectReviews1 - "+u);
         URL url = new URL(u);
         System.out.println("projectReviews2 - "+u);

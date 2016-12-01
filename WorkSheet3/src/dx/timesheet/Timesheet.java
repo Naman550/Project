@@ -38,7 +38,7 @@ public class Timesheet {
     //   SwingUtilities.updateTreeComponentUI(frame);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run() {
+            public void run() { 
                 new PopUpLogin().launchTimesheet();
 
             }

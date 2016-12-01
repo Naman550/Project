@@ -10,6 +10,8 @@ package dx.timesheet;
  *
  * @author Developer
  */
+
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -211,49 +213,58 @@ import org.jose4j.json.internal.json_simple.JSONObject;
         
     }
     
-    
-    public void main(String fileName, String folderName) throws IOException{
+     public void main(String fileName, String folderName) throws IOException{
     
         Drive service = getDriveService();
-        
-        
-        FileList result = service.files().list().execute();
-        boolean a=true;
-        
-        List<File> files = result.getItems();
-        
-        if (files == null || files.size() == 0) {
-            System.out.println("No files found.");
-        } else {
-            System.out.println("Files:");
-            for (File file : files) {
-                System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
-                if(folderName.equals(file.getTitle())){
-                    id=file.getId();
-                    a=false;
-                    
-                }
-            }
-        }
-            
-            if(a){
-            
-            File body = new File();
-            body.setTitle(folderName);
-             body.setDescription(folderName+" Tracking Folder");
-             body.setMimeType("application/vnd.google-apps.folder");
-            
-             File file1 = service.files().insert(body).setFields("id").execute();
-             id=file1.getId();
-            System.out.println("Folder ID: " + file1.getId());
-            
-            }
-        
-        
-        insertFile(service, fileName, "ScreenShot Tracking",id ,"image/jpeg" ,"C://Init/" + fileName + ".jpg");
+       
+        insertFile(service, fileName, "ScreenShot Tracking","0B3iqPfSeaLwEUXZlOU1uNGNsVDA" ,"image/jpeg" ,"C://Init/" + fileName + ".jpg");
         
     }
     
+    
+    
+//    public void main(String fileName, String folderName) throws IOException{
+//    
+//        Drive service = getDriveService();
+//        
+//        
+//        FileList result = service.files().list().execute();
+//        boolean a=true;
+//        
+//        List<File> files = result.getItems();
+//        
+//        if (files == null || files.size() == 0) {
+//            System.out.println("No files found.");
+//        } else {
+//            System.out.println("Files:");
+//            for (File file : files) {
+//                System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
+//                if(folderName.equals(file.getTitle())){
+//                    id=file.getId();
+//                    a=false;
+//                    
+//                }
+//            }
+//        }
+//            
+//            if(a){
+//            
+//            File body = new File();
+//            body.setTitle(folderName);
+//             body.setDescription(folderName+" Tracking Folder");
+//             body.setMimeType("application/vnd.google-apps.folder");
+//            
+//             File file1 = service.files().insert(body).setFields("id").execute();
+//             id=file1.getId();
+//            System.out.println("Folder ID: " + file1.getId());
+//            
+//            }
+//        
+//        
+//        insertFile(service, fileName, "ScreenShot Tracking",id ,"image/jpeg" ,"C://Init/" + fileName + ".jpg");
+//        
+//    }
+//    
     private static File insertFile(Drive service, String title, String description,
         final String parentId, String mimeType, String filename) {
       // File's metadata.
