@@ -298,9 +298,9 @@ public class HardwareDetails {
             System.out.println("Session token is>> (" + mySessionToken + ")");
             System.out.println("qwerty  - "+PopUpLogin.user_name);
             String folderName = PopUpLogin.user_name;
-            
+            System.out.println("\n\n\n************************************"+percentage+"****************************************\n\n\n");
             FinalUpload upload = new FinalUpload();
-            upload.main(str,folderName); 
+            upload.main(str,folderName,percentage); 
             
           
             try {

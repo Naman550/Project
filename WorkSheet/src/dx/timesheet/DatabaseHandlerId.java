@@ -40,6 +40,7 @@ public class DatabaseHandlerId {
    
     public void insertId(String id){
         try{
+            deleteId();
             String query="SELECT MAX(pId) FROM ServerId";
             rs=stmt.executeQuery(query);
             rs.next();

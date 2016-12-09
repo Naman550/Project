@@ -47,7 +47,6 @@ public class TrayIconUtility {
         } else {
             return (new ImageIcon(imageURL, description)).getImage();
         }
-
     }
 
     public void setTrayIcon(String imgPath) {

@@ -182,6 +182,7 @@ public class PopUpLogin {
     private boolean complete=false;
     private String oid;
     private boolean todo,reopen;
+    private boolean hold=true;
     
     public void fourButton(){
     
@@ -322,6 +323,7 @@ public class PopUpLogin {
 
         //   track_net_thread.interrupt();
         trayIcons.updateTrayIcon("/images/tray_disabled.png");
+        
         panel.lblStatus1.setText("Sign in");
     }
     Runnable updateTimesheetThread = new Runnable() {
@@ -425,6 +427,8 @@ public class PopUpLogin {
                         refresh();
                         if (!worker.isShutdown()) {
                             System.out.println("Worker thread stopped!");
+                            System.out.println("\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Worker thread stopped!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                   
                             worker.shutdownNow();
                         }
                         if (!screeShotListener.isShutdown()) {
@@ -652,7 +656,7 @@ public class PopUpLogin {
             sendLoginDetailsInUrl(user_name, Config.HTTP+Config.DOMAIN + "users/url/" + user_name + "/" + password + "/" + system_name + "/" + mac_address + "/" + router_ip + "/" + cpu_model + "/" + sys_ram + "/" + os_name + "/" + sys_hdd);
         }
         if (!firstLogin) {
-            //          System.out.println(firstLogin+"block called");
+            //System.out.println(firstLogin+"block called");
 
             sendLoginDetailsInUrl(user_name,Config.HTTP+Config.DOMAIN + "users/url1/" + user_name + "/" + password + "/" + system_name + "/" + mac_address + "/" + router_ip + "/" + cpu_model + "/" + sys_ram + "/" + os_name + "/" + sys_hdd);
             // System.out.println(DOMAIN + "/users/url1/" + user_name + "/" + password + "/" + system_name + "/" + mac_address + "/" + router_ip);
@@ -911,7 +915,7 @@ public class PopUpLogin {
                     dialog.repaint();
                     hideLoaderDialog();
                 } else {
-                    //         System.out.println("in else"+firstLogin);
+                    //System.out.println("in else"+firstLogin);
                     main_imgurl = imgUrl;
                     setUserPic(main_imgurl);
                     firstLogin = true;
@@ -1032,9 +1036,140 @@ public class PopUpLogin {
         }
         return value;
     }
+    
+    public void readOnHoldTask(final String username, final String pwd) throws MalformedURLException, IOException{
+        
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int holdTask=0;
+                int totalNoOfHoldTask=0;
+                int unHoldTask=0;
+                int totalNoOfUnHoldTask=0;
+                boolean flagTrue=false;
+                while(true){
+                    k+=1;
+                    URL xmlUrl = null;
+                    InputStream in=null;
+                    String status2=""; 
+                    String holdStatus="";
+                    double i=random.nextDouble()+random.nextDouble();
+                    
+                    try {
+                        xmlUrl = new URL(Config.HTTP+Config.DOMAIN + "users/getXml/" + username + "/" + pwd+"?"+k+"naman"+i);
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    System.out.println("readOnHoldTaskURL"+xmlUrl);
 
-    public void readPlayPauseTask(String username, String pwd) {
-        readxml.getUserList();                                       //read users from xml for review
+                    StringBuilder responseString=null;
+                    try {
+                        responseString = getStreamResponse(xmlUrl);
+                        in = xmlUrl.openStream();
+                    } catch (IOException ex) {
+                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    server_response = responseString.toString();
+                    System.out.println("readOnHoldTaskURL server_response ---->>>>"+server_response);
+                    
+                    
+                     
+                    Document doc = parse(in);
+                    doc.getDocumentElement().normalize();
+                    NodeList listOfCodes = doc.getElementsByTagName("tasks");
+                    int totalTasks = listOfCodes.getLength();
+                    System.out.println("NamanTotalTasks---->>>>><<<<< : "+totalTasks);
+                    for (int temp = 0; temp < listOfCodes.getLength(); temp++) {
+                        Node nNode = listOfCodes.item(temp);
+
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                            Element eElement = (Element) nNode;
+                            status2 = getElements(eElement, "status");
+                            holdStatus = getElements(eElement, "hold");
+                            
+                            if(status2.equals("onHold")){
+                            
+                                totalNoOfHoldTask += 1;
+                            }
+                            
+                            if(holdStatus.equals("2")){
+                            
+                                totalNoOfUnHoldTask += 1;
+                            }
+                            
+                        }
+                    }
+                    if(totalNoOfHoldTask > holdTask){
+
+                        holdTask=totalNoOfHoldTask;
+                        System.out.println("\n\n\n<<<<<<<<<<<<<<<HOLD refresh condition True>>>>>>>>>>>>>>>>>>>>>\n\n\n\n");
+                        try {
+                            if(flagTrue){
+                                refresh();
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    else{
+                        System.out.println("\n\n\n<<<<<<<<<<<<<<<HOLD refresh condition False>>>>>>>>>>>>>>>>>>>>>\n\n\n\n");
+                        
+                        holdTask=totalNoOfHoldTask;
+                    }
+                    totalNoOfHoldTask=0;
+                    System.out.println("\n\n\n>>>>>>>>status2status2status2status2-------->>>>>>>>"+status2);
+
+                   //------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+                    
+                    if(totalNoOfUnHoldTask > unHoldTask){
+
+                        unHoldTask=totalNoOfUnHoldTask;
+                        System.out.println("\n\n\n<<<<<<<<<<<<<<<UNHOLD refresh condition True>>>>>>>>>>>>>>>>>>>>>\n\n\n\n");
+                        try {
+                            if(flagTrue){
+                                refresh();
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    else{
+                        System.out.println("\n\n\n<<<<<<<<<<<<<<<HOLD refresh condition False>>>>>>>>>>>>>>>>>>>>>\n\n\n\n");
+                        
+                        unHoldTask=totalNoOfUnHoldTask;
+                    }
+                    totalNoOfHoldTask=0;
+                    totalNoOfUnHoldTask=0;
+                    flagTrue=true;
+                    
+                    System.out.println("\n\n\n>>>>>>>>status2status2status2status2-------->>>>>>>>"+status2);
+
+                    
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        thread.start();
+       
+    }
+
+    public void readPlayPauseTask(String username, String pwd)  {
+        readxml.getUserList();
+        //read users from xml for review
+        if(hold){
+            try {
+                readOnHoldTask(username,pwd);
+                hold=false;
+            } catch (IOException ex) {
+                Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            System.out.println("\n\n\n<<<<<<<<<<<<<<<HOLD FALSE>>>>>>>>>>>>>>>>>>>>>\n\n\n\n");
+        }
         
         System.out.println("Naman is here");
         TaskPanel.panelforScrollPane.setLayout(new BorderLayout());
@@ -3176,6 +3311,8 @@ public class PopUpLogin {
         try {
             double i=random.nextDouble()+random.nextDouble();
             k+=1;
+            comment=comment.replaceAll("\n","");
+            System.out.println("comment  ---->>>>>"+comment);
             URL url11 = new URL(Config.HTTP+Config.DOMAIN + "TimeSheets/markDone/" + userid + "/" + taskid + "/" + status + "/" + comment + "/" + oId +"/"+assign+"?"+k+"naman"+i);
             System.out.println("NamanbDoneNComplete"+url11);
             StringBuilder responseString;
@@ -3197,6 +3334,7 @@ public class PopUpLogin {
         try {
             double i=random.nextDouble()+random.nextDouble();
             k+=1;
+            comment=comment.replaceAll("\n","");
             URL url11 = new URL(Config.HTTP+Config.DOMAIN + "Tasks/startHoldTask/" + taskid + "/" + comment + "/" + status +"?"+k+"naman"+i);
             System.out.println("NamanbDoneNComplete"+url11);
             StringBuilder responseString;
@@ -3233,6 +3371,7 @@ public class PopUpLogin {
         try {
             double i=random.nextDouble()+random.nextDouble();
             k+=1;
+            comment=comment.replaceAll("\n","");
             URL url11 = new URL(Config.HTTP+Config.DOMAIN + "TimeSheets/markDone/" + userid + "/" + taskid + "/" + status + "/" + comment + "/" + oId +"/"+assign+"?"+k+"naman"+i);
             System.out.println("NamanbDoneNComplete"+url11);
             StringBuilder responseString;

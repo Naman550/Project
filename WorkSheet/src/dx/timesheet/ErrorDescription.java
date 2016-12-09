@@ -4,6 +4,8 @@
  */
 package dx.timesheet;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Me
  */
-public class ErrorDescription extends javax.swing.JDialog {
+public class ErrorDescription extends javax.swing.JDialog implements KeyListener{
 
     //   JXDatePicker d_picker;
     HardwareDetails hd = new HardwareDetails();
@@ -24,12 +26,14 @@ public class ErrorDescription extends javax.swing.JDialog {
     TaskPanel ts = new TaskPanel();
     String flag = "";
     java.awt.Frame frame;
+    private boolean space=true;
     /**
      * Creates new form ExtendDeadlineDialog
      */
     public ErrorDescription(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        textArea1.addKeyListener(this);
         //       d_picker=new JXDatePicker();
         //      d_picker.setBounds(105, 65, 125, 25);
         //      d_picker.setDate(Calendar.getInstance().getTime());
@@ -66,7 +70,6 @@ public class ErrorDescription extends javax.swing.JDialog {
         btnOk3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textArea1 = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -114,8 +117,6 @@ public class ErrorDescription extends javax.swing.JDialog {
         textArea1.setRows(5);
         jScrollPane1.setViewportView(textArea1);
 
-        jButton1.setText("jButton1");
-
         jButton2.setText("Clear");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -134,7 +135,7 @@ public class ErrorDescription extends javax.swing.JDialog {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(lblInput3)
-                        .addGap(0, 141, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(btnOk3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -142,11 +143,6 @@ public class ErrorDescription extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnExit3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel7Layout.createSequentialGroup()
-                    .addGap(0, 84, Short.MAX_VALUE)
-                    .addComponent(jButton1)
-                    .addGap(0, 85, Short.MAX_VALUE)))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,11 +158,6 @@ public class ErrorDescription extends javax.swing.JDialog {
                     .addComponent(btnOk3)
                     .addComponent(jButton2))
                 .addContainerGap())
-            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel7Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jButton1)
-                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -192,6 +183,8 @@ public class ErrorDescription extends javax.swing.JDialog {
          comments= textArea1.getText();
          
         if(comments.equals("")){  }
+        else
+        if(textArea1.getText().equals(" ")){}
         else{
             flag = "true";
            
@@ -286,7 +279,6 @@ public void setDialog(java.awt.Frame parent ){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnExit3;
     public static javax.swing.JButton btnOk3;
-    public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public static javax.swing.JPanel jPanel7;
     public javax.swing.JPanel jPanel8;
@@ -294,4 +286,36 @@ public void setDialog(java.awt.Frame parent ){
     public javax.swing.JLabel lblInput3;
     public static javax.swing.JTextArea textArea1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    
+        if(e.getKeyCode()==KeyEvent.VK_ENTER){
+                System.out.println("Hello");
+                e.consume();
+        }
+     
+        if (e.getKeyCode()==KeyEvent.VK_SPACE){
+                
+                if(space){
+                    System.out.println("SPACE");
+                    space=false;
+                }else{
+                    System.out.println("NOSPACE");
+                    textArea1.setEditable(space);
+                     
+                }
+        }else{
+                space=true;
+                textArea1.setEditable(space);
+         }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
 }

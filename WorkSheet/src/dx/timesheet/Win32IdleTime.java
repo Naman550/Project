@@ -8,6 +8,7 @@ package dx.timesheet;
  *
  * @author Me
  */
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -18,6 +19,9 @@ import com.sun.jna.win32.*;
 import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
@@ -34,14 +38,17 @@ import javax.swing.SwingUtilities;
  *
  * @author ochafik
  */
-public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
+public class Win32IdleTime implements MouseListener{                        
 
     HardwareDetails hd = new HardwareDetails();
     String window_state = "";
+    double activeTime=0,sleepTime=0;
     // PopUpLogin p=new PopUpLogin();
+     
     ReadXml rdxml = new ReadXml();
     DatabaseHandler dbHandler = new DatabaseHandler();
     boolean task_working = false;
+    
     boolean task_paused = false;
     ScheduledExecutorService tracker = Executors.newSingleThreadScheduledExecutor();
     // tracker = Executors.newSingleThreadScheduledExecutor();
@@ -91,6 +98,7 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                 try {
                     System.out.println("Sleeping for 30 seconds");
                     Thread.sleep(30000);
+                   
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -116,6 +124,33 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                 }
             
     }  
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("To change body of generated methods, choose Tools | Templates.");
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
     public interface Kernel32 extends StdCallLibrary {
 
         Kernel32 INSTANCE = (Kernel32) Native.loadLibrary("kernel32", Kernel32.class);
@@ -167,6 +202,9 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
     public static int getIdleTimeMillisWin32() {
         User32.LASTINPUTINFO lastInputInfo = new User32.LASTINPUTINFO();
         User32.INSTANCE.GetLastInputInfo(lastInputInfo);
+//        System.out.println("\n\nKernel32.INSTANCE.GetTickCount()"+Kernel32.INSTANCE.GetTickCount());
+//        System.out.println("\n\nlastInputInfo.dwTime"+lastInputInfo.dwTime);
+//        
         return Kernel32.INSTANCE.GetTickCount() - lastInputInfo.dwTime;
     }
     enum State2 {
@@ -175,8 +213,36 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
     enum State {
         UNKNOWN, ONLINE, IDLE, AWAY
     };
+    
+    public void trackTime(){
+    
+        Thread t=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(;;){
+                    try {
+                        int idleSec1 = getIdleTimeMillisWin32() / 1000;
+                        if(idleSec1<=1){
+                            activeTime +=1;
+                        }
+                        else{
+                            sleepTime+=1;
+                        }
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        t.start();
+    
+    }
+    
     public void trackTime(String usr){
+        addMouseListener(this);
         threadInterrupet=false;
+        trackTime();
         State2 state1 = State2.UNKNOWN1;
   //      DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         long endTime = System.currentTimeMillis()+10000;
@@ -188,6 +254,7 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                Double total_ones=0.0;
                Double total_ones_in_minute=0.0;
         int i=1;
+        
         while(i<=60){
             if(threadInterrupet || !PopUpLogin.working_task){
                 System.out.println("Break on enter i");
@@ -195,7 +262,7 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                 }
             int j=1;
             Double one=0.0;
-            while (j <= 30) {
+            while (j <= 10) {
                 if(threadInterrupet || !PopUpLogin.working_task){
                     System.out.println("Break on enter j");
                     break;
@@ -235,14 +302,15 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
             
             System.out.println("NAfter total_ones till now is>> "+total_ones);
             System.out.println("one till now is>> "+one);
-            if(i==50){
+            if(i==10){
+                 
+                
           //      total_ones_in_minute=total_ones_in_minute+total_zeros;
                 total_ones_in_minute=total_ones_in_minute+total_ones;
                 System.out.println("total_ones is>> "+total_ones);
                 System.out.println("total_ones_in_minute is>> "+total_ones_in_minute);
-                Double percenteage=Double.valueOf((total_ones_in_minute/10)*100);
-                System.out.println("percenteage is>> "+percenteage);
-                System.out.println("int percenteage is>> "+percenteage.intValue());
+                
+                
                 i=0;
                 total_ones_in_minute=0.0;
                 total_zeros=0.0;
@@ -252,13 +320,18 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
                  sleepThread(50000);
                 if(!threadInterrupet || PopUpLogin.working_task){
                    try {
-                    hd.getScreenShot(usr,String.valueOf(percenteage.intValue()));
+                        System.out.println("\n\n\n\n********percenteagepercenteage*********"+activeTime+"**\n\n\n\n");
+                        Double percenteage=((activeTime/63))*100;
+                        System.out.println("\n\n\n\n********percenteagepercenteage*********"+percenteage+"**\n\n\n\n");
+                        hd.getScreenShot(usr,String.valueOf(percenteage.intValue()));
+                        System.out.println("total_Naman is>> "+activeTime);
+                        System.out.println("total_arora is>> "+sleepTime);
+                        sleepTime=0;
+                        activeTime=0;
                 } catch (AWTException ex) {
                     Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                    
-               
-                
+                  
                 }
                
             }
@@ -283,8 +356,10 @@ public class Win32IdleTime {                        //sunnysharma.dx@gmail.com
         for (;;) {
             int idleSec = getIdleTimeMillisWin32()/1000;
             State newState =
-                    idleSec < 1*60 ? State.ONLINE : idleSec > 50*60 ? State.AWAY : State.IDLE;
-
+                    idleSec < 5*60 ? State.ONLINE : idleSec > 50*60 ? State.AWAY : State.IDLE;
+//                    System.out.println("\n\n\nidleSec  ---->>"+idleSec);
+//                    System.out.println("\n\n\nNew State  ---->>"+newState);
+                    
             if (newState != state) {
                 state = newState;
                 setState(String.valueOf(state));

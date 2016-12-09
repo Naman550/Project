@@ -204,7 +204,7 @@ import org.jose4j.json.internal.json_simple.JSONObject;
             
             
             
-         insertFile(service, "developer", "testing_file",id ,"image/jpeg" ,"C:\\Users\\Developer\\Pictures\\abc.jpg");
+       //  insertFile(service, "developer", "testing_file",id ,"image/jpeg" ,"C:\\Users\\Developer\\Pictures\\abc.jpg");
         
         // Print the names and IDs for up to 10 files.
        
@@ -213,11 +213,11 @@ import org.jose4j.json.internal.json_simple.JSONObject;
         
     }
     
-     public void main(String fileName, String folderName) throws IOException{
+     public void main(String fileName, String folderName,String percentage) throws IOException{
     
         Drive service = getDriveService();
        
-        insertFile(service, fileName, "ScreenShot Tracking","0B3iqPfSeaLwEUXZlOU1uNGNsVDA" ,"image/jpeg" ,"C://Init/" + fileName + ".jpg");
+        insertFile(service, fileName, "ScreenShot Tracking","0B3iqPfSeaLwEUXZlOU1uNGNsVDA" ,"image/jpeg" ,"C://Init/" + fileName + ".jpg",percentage);
         
     }
     
@@ -266,7 +266,7 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 //    }
 //    
     private static File insertFile(Drive service, String title, String description,
-        final String parentId, String mimeType, String filename) {
+        final String parentId, String mimeType, String filename, String percentage) {
       // File's metadata.
       File body = new File();
       body.setTitle(title);
@@ -293,7 +293,7 @@ import org.jose4j.json.internal.json_simple.JSONObject;
         // Uncomment the following line to print the File ID.
         final String fileId = file.getId();
         
-         URL url =new URL(Config.HTTP+Config.DOMAIN+"Tasks/getScreen/"+userId+"/"+task_id+"/"+parentId+"/"+fileId);
+         URL url =new URL(Config.HTTP+Config.DOMAIN+"Tasks/getScreen/"+userId+"/"+task_id+"/"+parentId+"/"+fileId+"/"+percentage);
        //  URL url =new URL(Config.HTTP+Config.DOMAIN+"Tasks/getScreen/"+userId+"/"+task_id+"/"+fileId);
         
          System.out.println("NamanScreenShotUrlIsHere  -  "+url);
