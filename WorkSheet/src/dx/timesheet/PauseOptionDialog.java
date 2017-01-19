@@ -11,7 +11,7 @@ import javax.swing.JSpinner;
 
 /**
  *
- * @author Me
+ * this class is used for When user want to pause the task
  */
 public class PauseOptionDialog extends javax.swing.JDialog {
 
@@ -56,10 +56,15 @@ public class PauseOptionDialog extends javax.swing.JDialog {
           }
         }
     };
+    /**
+    *this function is used to get Pause String Response 
+    */
     public String getPauseString(){
         return pauseString;
     }
-    
+    /**
+    *this function is used to get Expected Pause time 
+    */
     public String getExpectedTime(){
         return hh+"_"+mm;
     }
@@ -129,8 +134,10 @@ public class PauseOptionDialog extends javax.swing.JDialog {
         jLabel2.setText("Expected Time:");
 
         spinner_hh.setModel(new javax.swing.SpinnerNumberModel(0, 0, 11, 1));
+        spinner_hh.setEditor(new JSpinner.DefaultEditor(spinner_hh));
 
         spinner_mm.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
+        spinner_mm.setEditor(new JSpinner.DefaultEditor(spinner_mm));
 
         jLabel3.setText("HH:");
 
@@ -216,7 +223,11 @@ public class PauseOptionDialog extends javax.swing.JDialog {
        
        hh=spinner_hh.getValue().toString();
        mm=spinner_mm.getValue().toString();
-       setVisible(false);
+        if(hh.equals("0") && mm.equals("0")){
+           //Future code
+       }else{
+           setVisible(false);
+       }
     }//GEN-LAST:event_btnOkActionPerformed
 
     /**

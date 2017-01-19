@@ -8,7 +8,7 @@ import java.awt.Color;
 
 /**
  *
- * @author Me
+ * @This class is used to display the Loader at TimeSheet frame
  */
 public class LoaderDialog extends javax.swing.JDialog {
 

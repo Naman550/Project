@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Me
+ * this class perform basic operation of database
  */
 public class DatabaseHandler {
     
@@ -32,23 +32,33 @@ public class DatabaseHandler {
     public DatabaseHandler() {
     
     }
+    /**
+    * this function is used for Load the database driver and get connection with database here the database is SQLite
+    */
      public void connect() throws ClassNotFoundException, SQLException {
-        Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-        con = DriverManager.getConnection("jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ="
-                + "LoginDetails.mdb");
+       
+        // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+       // con = DriverManager.getConnection("jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ="
+       //         + "LoginDetails.mdb");
+         
+         
+//        String url = "jdbc:sqlite:E:/WorkSheet/LoginDetails.db";
+        String url = "jdbc:sqlite:LoginDetails.db";
+        con = DriverManager.getConnection(url);              
         stmt = con.createStatement();
     }
-     public void connect2() throws ClassNotFoundException, SQLException {
-        Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-        con = DriverManager.getConnection("jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ="
-                + "LoginDetails.mdb");
-        stmt = con.createStatement();
-    }
+    
+     /**
+    * This function is used for company Alias. this part is temporary deleted
+    */
      public void saveCompanyAlias(String alias) throws SQLException {
-         PreparedStatement pstmt = con.prepareStatement("insert into Alias(alias) values (?);");
-            pstmt.setString(1, alias);
-            pstmt.execute();
+        PreparedStatement pstmt = con.prepareStatement("insert into Alias(alias) values (?);");
+        pstmt.setString(1, alias);
+        pstmt.execute(); 
     }
+     /**
+    * This function is used to get company Alias. this part is temporary deleted
+    */
      public String getAlias() throws SQLException {
         String alias = "";
         stmt.executeQuery("SELECT * FROM Alias");
@@ -59,6 +69,9 @@ public class DatabaseHandler {
         rs.close();
         return alias;
     }
+    /**
+    * This function is used for insert TimeSheetId
+    */
    public void insertTimesheetId(String timesheetid) throws SQLException {
         String userid = getUserId();
         System.out.println(userid);
@@ -69,6 +82,9 @@ public class DatabaseHandler {
         pstmt.setString(2, userid);
         pstmt.execute();
     }
+    /**
+    * This function is used for set TimeSheetId
+    */
  public void setTimeId(String id,String userid,String taskid) throws SQLException{
        stmt.executeQuery("SELECT * FROM User");
        ResultSet rs = stmt.getResultSet();
@@ -102,12 +118,18 @@ public class DatabaseHandler {
             
         }
    }
+    /**
+    * This function is used for show message info dialog
+    */
    public void showInfoDialog(String Info) {
         InfoDialog inf = new InfoDialog(null, true);
         inf.setLocationRelativeTo(new TaskPanel());
         inf.setInfo(Info);
         inf.setVisible(true);
     }
+    /**
+    * This function is used for get Time-Id
+    */
     public String getTimeId() throws SQLException {
         String timeid = "";
         stmt.executeQuery("SELECT * FROM User");
@@ -119,6 +141,9 @@ public class DatabaseHandler {
         System.out.println("Retrieved time id>> "+timeid);
         return timeid;
     }
+    /**
+    * This function is used for get Task-Id
+    */
     public String getTaskId() throws SQLException {
         String taskid = "";
         stmt.executeQuery("SELECT * FROM User");
@@ -130,6 +155,9 @@ public class DatabaseHandler {
         System.out.println("Retrieved task id>> "+taskid);
         return taskid;
     }
+    /**
+    * This function is used for get User-Id
+    */
       public String getUserId() throws SQLException {
         String userid = "";
         stmt.executeQuery("SELECT * FROM User");
@@ -141,6 +169,9 @@ public class DatabaseHandler {
         System.out.println("Retrieved task id>> "+userid);
         return userid;
     }
+    /**
+    * This function is used for delete all data
+    */
    public void deleteAllRows() throws SQLException{
            String sql = "DELETE FROM User";
         int delete = stmt.executeUpdate(sql);
@@ -150,7 +181,9 @@ public class DatabaseHandler {
       }
    
    
-   
+   /**
+    * This function is used for delete all data
+    */
     public void deleteRecord() throws SQLException{
         String sql = "DELETE FROM LoggedInUser";
         int delete = stmt.executeUpdate(sql);
@@ -158,6 +191,10 @@ public class DatabaseHandler {
             System.out.println("All rows are completelly deleted!");
         }
     }
+    
+    /**
+    * This function is used for Update user data
+    */
     public void updateLoggedInUserTable(String userid, String name, String username, String imgurl) throws SQLException {
         stmt.executeQuery("SELECT * FROM LoggedInUser");
         ResultSet rs = stmt.getResultSet();
@@ -175,6 +212,9 @@ public class DatabaseHandler {
             pstmt.executeUpdate();
         }
     }
+    /**
+    * This function is used for check Loging Session
+    */
     public void checkLoginSession() throws SQLException {
         stmt.executeQuery("SELECT * FROM LoggedInUser");
         ResultSet rs = stmt.getResultSet();
@@ -192,6 +232,9 @@ public class DatabaseHandler {
             PopUpLogin.loginStatus = false;
         }
     }
+    /**
+    * This function is used for close the connection 
+    */
     public void closeConnection(){
         try {
             if(!con.isClosed()){
@@ -201,7 +244,9 @@ public class DatabaseHandler {
             Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+    * This function is used for get TimeSheet ID in database 
+    */
     public String getTimesheetId() throws SQLException {
         String timeid = null;
         stmt.executeQuery("SELECT * FROM LoggedInUser");
@@ -212,6 +257,9 @@ public class DatabaseHandler {
         rs.close();
         return timeid;
     }
+    /**
+    * This function is used for delete TimeSheet ID in database 
+    */
     public void deleteTimeSheetId() throws SQLException {
         String userid = getUserId();
         PreparedStatement pstmt = con.prepareStatement("UPDATE LoggedInUser " + "  SET timeId = ? " + "WHERE userid = ? ");
@@ -219,10 +267,16 @@ public class DatabaseHandler {
         pstmt.setString(2, userid);
         pstmt.execute();
     }
+    /**
+    * This function is used for set Login Status in database 
+    */
     public boolean setLoginStatus() throws SQLException{
         checkLoginSession();
         return loginStatus;
     }
+    /**
+    * This function is used for get UserName in database 
+    */
     public String getUserName() throws SQLException {
         String username = null;
         stmt.executeQuery("SELECT * FROM LoggedInUser");
@@ -232,6 +286,9 @@ public class DatabaseHandler {
         }
         return username;
     }
+    /**
+    * This function is used for get UserID in database 
+    */
      public String getUserId1() throws SQLException {
         String userid = null;
         stmt.executeQuery("SELECT * FROM LoggedInUser");
@@ -241,6 +298,9 @@ public class DatabaseHandler {
         }
         return userid;
     }
+     /**
+    * This function is used for get UserID in database 
+    */
      public String getUserId2() throws SQLException{
         String userid = null;
         stmt.executeQuery("SELECT * FROM APP.TBLSESSION");
@@ -268,6 +328,9 @@ public class DatabaseHandler {
         }
         rs.close();
     }
+    /**
+    * This function is used for check Login session in database 
+    */
       public void checkLoginSession1() throws SQLException {
         stmt.executeQuery("SELECT * FROM APP.TBLSESSION");
         ResultSet rs = stmt.getResultSet();
@@ -287,6 +350,9 @@ public class DatabaseHandler {
         }
         rs.close();
     }
+      /**
+    * This function is used for delete table in database 
+    */
       public void deleteTable() throws SQLException{
            String sql = "DELETE FROM APP.TBLSESSION";
         int delete = stmt.executeUpdate(sql);
@@ -295,12 +361,18 @@ public class DatabaseHandler {
       }
       }
       
+    /**
+    * This function is used for close the database connection
+    */
       public void closeDatabase() throws SQLException{
           con.close();
           stmt.close();
           rs.close();
           
       }
+    /**
+    * This function is used for insertLoginDetails in database 
+    */
        public void insertLoginDetails(String userid) throws SQLException {
         stmt.executeQuery("SELECT * FROM TABLELOGIN");
         ResultSet rs = stmt.getResultSet();
@@ -317,21 +389,15 @@ public class DatabaseHandler {
             PreparedStatement pstmt = con.prepareStatement("insert into TABLELOGIN (userid,username) values (?, ?);");
             pstmt.setString(1, userid);
             pstmt.setString(2, user_name);
-            //     pstmt.setBoolean(3, true);
+            
             pstmt.execute();
-            //  updateLoggedInUserTable(userid);
-
-            //   stmt.close ();
+            
         } else {
-            //    updateLoggedInUserTable(userid);
-            //             PreparedStatement pstmt = con.prepareStatement("UPDATE TABLELOGIN " + "  SET login = ? " + "WHERE userid = ? ");
-            //             pstmt.setBoolean(1, true);
-            //            pstmt.setString(2, userid);
-            //            pstmt.executeUpdate();
-            //            System.out.println("Entered username is : " + userName);
-            //            System.out.println("Email is : " + user_name);
-        }
+            }
     }
+    /**
+    * This function is used for chekLoginDetails in database 
+    */
        public void chekLoginDetails() throws SQLException {
         stmt.executeQuery("SELECT * FROM TABLELOGIN");
         ResultSet rs = stmt.getResultSet();

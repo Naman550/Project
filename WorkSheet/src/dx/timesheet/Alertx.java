@@ -12,8 +12,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 /**
- *
- * @author Me
+ *This class is used to display the message on the TimeSheet 
  */
 public class Alertx extends javax.swing.JDialog {
 static Component c;
@@ -38,6 +37,9 @@ private JFrame dialo;
     public void setInfo(String info){
         lblInfo.setText(info);
     }
+    /**
+    * KeyListener Implementation
+    */
     KeyListener kl=new KeyListener() {
 
         @Override
@@ -157,11 +159,11 @@ private JFrame dialo;
      * @param args the command line arguments
      */
     
-    public void hh(){
+    public void msgDialog(){
             
                 Alertx dialog = new Alertx(new javax.swing.JFrame(), true);
                 
-                dialog.setLocationRelativeTo(InputDialog.btnClear);
+                dialog.setLocationRelativeTo(TaskPanel.panelforScrollPane);
                 dialog.setAlwaysOnTop(true);
                 dialog.setFocusableWindowState(true);
                 dialog.setVisible(true);

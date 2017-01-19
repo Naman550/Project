@@ -6,16 +6,11 @@ package dx.timesheet;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Me
+ * @this class take the error message from tester and send the task to ToDo
  */
 public class ErrorDescription extends javax.swing.JDialog implements KeyListener{
 
@@ -33,22 +28,19 @@ public class ErrorDescription extends javax.swing.JDialog implements KeyListener
     public ErrorDescription(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        textArea1.addKeyListener(this);
-        //       d_picker=new JXDatePicker();
-        //      d_picker.setBounds(105, 65, 125, 25);
-        //      d_picker.setDate(Calendar.getInstance().getTime());
-       
-        //    d_picker.getMonthView().setFlaggedDates(new Date());
-        //  d_picker.getMonthView().set
-        //    jPanel7.add(d_picker);
-        //  frame.getContentPane().add(panel);
+        textArea1.setDocument(new TxtDocument());
+      
     }
-
+    /**
+    * this function is used to return comment of the user enter in errorMessageDialog box
+    */
     public String getComments() {
         System.out.println(comments);
         return comments;
     }
-
+    /**
+    * this function is used to return flag if flag is true then errorMessageDialog will display
+    */
     public String getFlag() {
         return flag;
     }
@@ -318,4 +310,6 @@ public void setDialog(java.awt.Frame parent ){
     @Override
     public void keyReleased(KeyEvent e) {
     }
+    
+    
 }

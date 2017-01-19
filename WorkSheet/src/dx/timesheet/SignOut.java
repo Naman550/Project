@@ -8,7 +8,7 @@ import java.awt.Component;
 
 /**
  *
- * @author Me
+ * @This class is used for conformation of Sign-out block from user in timeSheet
  */
 public class SignOut extends javax.swing.JDialog {
     
@@ -16,7 +16,7 @@ public class SignOut extends javax.swing.JDialog {
     static Component c;
     static boolean flag1,flag2;
     /**
-     * Creates new form ExitDialog
+     * Creates new form Sign Out Dialog
      */
     public SignOut(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -27,21 +27,6 @@ public class SignOut extends javax.swing.JDialog {
     public SignOut(Component c, boolean modal) {
         
     }
-        
-//    public boolean sign(){
-//    
-//        SignOut dialog = new SignOut(new javax.swing.JFrame(), true);
-//        dialog.setVisible(true);
-//        dialog.setLocationRelativeTo(TaskPanel.panelforScrollPane);
-//        dialog.setAlwaysOnTop(true);
-//        dialog.setFocusableWindowState(true);
-//        
-//        
-//        return false;
-//        
-//        
-//    
-//    }
     
     public boolean flagResult(){
         return flag1;

@@ -4,27 +4,13 @@
  */
 package dx.timesheet;
 
-import static dx.timesheet.InputDialog.txtComments;
-import java.awt.Color;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 /**
  *
- * @author Me
+ * @this class take the reason from user to start the task in timeSheet
  */
 public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
 
@@ -42,22 +28,29 @@ public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
     public OnHoldMsg(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-       textArea1.addKeyListener(this);
+       textArea1.setDocument(new TxtDocument());
        
        
     }
     
-    
+    /**
+    * this function is used get TODO reason from Tester
+    */
 
     public String getComments() {
         System.out.println(comments);
         return comments;
     }
-
+    /**
+    * this function is used get Flag
+    */
     public String getFlag() {
         return flag;
     }
 
+    public void setString(String string){
+        lblInput3.setText(string);
+    }
    
     /** ; 
      * This method is called from within the constructor to initialize the form.
@@ -85,7 +78,7 @@ public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
         jPanel7.setPreferredSize(new java.awt.Dimension(230, 135));
 
         lblInput3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        lblInput3.setText("Reason for Start the Task");
+        lblInput3.setText("Reason for Start the Task////");
 
         jPanel8.setBackground(new java.awt.Color(15, 161, 208));
 
@@ -210,7 +203,7 @@ public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
         inf.setVisible(true);
 
     }
-public void setDialog(java.awt.Frame parent ){
+    public void setDialog(java.awt.Frame parent ){
        frame=parent;
        OnHoldMsg dialog = new OnHoldMsg(new javax.swing.JFrame(), true);
         dialog.setVisible(true);

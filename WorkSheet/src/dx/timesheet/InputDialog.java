@@ -15,7 +15,6 @@ import java.awt.event.MouseListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -23,7 +22,7 @@ import javax.swing.text.Document;
 
 /**
  *
- * @author Me
+ * @this class is used to take a input from user, What you have done, in the task 
  */
 public class InputDialog extends javax.swing.JDialog {
 
@@ -40,30 +39,36 @@ public class InputDialog extends javax.swing.JDialog {
         jScrollPane2.getVerticalScrollBar().setPreferredSize(new Dimension(7, 0));
         txtComments.setDocument(new TxtDocument());
         txtComments.getDocument().addDocumentListener(myListener);
-  //      txtComments.setForeground(new Color(211, 211, 211));
-    //    btnOk.requestFocus();
         txtComments.addMouseListener(mouselistener);
         txtComments.addKeyListener(kd);
-  //      txtComments.setTransferHandler(null);                                     enable/disable copy paste
-     //   DefaultCaret caret = (DefaultCaret)txtComments.getCaret();
-     //   caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-   //     txtComments.g
     }
-    
+    /**
+    * this function is used to create Hint Message 
+    */
     public void setHint(String hint){
         txtComments.setText(hint);
     }
+    /**
+    * this function is used to create setInfo Message 
+    */
     public void setInfo(String info){
         lblInput.setText(info);
     }
-    
+    /**
+    * this function is used to set Text Color
+    */
     public void setTextColor(Color clr){
         txtComments.setForeground(clr);
     }
+    /**
+    * this function is used to get Input message
+    */
     public String getInput(){
         return comments;
     }
-    
+    /**
+    * to add mouseListener
+    */
     MouseListener mouselistener=new MouseListener() {
 
         @Override
@@ -97,6 +102,9 @@ public class InputDialog extends javax.swing.JDialog {
             
         }
     };
+    /**
+    * to add KeyAdapter
+    */
     public KeyAdapter kd=new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -110,16 +118,8 @@ public class InputDialog extends javax.swing.JDialog {
             txtComments.setText("");
             txtComments.setForeground(Color.black);
         }
-        
-  //      if(c==KeyEvent.VK_PASTE){
-  //          System.out.println("Copied>>"+txtComments.getText());
-  //      }
-   //     if("minimum 30 characters required!".equals(txtComments.getText().toString())){
-   //         txtComments.setText("minimum 30 characters required!");
-  //      }
- // if (//Write your condition here) {
-   //   e.consume();  // ignore event
-}
+  
+        }
     };
     
     
@@ -129,18 +129,10 @@ public class InputDialog extends javax.swing.JDialog {
         public void insertUpdate(DocumentEvent e) {
            
             Document document = e.getDocument();
-         //   if(txtComments.getText().contains("minimum 30 characters required!")){
-          //           txtComments.setText("");
-          //           txtComments.setForeground(Color.black);
-        //      }
+         
             try {
                  String s = document.getText(0, document.getLength());
-        //       System.out.println("Copied>>>>>>"+s);
-             
-                 
-                 
-                 
-                 
+        
             } catch (BadLocationException ex) {
                 Logger.getLogger(InputDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -296,8 +288,9 @@ public class InputDialog extends javax.swing.JDialog {
         else
         {
            
+//            new PopUpLogin().showInfoDialog("Minimum 30 Characters requried");
             Alertx alert = new Alertx(dialo,true);
-            alert.hh();
+            alert.msgDialog();
             
 //            alert.setLocation(150, 150);
             //JOptionPane.showMessageDialog(null,"Minimum 30 characters required");

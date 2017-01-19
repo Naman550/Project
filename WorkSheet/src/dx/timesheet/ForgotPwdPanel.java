@@ -12,16 +12,19 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Me
+ * @this class display the Forgot password frame
  */
 public class ForgotPwdPanel extends javax.swing.JPanel {
 private Image img;
     /**
      * Creates new form ForgotPwdPanel
      */
+
     public ForgotPwdPanel(Image img) {
         initComponents();
          this.img = img;
+    lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource(Config.LOGOPATH))); // NOI18N
+
     Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
     setPreferredSize(size);
     setMinimumSize(size);
@@ -40,7 +43,9 @@ private Image img;
   public ImagePanel(String img) {
     this(new ImageIcon(img).getImage());
   }
-
+    /**
+    * this function is used to set dimension size of Image 
+    */
   public ImagePanel(Image img) {
     this.img = img;
     Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
@@ -116,15 +121,12 @@ private Image img;
                 .addGap(10, 10, 10))
         );
 
-        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/logo.png"))); // NOI18N
-
         jLabel8.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/forgot_pwd.png"))); // NOI18N
 
         lblForgotPwd.setText("Forgot Password?");
 
         lblDx.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        lblDx.setText("www.designersx.com");
 
         panelForgotPwdContainer.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -138,6 +140,11 @@ private Image img;
         });
 
         btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
 
         lblGoLogin.setForeground(new java.awt.Color(153, 153, 153));
         lblGoLogin.setText("Go to Login");
@@ -195,7 +202,7 @@ private Image img;
                     .addGroup(layout.createSequentialGroup()
                         .addGap(102, 102, 102)
                         .addComponent(lblDx)))
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addComponent(panelForgotPwdContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -227,6 +234,10 @@ private Image img;
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEmailActionPerformed
 
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnSubmit;
     public javax.swing.JLabel jLabel1;
@@ -238,7 +249,7 @@ private Image img;
     public static javax.swing.JLabel lblDx;
     public static javax.swing.JLabel lblForgotPwd;
     public static javax.swing.JLabel lblGoLogin;
-    public javax.swing.JLabel lblLogo;
+    public static javax.swing.JLabel lblLogo;
     public static javax.swing.JLabel lblMinimize2;
     public static javax.swing.JPanel panelForgotPwdContainer;
     public static javax.swing.JPanel panelLogo;

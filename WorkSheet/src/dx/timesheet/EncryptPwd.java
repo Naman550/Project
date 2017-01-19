@@ -9,7 +9,7 @@ import java.security.MessageDigest;
 
 /**
  *
- * @author Me
+ * @This class is used for Encrypt Password
  */
 public class EncryptPwd {
     

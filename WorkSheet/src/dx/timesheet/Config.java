@@ -6,13 +6,89 @@
 
 package dx.timesheet;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 /**
  *
- * @author dx
+ * This class set the Configuration of data like HTTP,Domain,version,URL.. in timeSheet
  */
 public class Config {
-    public static final String HTTP = "http://";
-        public static final String DOMAIN = "pms.trimonks.com/";
-  
+    public static  String HTTP = "";
+    public static  String DOMAIN=""; // = "pms.trimonks.com/";*/
+    public static  String VERSION=""; // = "pms.trimonks.com/";*/
+    public static  String URL=""; // = "pms.trimonks.com/";*/
+    public static  String COPYRIGHT=""; // 2016*/
+    public static  String COMPANYNAME=""; 
+    public static  String LOGOPATH=""; 
+    public static  String COMPANYURL=""; 
+    public static void setDomain(){
+    
+        
+        try {
+            /**
+            * set the path of XML file
+            */
+//            File fXmlFile = new File("E:\\WorkSheet\\src\\dx\\timesheet\\domain.xml");
+            File fXmlFile = new File("domain.xml");
+            
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
+            
+            
+            NodeList nList = doc.getElementsByTagName("domain");
+            
+            for(int i=0; i<nList.getLength(); i++){
+                
+                Node node = nList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+                   /**
+                    *Set the various value from XML file 
+                    */
+                    HTTP = getElements(eElement, "http");
+                    DOMAIN = getElements(eElement, "domain_url");
+                    VERSION = getElements(eElement, "version");
+                    URL = getElements(eElement, "url");
+                    COPYRIGHT = getElements(eElement, "copyright");
+                    COMPANYNAME = getElements(eElement, "company");
+                    LOGOPATH = getElements(eElement, "logo_path");
+                    COMPANYURL = getElements(eElement, "company_url");
+                    
+                }
+            }
+            
+            }
+            catch (IOException ex) {
+                Logger.getLogger(xml.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParserConfigurationException ex) {
+           Logger.getLogger(xml.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (SAXException ex) {
+           Logger.getLogger(xml.class.getName()).log(Level.SEVERE, null, ex);
+       }
+    }
+    
+    public static String getElements(Element element, String tag) {
+        NodeList nodelist = element.getElementsByTagName(tag);
+        String value = "";
+        if (nodelist.getLength() > 0) {
+            Element elm = (Element) nodelist.item(0);
+            value = elm.getChildNodes().item(0).getNodeValue();
+            System.out.println(value);
+        }
+        return value;
+    }
+    
 
 }

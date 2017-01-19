@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author Me
+ * This class is used for Set the basic like user image, company logo, Signout, Refresh.. etc 
  */
 public class TaskPanel extends javax.swing.JPanel {
     private Image img;
@@ -44,12 +44,14 @@ public class TaskPanel extends javax.swing.JPanel {
     public TaskPanel(Image img) {
 
         initComponents();
-           this.img = img;
-    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
-    setPreferredSize(size);
-    setMinimumSize(size);
-    setMaximumSize(size);
-    setSize(size);
+        this.img = img;
+        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource(Config.LOGOPATH))); // NOI18N
+
+        Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+        setPreferredSize(size);
+        setMinimumSize(size);
+        setMaximumSize(size);
+        setSize(size);
      
     }
     @Override
@@ -57,6 +59,9 @@ public class TaskPanel extends javax.swing.JPanel {
      super.paintComponent(g);
     g.drawImage(img, 0, 0, null);
   }
+    /**
+     *This function is used for PARSE the user xml
+     */
     public static Document parse(InputStream is) {
         Document ret = null;
         DocumentBuilderFactory domFactory;
@@ -175,8 +180,6 @@ public class TaskPanel extends javax.swing.JPanel {
                 .addGap(10, 10, 10))
         );
 
-        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/logo.png"))); // NOI18N
-
         lblPic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/user.png"))); // NOI18N
         lblPic.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -235,7 +238,7 @@ public class TaskPanel extends javax.swing.JPanel {
                         .addGap(0, 0, 0)
                         .addComponent(lblUserName))
                     .addComponent(lblLogo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
                 .addComponent(lblSignOut2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,7 +288,7 @@ public class TaskPanel extends javax.swing.JPanel {
     public javax.swing.JSeparator jSeparator2;
     public static javax.swing.JLabel lblClose3;
     public static javax.swing.JLabel lblDx;
-    public javax.swing.JLabel lblLogo;
+    public static javax.swing.JLabel lblLogo;
     public static javax.swing.JLabel lblMinimize3;
     public static javax.swing.JLabel lblPic;
     public static javax.swing.JLabel lblRefreshMain;

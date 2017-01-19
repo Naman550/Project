@@ -21,7 +21,7 @@ import javax.swing.ListCellRenderer;
 
 /**
  *
- * @author Me
+ * @This class Manages the Sub-task-Dialog
  */
 public class TaskWithSubtaskDialog extends javax.swing.JDialog {
 
@@ -45,33 +45,20 @@ public class TaskWithSubtaskDialog extends javax.swing.JDialog {
         jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jScrollPane1.getHorizontalScrollBar().setPreferredSize(new Dimension(8, 0));
         jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
-
-       //     jScrollPane1.setBorder(BorderFactory.createEmptyBorder());
         jList1.setCellRenderer(new CheckListRenderer());
         jList1.setModel(model);
         jList1.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent event) {
                 JList list = (JList) event.getSource();
-                // Get index of item clicked
                 int index = list.locationToIndex(event.getPoint());
                 CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
-                // Toggle selected state
                 item.setSelected(!item.isSelected());
                 System.out.println("Selected valueList : " + list.getSelectedValuesList());
                 System.out.println("Selected value : " + list.getSelectedValue());
-                //    getSelectdValues(list);
-
-
-                // Repaint cell
                 list.repaint(list.getCellBounds(index, index));
             }
         });
-
-        //   jList1.setModel(jList1.getModel());
-        // pack();
-        //       f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //     setVisible(true);
-    }
+}
 
     public void getSelectdValues(JList list) {
         listOfSelectedValues = new ArrayList<String>();
@@ -80,8 +67,6 @@ public class TaskWithSubtaskDialog extends javax.swing.JDialog {
             CheckListItem item1 = (CheckListItem) list.getModel().getElementAt(i);
             System.out.println("Selected value : " + item1.isSelected);
             if (item1.isSelected) {
-                //   System.out.println(i);
-                //    System.out.println("Checked value"+list.getSelectedValuesList());
                 System.out.println("Checked value" + item1.toString());
                 listOfSelectedValues.add(item1.toString());
                 listOfSelectedIndexes.add(String.valueOf(i));

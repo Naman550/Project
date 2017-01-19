@@ -4,26 +4,39 @@
  */
 package dx.timesheet;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JSpinner;
 
 /**
  *
- * @author Me
+ * @This class is used for Extend the deadline of user task
  */
 public class ExtendDeadlineDialog extends javax.swing.JDialog {
 
-    //   JXDatePicker d_picker;
     HardwareDetails hd = new HardwareDetails();
     String comments = "";
+    String timeInHour="",timeInMin="";
     SimpleDateFormat sd = new SimpleDateFormat("dd-MMM-yyyy");
     TaskPanel ts = new TaskPanel();
-    String flag = "";
+    static String flag = "";
     java.awt.Frame frame;
+    
+    /**
+    * this function is used to return the extend dead line time in hours
+    */
+    public String getTimeInHour() {
+        return timeInHour;
+    }
+    /**
+    * this function is used to return the extend dead line time in Minutes
+    */
+    public String getTimeInMin() {
+        return timeInMin;
+    }
     /**
      * Creates new form ExtendDeadlineDialog
      */
@@ -41,20 +54,28 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
         //    jPanel7.add(d_picker);
         //  frame.getContentPane().add(panel);
     }
-
+    /**
+    * this function is used to return the extend dead line date
+    */
     public String getDate() {
         System.out.println(comments);
         return comments;
     }
-
+    /**
+    * this function is used to return the flag extend dead line.
+    */
     public String getFlag() {
         return flag;
     }
-
+    /**
+    * this function is used to set the extend dead line date
+    */
     public void setDate(String s) {
         lblDeadline.setText(s);
     }
-
+    /**
+    * this function is used to set the extend dead line current date
+    */
     public void setCurrentDate() {
         d_picker.setDate(Calendar.getInstance().getTime());
     }
@@ -76,6 +97,10 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
         lblDeadline = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         d_picker = new org.jdesktop.swingx.JXDatePicker();
+        jLabel3 = new javax.swing.JLabel();
+        spinnerHour = new javax.swing.JSpinner();
+        jLabel4 = new javax.swing.JLabel();
+        spinnerMin = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -127,6 +152,17 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
                 d_pickerActionPerformed(evt);
             }
         });
+        d_picker.getEditor().setEditable(false);
+
+        jLabel3.setText("HH:");
+
+        spinnerHour.setModel(new javax.swing.SpinnerNumberModel(0,0, 23, 1));
+        spinnerHour.setEditor(new JSpinner.DefaultEditor(spinnerHour));
+
+        jLabel4.setText("MM:");
+
+        spinnerMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
+        spinnerMin.setEditor(new JSpinner.DefaultEditor(spinnerMin));
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -135,18 +171,27 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
             .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(lblInput3)
                         .addGap(3, 3, 3)
                         .addComponent(lblDeadline))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(btnOk3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnExit3))
                     .addComponent(jLabel2)
-                    .addComponent(d_picker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                    .addComponent(d_picker, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                            .addComponent(btnOk3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnExit3))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(spinnerHour, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(spinnerMin, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,20 +207,26 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
                 .addComponent(d_picker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnExit3)
-                    .addComponent(btnOk3))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(jLabel3)
+                    .addComponent(spinnerHour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(spinnerMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnOk3)
+                    .addComponent(btnExit3))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+            .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -191,22 +242,31 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
         long deaddate = 0, newdate = 0;
         Calendar now = Calendar.getInstance();
         Date time=now.getTime();
+        timeInHour=spinnerHour.getValue().toString();
+        timeInMin=spinnerMin.getValue().toString();
+        System.out.println(timeInHour+"-"+timeInMin);
         try {
             deaddate = hd.convertDateToMillis(lblDeadline.getText().toString());
             newdate = hd.convertDateToMillis(sd.format(d_picker.getDate()));
-        
-        System.out.println("deaddate:::" + deaddate);
-        System.out.println("newdate:::" + newdate);
-        if (newdate > deaddate) {
-            comments = sd.format(d_picker.getDate());
-            setVisible(false);
-            flag = "correct";
-        } else {
-            flag = "wrong";
-            System.out.println(".........New date is wrong...........");
-            setVisible(false);
-        }} catch (Exception ex) {
-            showInfoDialog("Incorrect date");
+
+            System.out.println("deaddate:::" + deaddate);
+            System.out.println("newdate:::" + newdate);
+            //if (newdate > deaddate) {
+            if(timeInHour.equals("0") && timeInMin.equals("0") ){
+
+                flag = "wrong";
+                System.out.println(".........New date is wrong...........");
+                setVisible(false);
+            } else {
+                    flag = "correct";
+                    System.out.println("FLAG--->>>"+flag);
+                    comments = sd.format(d_picker.getDate());
+                    System.out.println("comment-->>"+comments);
+                    setVisible(false);
+                    
+            }
+        } catch (Exception ex) {
+            showInfoDialog("Incorrect date or time");
             Logger.getLogger(ExtendDeadlineDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -276,9 +336,13 @@ public void setDialog(java.awt.Frame parent ){
     public static javax.swing.JButton btnOk3;
     public org.jdesktop.swingx.JXDatePicker d_picker;
     public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel3;
+    public javax.swing.JLabel jLabel4;
     public static javax.swing.JPanel jPanel7;
     public javax.swing.JPanel jPanel8;
     public javax.swing.JLabel lblDeadline;
     public javax.swing.JLabel lblInput3;
+    public javax.swing.JSpinner spinnerHour;
+    public javax.swing.JSpinner spinnerMin;
     // End of variables declaration//GEN-END:variables
 }

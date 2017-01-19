@@ -20,7 +20,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Me
+ * This class is used for Detail of task like Task description, task DeadLine, Task status
  */
 public class TaskDetailDialog extends javax.swing.JDialog {
 
@@ -36,22 +36,21 @@ public class TaskDetailDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         addMouseListener(ml);
-      //  scrolller = new JScrollPane(lblDetailedTask, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         lblCross.addMouseListener(ml);
         scrolller.setBorder(BorderFactory.createEmptyBorder());
         scrolller.getViewport().setBackground(Color.white);
         scrolller.getVerticalScrollBar().setPreferredSize(new Dimension(9, 0));
         scrolller.addMouseListener(ml);
     }
-    
+    /**
+     *This function is used to set the tasks Detail in TimeSHeet like Task description, task DeadLine, Task status
+     */
     public void setDetailedTask(String text, String date, String status, String currentDate, String lTime){
          String[] s1=text.split(":");
          
          for(String s: s1) {
          System.out.println(s);
-   //      lblDetailedTask.setText("<html><p width=\"168px\">" + lblDetailedTask.getText()+ s + "</p></html>");
             }
-    //    lblDetailedTask.setText("<html><b>Task Description:</b></br><p width=\"168px\">" + text + "</p></html>");
         if(status.equals("Working") || status.equals("Progress") || status.equals("Testing-Working")){
          lblDetailedTask.setText("<html><p width=\"168px\"><b>Description - </b>" + text + ""
                  + "</p></p></br><b>DeadLine</b> - "+date+"<p></br><b> Status </b>- <font color=green>"+status+"</font>"
@@ -66,14 +65,14 @@ public class TaskDetailDialog extends javax.swing.JDialog {
         else{
          lblDetailedTask.setText("<html><p width=\"168px\"><b>Description - </b>" + text + "</p></br><b>DeadLine</b> - "+date+"</br><p> <b>Status</b> -<font color=red> "+status+"</font></p></html>");
         }
-//    JScrollPane scroller = new JScrollPane(lblDetailedTask, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    //    add(scroller);
     }
     public void clearDetailedTask(){
         lblDetailedTask.setText("");
     }
     
-
+    /**
+     *This function is used for animation of Task Detailed Dialog box
+     */
      public Timer timer = new Timer(1, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -87,14 +86,15 @@ public class TaskDetailDialog extends javax.swing.JDialog {
             repaint();
         }
     });
-     
+     /**
+     *This function is used for animation of Task Detailed Dialog box
+     */
      public Timer timer2 = new Timer(1, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             width1 -= 4;
             if (width1 >= getWidth()+30) {
                 timer.stop();
-                //             new Thread(getIdleTimeThread).start();
             }
             setLocation(screenRect.width - width1,
                     screenRect.height - getWidth()-60);
@@ -102,7 +102,9 @@ public class TaskDetailDialog extends javax.swing.JDialog {
         }
     });
      
-     
+     /**
+     *This function is used for start the animation of Task Detailed Dialog box
+     */
      public void startTimer(){
                 
                 timer.setInitialDelay(0);
@@ -111,6 +113,10 @@ public class TaskDetailDialog extends javax.swing.JDialog {
                 setVisible(true);
                 
      }
+     
+     /**
+     *This mouse listener is used for dispose the Task Detailed Dialog box
+     */
     MouseListener ml=new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {

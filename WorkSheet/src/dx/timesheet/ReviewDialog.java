@@ -18,8 +18,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 
 /**
- *
- * @author Me
+ * The class is used for set Review List in Review Dialog. 
  */
 public class ReviewDialog extends javax.swing.JDialog {
     java.awt.Frame f;
@@ -37,27 +36,28 @@ public class ReviewDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         listUserReview.setSelectedIndex(0);
-     //   listUserReview.getScrollableTracksViewportWidth();
     }
 
     public ReviewDialog() {
-        
-        
-    }
-    public void initializeList(){
-     
     }
     
+    
+    public void initializeList(){
+    }
+    
+    /**
+     * This function is used for set Review user List. 
+     */
     public void setListModel(ListModel lm){
-
         listUserReview.setModel(lm);
     }
     
+    /**
+     * This function is used for get Selected user in Review List. 
+     */
     public String getSelectedUser(){
         return selected_user;
     }
-    
-  
     
     public void printHashmap(){
         System.out.println("Printing");
@@ -191,16 +191,26 @@ public class ReviewDialog extends javax.swing.JDialog {
         return f;
        
    }
+    /**
+    * This function is used for show Loader after Selected user in Review List. 
+    */
     public void showLoaderDialog2() {
         infD.setLocationRelativeTo(TaskPanel.panelforScrollPane);
         infD.setVisible(true);
     }
+    
+    /**
+    * This function is used for hide Loader after Selected user in Review List. 
+    */
     public void hideLoaderDialog(){
         if(infD.isVisible()){
             infD.setVisible(false);
         }
     }
    
+    /**
+    * This Swing Worker class is used send review to server. 
+    */
     class BackgroundWorker extends SwingWorker<Integer, Integer> {
         @Override
         protected Integer doInBackground() throws Exception {

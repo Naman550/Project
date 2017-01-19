@@ -5,12 +5,10 @@
 package dx.timesheet;
 
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  *
- * @author Me
+ * @this class show the Panel of Play, Pause, stop, Todo, Done the task in timeSheet
  */
 public class PanelPlayPause extends javax.swing.JPanel {
 

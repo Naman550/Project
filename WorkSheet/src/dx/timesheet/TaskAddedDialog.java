@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 
 /**
  *
- * @author Me
+ * This class is used for , to open the task dialog like new task added
  */
 public class TaskAddedDialog extends javax.swing.JDialog {
 
@@ -21,11 +21,17 @@ public class TaskAddedDialog extends javax.swing.JDialog {
         initComponents();
         
     }
-
     
+    /**
+     * This function is used for , to set the message in task dialog
+     */
     public void setMsg(String msg){
         lblInfo.setText(msg);
     }
+    
+    /**
+     * we can added mouse listener (ml) in task dialog class to dispose the task dialog box.
+     */
     MouseListener ml=new MouseListener() {
 
         @Override
@@ -73,6 +79,7 @@ public class TaskAddedDialog extends javax.swing.JDialog {
 
         lblInfo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblInfo.setText("New Task");
+        lblInfo.setAutoscrolls(true);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/task_update.png"))); // NOI18N
 
@@ -84,8 +91,8 @@ public class TaskAddedDialog extends javax.swing.JDialog {
                 .addGap(16, 16, 16)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addComponent(lblInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addContainerGap())
         );
         panelTaskAddedLayout.setVerticalGroup(
             panelTaskAddedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -7,8 +7,6 @@ package dx.timesheet;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +18,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Me
+ * @This class is used to display the Login Panel in TimeSheet 
  */
 public class LoginPanel extends javax.swing.JPanel {
 private Image img;
@@ -30,65 +28,69 @@ private BufferedImage image;
      */
     public LoginPanel() {
         
-        
-     //   this(new ImageIcon(img).getImage());
-        
-   //     panelNew=new ImagePanel(new ImageIcon("/dx/timesheet/bg.jpg").getImage());
+    
         initComponents();
+        lblDx.setText("hello");
         try {
             image = ImageIO.read(new File("/images/bg.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
- public LoginPanel(Image img) {
-   //     panelNew=new ImagePanel(new ImageIcon("top_img.p").getImage());
+    /**
+    *  Set Login-Panel Frame and set the dimension
+    */
+     public LoginPanel(Image img) {
         initComponents();
         this.img = img;
-    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
-    setPreferredSize(size);
-    setMinimumSize(size);
-    setMaximumSize(size);
-    setSize(size);
+        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource(Config.LOGOPATH))); // NOI18N
+
+        Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+        setPreferredSize(size);
+        setMinimumSize(size);
+        setMaximumSize(size);
+        setSize(size);
     }
      
- @Override
-    public void paintComponent(Graphics g) {
-     super.paintComponent(g);
-    g.drawImage(img, 0, 0, null);
-  }
-   
- public void setStatus(String txt){
-       lblStatus1.setText(txt);
-   } 
+     @Override
+        public void paintComponent(Graphics g) {
+         super.paintComponent(g);
+        g.drawImage(img, 0, 0, null);
+      }
+       /**
+        *  this function is used to set the sign-in status
+        */
+     public void setStatus(String txt){
+           lblStatus1.setText(txt);
+       } 
 
- 
- class ImagePanel extends JPanel {
+    /**
+    *  this function is used to set the Image
+    */
+     class ImagePanel extends JPanel {
 
-  private Image img;
+      private Image img;
 
-  public ImagePanel(String img) {
-    this(new ImageIcon(img).getImage());
-  }
+      public ImagePanel(String img) {
+        this(new ImageIcon(img).getImage());
+      }
 
-  public ImagePanel(Image img) {
-    this.img = img;
-    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
-    setPreferredSize(size);
-    setMinimumSize(size);
-    setMaximumSize(size);
-    setSize(size);
-   // setLayout(null);
-  }
+      public ImagePanel(Image img) {
+        this.img = img;
+        Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+        setPreferredSize(size);
+        setMinimumSize(size);
+        setMaximumSize(size);
+        setSize(size);
+       // setLayout(null);
+      }
 
-  
-  
-  public void paintComponent(Graphics g) {
-      super.paintComponent(g);
-    g.drawImage(img, 0, 0, null);
-  }
+      public void paintComponent(Graphics g) {
+          super.paintComponent(g);
+        g.drawImage(img, 0, 0, null);
+      }
 
-}
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -165,10 +167,7 @@ private BufferedImage image;
                 .addGap(12, 12, 12))
         );
 
-        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/logo.png"))); // NOI18N
-
         lblDx.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        lblDx.setText("www.designersx.com");
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/status_offline.png"))); // NOI18N
 
@@ -274,7 +273,7 @@ private BufferedImage image;
                                 .addComponent(jLabel5)
                                 .addGap(0, 0, 0)
                                 .addComponent(lblStatus1)))
-                        .addGap(0, 90, Short.MAX_VALUE))
+                        .addGap(0, 125, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(2, 2, 2)
                         .addComponent(panelLoginContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -327,7 +326,7 @@ private BufferedImage image;
     public javax.swing.JLabel lblClose;
     public static javax.swing.JLabel lblDx;
     public javax.swing.JLabel lblForgotPwd;
-    public javax.swing.JLabel lblLogo;
+    public static javax.swing.JLabel lblLogo;
     public javax.swing.JLabel lblMinimize;
     public javax.swing.JLabel lblStatus1;
     public javax.swing.JPanel panelLoginContainer;

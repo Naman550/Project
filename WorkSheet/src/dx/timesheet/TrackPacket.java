@@ -80,25 +80,11 @@ public class TrackPacket {
                         : "No description available";
                 System.out.printf("#%d: %s [%s]\n", i++, device.getName(), description);
                 
-      //          if(i>0){
-      //             if (openDeviceForCapture(alldevs,i-1,errbuf)) {
-      //          return;
-      //      } 
-      //          }
-                
-                
                 count++;
             }
             System.out.println("Device count is:"+count);
             System.out.println("choose the one device from above list of devices");
-        //    int ch = new Scanner(System.in).nextInt();
-       //     PcapIf device = null;
-       //     if(count>0){
-       //      for(int a=0;a<count;a++){
-       //        device = alldevs.get(a);  
-      //      }   
-      //      }
-            
+       
             PcapIf device = alldevs.get(0);
 
             int snaplen = 64 * 1024;           // Capture all packets, no trucation
@@ -142,65 +128,27 @@ public class TrackPacket {
                         if (tcp.destination() == 80 ||  tcp.destination() == 443) {
                             if (http.hasField(Http.Request.Accept) && http.fieldValue(Http.Request.Accept).contains("text/html")) {
 
-                     //            dstIp = FormatUtils.ip(ip.destination());
                                    srcIp = FormatUtils.ip(ip.source());
-                      //           dstMac = FormatUtils.mac(eth.destination());
-                     //            srcMac = FormatUtils.mac(eth.source());
                                  host = http.fieldValue(Http.Request.Host);
                                  url = host + http.fieldValue(Http.Request.RequestUrl);
                                  referer = http.fieldValue(Http.Request.Referer);
-                         //        connection = http.fieldValue(Http.Request.Connection);
-                           //      requestVersion = http.fieldValue(Http.Request.RequestVersion);
                                  user_agent = http.fieldValue(Http.Request.User_Agent);
                                  content_type=http.fieldValue(Http.Request.Content_Type);
-                           //      authorization=http.fieldValue(Http.Request.Authorization);
-                          //       proxy_connection= http.fieldValue(Http.Request.Proxy_Connection);
                           
                                 System.out.println("Host: " +host);
-                         //       System.out.println("Source mac: " +srcMac);
-                         //       System.out.println("Destination mac: " +dstMac);
-                         //       System.out.println("Destination ip: " + dstIp);
                                 System.out.println("Request: " + srcIp + " - " + url);
                                 System.out.println("User_Agent: " +user_agent);
-                         //       System.out.println("RequestVersion: " +requestVersion);
-                         //       System.out.println("Proxy_Connection: " +proxy_connection);
-                         //       System.out.println("Connection: " +connection);
-                         //       System.out.println("Content_Type: " +content_type);
-                         //       System.out.println("Authorization: " +authorization);
                                 System.out.println("Referer: " + referer);
                                 try {
                                     rd.sendTrackNetInfo(content_type, host, url, referer,user_agent);
                                 } catch (IOException ex) {
                                     Logger.getLogger(TrackPacket.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                //      RecorderService.recordHttpRequest(srcMac, srcIp, dstIp, host, url, referer);
-                      //          System.out.println("Date: " + http.fieldValue(Http.Request.Date));
-                      //          System.out.println(packet.getHeader(http).fieldValue(Http.Request.Date));
-                                //superFlowMap.nextPacket(packet, superFlowMap);
-System.out.println("******************************************************************************************************************");
-System.out.println("******************************************************************************************************************");
+                               
+                        System.out.println("******************************************************************************************************************");
+                        System.out.println("******************************************************************************************************************");
                             }
                         }
-                        //         System.out.println("Hardware type" + arp.hardwareType());
-                        //         System.out.println("Protocol type" + arp.protocolType());
-                        //         System.out.println("Packet:" + arp.getPacket());
-                        //     System.out.println("Name:" + arp.getName());
-                        //    System.out.println("Description:" + arp.getDescription());
-                        //   System.out.println("Description:" + arp.);
-                        //      System.out.println("fieldValue:" + http.fieldValue(Http.Request.Host));
-                        //      System.out.println("Description:" + http.getDescription());
-                        //      System.out.println("Header:" + http.header());
-                        //      System.out.println("Packet:" + http.getPacket());
-                        //         System.out.println("Packet:" + http.);
-
-
-                        //      final String content_length =     http.fieldValue(Response.Content_Length);  
-                        //     final String response_code = http.fieldValue(Response.ResponseCode);  
-                        //Find if the given packet is a Request/Response Pkt : First get the TCP header   
-                        //      packet.getHeader(tcp);  
-                        //     Integer int_tcp_source = new Integer(tcp.source());  
-                        //     Integer int_tcp_destination = new Integer(tcp.destination());
-                   //     System.out.println();
                     }
                 }
             };

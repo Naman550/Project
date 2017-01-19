@@ -10,7 +10,7 @@ import java.awt.event.KeyListener;
 
 /**
  *
- * @author Me
+ * @this class is used for Information Message to the user or Popup Message to user in Timesheet
  */
 public class InfoDialog extends javax.swing.JDialog {
 Component c;
@@ -27,9 +27,15 @@ Component c;
     public InfoDialog(Component c, boolean modal) {
         
     }
+    /**
+    * this function is used to create setInfo Message 
+    */
     public void setInfo(String info){
         lblInfo.setText(info);
     }
+    /**
+    * set the KeyListener and on press Enter, InfoDialog box is dispose   
+    */
     KeyListener kl=new KeyListener() {
 
         @Override

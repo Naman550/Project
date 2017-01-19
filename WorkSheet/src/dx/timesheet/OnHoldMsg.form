@@ -103,7 +103,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="11" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Reason for Start the Task"/>
+            <Property name="text" type="java.lang.String" value="Reason for Start the Task////"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel8">

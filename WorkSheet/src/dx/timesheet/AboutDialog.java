@@ -17,8 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Me
+ * This class is used to open the About Dialog Message
  */
 public class AboutDialog extends javax.swing.JDialog {
 
@@ -28,8 +27,10 @@ public class AboutDialog extends javax.swing.JDialog {
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        lblLink.setText("<HTML><U>http://www.designersx.com<U><HTML>");
-        lblCopyright.setText("<HTML>Copyright &copy 2016 DesignersX<HTML>");
+        iconInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource(Config.LOGOPATH))); 
+        lblLink.setText("<HTML><U>"+Config.COMPANYURL+"<U><HTML>");
+        lblCopyright.setText("<HTML>Copyright &copy "+Config.COPYRIGHT+" "+Config.COMPANYNAME+"<HTML>");
+        jLabel1.setText("<HTML>"+Config.VERSION+"<HTML>");
         lblClose.addMouseListener(ml);
         lblLink.addMouseListener(ml);
         panelAbout.addMouseListener(ml);
@@ -56,7 +57,9 @@ public class AboutDialog extends javax.swing.JDialog {
     }
     
     
-    
+    /**
+    * This Listener is used to click on the About Dialog frame
+    */
     MouseListener ml=new MouseListener() {
 
         @Override
@@ -67,7 +70,7 @@ public class AboutDialog extends javax.swing.JDialog {
             }
             if (e.getSource() == lblLink) {
                 try {
-                    openWebpage(new URL("http://www.designersx.com"));
+                    openWebpage(new URL("http://"+Config.COMPANYURL));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -137,8 +140,6 @@ public class AboutDialog extends javax.swing.JDialog {
         lblInfo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblInfo.setText("Timesheet");
 
-        iconInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/logo.png"))); // NOI18N
-
         jLabel1.setText("1.1.0");
 
         lblCopyright.setText("Copyright \\u00A9 2016 DesignersX");
@@ -167,7 +168,7 @@ public class AboutDialog extends javax.swing.JDialog {
                             .addGroup(panelAboutLayout.createSequentialGroup()
                                 .addGap(31, 31, 31)
                                 .addComponent(jLabel1)))
-                        .addGap(0, 35, Short.MAX_VALUE)))
+                        .addGap(0, 183, Short.MAX_VALUE)))
                 .addGap(7, 7, 7))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAboutLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -196,7 +197,7 @@ public class AboutDialog extends javax.swing.JDialog {
                 .addComponent(lblCopyright)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblLink)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

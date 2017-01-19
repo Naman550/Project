@@ -13,8 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 /**
- *
- * @author Me
+ * this class is used for waiting the user, when his/her Hardware is not added in server
  */
 public class WaitingPanel extends javax.swing.JPanel {
     private Image img;
@@ -24,29 +23,30 @@ public class WaitingPanel extends javax.swing.JPanel {
     public WaitingPanel(Image img) {
         
         initComponents();
-             this.img = img;
-    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
-    setPreferredSize(size);
-    setMinimumSize(size);
-    setMaximumSize(size);
-    setSize(size);
- //       txtStartTime.setText(getCurrentTime());
- //       txtDate.setText(getCurrentDate());
-//        txtEndTime.setText(getCurrentTime());
-        
+         this.img = img;
+        Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+        setPreferredSize(size);
+        setMinimumSize(size);
+        setMaximumSize(size);
+        setSize(size);
     }
        @Override
     public void paintComponent(Graphics g) {
      super.paintComponent(g);
     g.drawImage(img, 0, 0, null);
   }
+     /**
+     * This function is used to return the current time. 
+     */
    public static String getCurrentTime() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
         return strDate;
     }
-
+   /**
+     * This function is used to return the current date. 
+     */
     public static String getCurrentDate() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd");//dd/MM/yyyy
         Date now = new Date();
@@ -60,7 +60,10 @@ public class WaitingPanel extends javax.swing.JPanel {
   public ImagePanel(String img) {
     this(new ImageIcon(img).getImage());
   }
-
+  
+  /**
+     * This function is used to set the size of Image. 
+     */
   public ImagePanel(Image img) {
     this.img = img;
     Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));

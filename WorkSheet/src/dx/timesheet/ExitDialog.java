@@ -6,7 +6,7 @@ package dx.timesheet;
 
 /**
  *
- * @author Me
+ * @the class conform from user to close the task
  */
 public class ExitDialog extends javax.swing.JDialog {
     String comments;

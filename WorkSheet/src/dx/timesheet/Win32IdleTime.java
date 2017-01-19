@@ -5,8 +5,7 @@
 package dx.timesheet;
 
 /**
- *
- * @author Me
+ *This class is used JNA library in which we get IdleTime of user at system
  */
 import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 import java.text.DateFormat;
@@ -18,19 +17,19 @@ import com.sun.jna.*;
 import com.sun.jna.win32.*;
 import java.awt.AWTException;
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Utility method to retrieve the idle time on Windows and sample code to test
@@ -42,8 +41,7 @@ public class Win32IdleTime implements MouseListener{
 
     HardwareDetails hd = new HardwareDetails();
     String window_state = "";
-    double activeTime=0,sleepTime=0;
-    // PopUpLogin p=new PopUpLogin();
+    static double activeTime=0,sleepTime=0;
      
     ReadXml rdxml = new ReadXml();
     DatabaseHandler dbHandler = new DatabaseHandler();
@@ -51,30 +49,44 @@ public class Win32IdleTime implements MouseListener{
     
     boolean task_paused = false;
     ScheduledExecutorService tracker = Executors.newSingleThreadScheduledExecutor();
-    // tracker = Executors.newSingleThreadScheduledExecutor();
     boolean threadInterrupet=false;
     static boolean auto_pause=false;
-    
+    /**
+     *This function is used to set the state of window
+     */
     public void setState(String state) {
         window_state = state;
     }
-
+    /**
+     *This function is used to get the state of window
+     */
     public String getState() {
         return window_state;
     }
-
+    /**
+     *This function is used to set the Pause status
+     */
     public void setPauseStatus(boolean paused) {
         task_paused = paused;
     }
-
+    /**
+     *This function is used to get the Pause status
+     */
     public boolean getPauseStatus() {
         return task_paused;
     }
-
+     /**
+     *This function is used to set the Working task
+     */
     public void setWorkingStatus(boolean working) {
         task_working = working;
     }
-
+    
+    
+    
+    /**
+     *This function is used to auto pause the working thread
+     */
     public void doIfUserIdle() {
         try {        
             dbHandler.connect();
@@ -110,18 +122,19 @@ public class Win32IdleTime implements MouseListener{
         }
         
     }
-
+    
+    /**
+     *This function is used to sleep the thread
+     */
     public void sleepThread(final long millis) {
-        
-           
-                        try{
-                    Thread.sleep(millis);
-                }
-                catch (InterruptedException ex) {
-                       threadInterrupet=true;
-                       Thread.currentThread().interrupt();
-                       Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        try{
+            Thread.sleep(millis);
+        }
+        catch (InterruptedException ex) {
+               threadInterrupet=true;
+               Thread.currentThread().interrupt();
+               Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+        }
             
     }  
 
@@ -165,8 +178,9 @@ public class Win32IdleTime implements MouseListener{
          */
         public int GetTickCount();
     };
-    public interface User32 extends StdCallLibrary {
-        User32 INSTANCE = (User32) Native.loadLibrary("user32", User32.class);
+    public interface User3 extends StdCallLibrary {
+        User3 INSTANCE = (User3) Native.loadLibrary("user32", User3.class);
+        
         /**
          * Contains the time of the last input.
          *
@@ -200,11 +214,8 @@ public class Win32IdleTime implements MouseListener{
      * @return idle time in milliseconds
      */
     public static int getIdleTimeMillisWin32() {
-        User32.LASTINPUTINFO lastInputInfo = new User32.LASTINPUTINFO();
-        User32.INSTANCE.GetLastInputInfo(lastInputInfo);
-//        System.out.println("\n\nKernel32.INSTANCE.GetTickCount()"+Kernel32.INSTANCE.GetTickCount());
-//        System.out.println("\n\nlastInputInfo.dwTime"+lastInputInfo.dwTime);
-//        
+        User3.LASTINPUTINFO lastInputInfo = new User3.LASTINPUTINFO();
+        User3.INSTANCE.GetLastInputInfo(lastInputInfo);
         return Kernel32.INSTANCE.GetTickCount() - lastInputInfo.dwTime;
     }
     enum State2 {
@@ -214,6 +225,9 @@ public class Win32IdleTime implements MouseListener{
         UNKNOWN, ONLINE, IDLE, AWAY
     };
     
+    /**
+     *This function is used to count the active Time of user
+     */
     public void trackTime(){
     
         Thread t=new Thread(new Runnable() {
@@ -238,13 +252,14 @@ public class Win32IdleTime implements MouseListener{
         t.start();
     
     }
-    
+    /**
+     *This function is used to count and track Time and send screenShot of user at server.
+     */
     public void trackTime(String usr){
         addMouseListener(this);
         threadInterrupet=false;
         trackTime();
         State2 state1 = State2.UNKNOWN1;
-  //      DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         long endTime = System.currentTimeMillis()+10000;
         System.out.println("NamanEndTime - "+endTime);
                long startTime=System.currentTimeMillis();
@@ -267,7 +282,6 @@ public class Win32IdleTime implements MouseListener{
                     System.out.println("Break on enter j");
                     break;
                 }
-                //sleepThread(50000);
                  int idleSec1 = getIdleTimeMillisWin32() / 1000;
                  System.out.println("NamanIdleSec1  -  "+idleSec1);
             State2 newState =
@@ -286,12 +300,8 @@ public class Win32IdleTime implements MouseListener{
                 }else{
                     one=1.0;
                 }
-           //     if(j==10){
-            //        break;
-            //    }
                 System.out.println("j is "+j);
                  j++;
-                 
             }
             if(threadInterrupet || !PopUpLogin.working_task){
                 System.out.println("Break on exit j");
@@ -303,9 +313,6 @@ public class Win32IdleTime implements MouseListener{
             System.out.println("NAfter total_ones till now is>> "+total_ones);
             System.out.println("one till now is>> "+one);
             if(i==10){
-                 
-                
-          //      total_ones_in_minute=total_ones_in_minute+total_zeros;
                 total_ones_in_minute=total_ones_in_minute+total_ones;
                 System.out.println("total_ones is>> "+total_ones);
                 System.out.println("total_ones_in_minute is>> "+total_ones_in_minute);
@@ -316,24 +323,37 @@ public class Win32IdleTime implements MouseListener{
                 total_zeros=0.0;
                 total_ones=0.0;
                 one_or_zero="";
-                System.out.println("\n\n\n......Thread Going To Sleep.......\n\n\n");
-                 sleepThread(50000);
+                Random r = new Random();
+                int firstDelay  = r.nextInt(5);
+                int secondDelay = r.nextInt(5);
+
+
+                int finalDelay=5+secondDelay+firstDelay;
+            
+                System.out.println(""+finalDelay);
+                System.out.println("\n\n\n......Thread Going To Sleep..."+finalDelay+"....\n\n\n");
+                 
                 if(!threadInterrupet || PopUpLogin.working_task){
                    try {
+                       //hd.screenShotDetail(finalDelay);
+                       Thread.sleep(finalDelay*60*1000);
                         System.out.println("\n\n\n\n********percenteagepercenteage*********"+activeTime+"**\n\n\n\n");
-                        Double percenteage=((activeTime/63))*100;
+                        Double percenteage=((activeTime/(63*finalDelay)))*100;
+                        if(percenteage>99){
+                            percenteage=99.0-secondDelay;
+                        }
                         System.out.println("\n\n\n\n********percenteagepercenteage*********"+percenteage+"**\n\n\n\n");
                         hd.getScreenShot(usr,String.valueOf(percenteage.intValue()));
                         System.out.println("total_Naman is>> "+activeTime);
                         System.out.println("total_arora is>> "+sleepTime);
                         sleepTime=0;
                         activeTime=0;
-                } catch (AWTException ex) {
-                    Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (AWTException ex) {
+                        Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+                    }   catch (InterruptedException ex) {
+                        Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                  
-                }
-               
             }
             one_or_zero="";one=0.0;
             System.out.println("i is "+i);
@@ -341,7 +361,10 @@ public class Win32IdleTime implements MouseListener{
         }
         System.out.print("Exit from while");
     }
-    // TEST
+    /**
+     *This function is used to check OS of system, check the status of the user 
+     * status will be ONLINE, IDLE, AWAY
+     */
     public void getIdleTime() {
         if (!System.getProperty("os.name").contains("Windows")) {
             System.err.println(""
@@ -351,15 +374,12 @@ public class Win32IdleTime implements MouseListener{
         }
         State state = State.UNKNOWN;
         DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
-        //  p=new PopUpLogin();
-
+        
         for (;;) {
             int idleSec = getIdleTimeMillisWin32()/1000;
+            System.out.println("");
             State newState =
                     idleSec < 5*60 ? State.ONLINE : idleSec > 50*60 ? State.AWAY : State.IDLE;
-//                    System.out.println("\n\n\nidleSec  ---->>"+idleSec);
-//                    System.out.println("\n\n\nNew State  ---->>"+newState);
-                    
             if (newState != state) {
                 state = newState;
                 setState(String.valueOf(state));
@@ -394,27 +414,12 @@ public class Win32IdleTime implements MouseListener{
                     System.out.println(state);
                 }
 
-
-                //
-                // just for fun, if the state is AWAY (screensaver is coming!)
-                // we move the mouse wheel using java.awt.Robot just a little bit to change
-                // the state and prevent the screen saver execution.
-                //
-                //        if (state == State.AWAY) {
-                //          System.out.println("Activate the mouse wheel to change state!");
                 java.awt.Robot robot;
                 try {
                     robot = new java.awt.Robot();
-                    //          robot.mouseWheel(-1);
-                    //     robot.mouseWheel(1);
-                    //        for(int i=0;i<10;i++){
-       //             robot.keyPress(KeyEvent.VK_ENTER);
-        //            robot.keyPress(KeyEvent.VK_T);
-
-                    //        }
-
+                    
                 } catch (AWTException ex) {
-                    //          Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+                              Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
