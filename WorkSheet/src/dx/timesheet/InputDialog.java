@@ -31,7 +31,7 @@ public class InputDialog extends javax.swing.JDialog {
     
     /**
      * Creates new form InputDialog
-     */
+    */
     public InputDialog(java.awt.Frame parent,boolean Model) {
         super(parent,Model);
         
@@ -290,6 +290,7 @@ public class InputDialog extends javax.swing.JDialog {
            
 //            new PopUpLogin().showInfoDialog("Minimum 30 Characters requried");
             Alertx alert = new Alertx(dialo,true);
+            alert.setInfo("Minimum 30 Characters requried");
             alert.msgDialog();
             
 //            alert.setLocation(150, 150);

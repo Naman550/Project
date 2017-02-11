@@ -118,6 +118,7 @@ public class ReadXml {
         }
         printHashmap();
         ReviewDialog.listUserReview.setModel(listmodel);
+        SelectChatUser.chatList.setModel(listmodel);
     }
     
     

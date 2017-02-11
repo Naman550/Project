@@ -32,6 +32,8 @@ public class Config {
     public static  String COMPANYNAME=""; 
     public static  String LOGOPATH=""; 
     public static  String COMPANYURL=""; 
+    
+    
     public static void setDomain(){
     
         
@@ -39,8 +41,11 @@ public class Config {
             /**
             * set the path of XML file
             */
-//            File fXmlFile = new File("E:\\WorkSheet\\src\\dx\\timesheet\\domain.xml");
-            File fXmlFile = new File("domain.xml");
+          
+            
+            
+            File fXmlFile = new File("E:\\WorkSheet\\src\\dx\\timesheet\\domain.xml");
+//            File fXmlFile = new File("domain.xml");
             
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

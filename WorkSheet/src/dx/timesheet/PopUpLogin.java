@@ -89,7 +89,7 @@ public class PopUpLogin {
     String client_code, project_code, task, start_time, date, end_time, status;
     String mac_address;
     String forgotton_user;
-            
+    static String chatUserName,chatUserPassword,chatUserId;        
     static int k=0;
     Random random = new Random();
     String server_response;
@@ -105,6 +105,7 @@ public class PopUpLogin {
     int totalNoOfTodoTask=0;
     int testingTask=0;
     int totalNoOfTestingTask=0;
+    SelectChatUser selectChatUser;
     int taskLength=0;
     int totalTasks=0;
     int totalLength=0;
@@ -157,6 +158,7 @@ public class PopUpLogin {
     public TaskPanel taskPanel = new TaskPanel(new ImageIcon(this.getClass().getResource("/images/center_img.png")).getImage());
     static DatabaseHandler dbHandler = new DatabaseHandler();
     TaskAddedDialog taskDialog = new TaskAddedDialog(null, true);
+    
     TrackPacket trc = new TrackPacket();
     TaskDetailDialog td; 
     HardwareDetails hd = new HardwareDetails();
@@ -167,6 +169,7 @@ public class PopUpLogin {
     Thread tracker_thread;
     Thread track_net_thread;
     ReviewDialog reviewDlg;
+    
     boolean kOnHold=false;
     ReadXml readxml = new ReadXml();
     boolean nPause=false;
@@ -218,6 +221,8 @@ public class PopUpLogin {
     
     
     JSeparator seperator = new JSeparator(JSeparator.HORIZONTAL);
+    
+    
     private JFrame dialog = new JFrame() {
       
         private static final long serialVersionUID = 1L;
@@ -300,6 +305,8 @@ public class PopUpLogin {
 
         }
     });
+    
+    
 
     /**
      * This function will get the visibility of the frame 
@@ -353,6 +360,12 @@ public class PopUpLogin {
         main_username = "";
         main_password = "";
         ReadXml.isPresent = false;
+        try{
+            ChattingWindow.connection.disconnect();
+        }catch(Exception e){
+            System.out.println("connection can not be created");
+        }
+        
         trayIcons.updateTrayIcon("/images/tray_disabled.png");
         panel.lblStatus1.setText("Sign in");
     }
@@ -536,6 +549,10 @@ public class PopUpLogin {
             stask = new TaskWithSubtaskDialog(dialog, true);
             reviewDlg = new ReviewDialog(dialog, true);
             reviewDlg.setDialog(dialog);
+            
+            selectChatUser = new SelectChatUser(dialog, true);
+            //selectChatUser.setDialog(dialog);
+            
             in2 = new InputDialog(dialog, true);
             pauseDialog = new PauseOptionDialog(dialog, true);
             cd = new ConfirmDialog(dialog, true);
@@ -605,7 +622,16 @@ public class PopUpLogin {
                     showMainDialog();
                     showInfoDialog("Please click dialog below!");
                 } else {
-                    signOutBlock("");
+                     signOut.setLocationRelativeTo(dialog);
+                    signOut.setVisible(true);
+
+                    boolean sign = signOut.flagResult();
+                    System.out.println("sssssssss+++"+sign);
+                    if(sign==true){
+                        signOutBlock("");
+    //                
+                    }
+                    else{}
                 }
             }
             if (e.getSource() == TrayIconUtility.aboutItem) {
@@ -819,12 +845,14 @@ public class PopUpLogin {
         TaskPanel.lblDx.setText("<HTML><U>"+Config.URL+"<U><HTML>");
         ForgotPwdPanel.lblDx.setText("<HTML><U>"+Config.URL+"<U><HTML>");
         ForgotPwdPanel.lblGoLogin.setText("<HTML><U>Go to login<U><HTML>");
+        TaskPanel.chat.setText("<HTML><U>Chat<U><HTML>");
     }
     //Run Background task here 
     /**
      * this function will add and set MouseListener, KeyListener 
     */
     public void setMouseListeners() {
+        TaskPanel.chat.addMouseListener(showHandCursor);
         TaskPanel.lblSignOut2.addMouseListener(showHandCursor);
         TaskPanel.lblRefreshMain.addMouseListener(showHandCursor);
         panel.lblForgotPwd.addMouseListener(showHandCursor);
@@ -852,7 +880,7 @@ public class PopUpLogin {
     }
     
     /**
-     * This function is used for getting the response from server
+    * This function is used for getting the response from server
     */
         public StringBuilder getStreamResponse(URL url) throws IOException {
         InputStream in;
@@ -1231,15 +1259,36 @@ public class PopUpLogin {
     * This function is used for read the XML of the user and maintain the Task panel List.   
     */              
 
-    public void readPlayPauseTask(String username, String pwd)  {
+    public void readPlayPauseTask(final String username, final String pwd)  {
         readxml.getUserList();
         //read users from xml for review
         if(hold){
-            readOnHoldTask(username,pwd);
+            
+              Thread chattingWindow=new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    ChattingWindow.createXMPPConnection();
+                    
+                    System.out.println(username+"<<<<<<<<>>>>>>>>>"+pwd+""+userId);
+                    chatUserId=userId;
+                    chatUserPassword=pwd; 
+                    String chatName[] = chatUserName.split(" ");
+                    chatUserName= chatName[0];
+                    System.out.println(chatUserName+"<<<<<<<<>>>>>>>>>"+chatUserPassword);
+                    readOnHoldTask(username,pwd);
+                    ChattingWindow.addXMPPAccount(chatUserName, "welcome");
+                }
+            });
+            chattingWindow.start();
+            
+            
             hold=false;
         }else{
             System.out.println("\n\n\n<<<<<<<<<<<<<<<HOLD FALSE>>>>>>>>>>>>>>>>>>>>>\n\n\n\n");
         }
+        
+       
         
         System.out.println("Naman is here");
         TaskPanel.panelforScrollPane.setLayout(new BorderLayout());
@@ -3032,6 +3081,16 @@ public class PopUpLogin {
                 new BackgroundWorker().execute();
                 showLoaderDialog2();
             }
+            
+            if(e.getSource() == TaskPanel.chat){
+                System.out.println("Chat COde HERE");
+                //SelectChatUser selectChatUser = new SelectChatUser(dialo, true);
+                selectChatUser.setLocationRelativeTo(dialog);
+                selectChatUser.chatList.setSelectedIndex(0);
+                selectChatUser.setVisible(true);
+               
+            }
+            
             if (e.getSource() == TaskPanel.lblSignOut2) {
                 
                 signOut.setLocationRelativeTo(dialog);
@@ -3566,6 +3625,7 @@ public class PopUpLogin {
             name = getLoginElements(doc, "name");
             System.out.println("name - "+name);
             TaskPanel.lblUserName.setText(name);
+            chatUserName=name;
         } catch (IOException | DOMException ex) {
             hd.errorDescription("ErrorDescription14", ex);
             showInfoDialog("Connection error! Please try again.");

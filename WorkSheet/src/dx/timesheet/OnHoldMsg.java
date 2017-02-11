@@ -78,7 +78,7 @@ public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
         jPanel7.setPreferredSize(new java.awt.Dimension(230, 135));
 
         lblInput3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        lblInput3.setText("Reason for Start the Task////");
+        lblInput3.setText("Reason for Start the Task");
 
         jPanel8.setBackground(new java.awt.Color(15, 161, 208));
 

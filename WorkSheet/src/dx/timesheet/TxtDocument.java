@@ -23,7 +23,7 @@ public class TxtDocument extends PlainDocument {
     if (str == null) {
           return;
       }
-char c=str.charAt(str.length()-1);
+    char c=str.charAt(str.length()-1);
       str.replaceAll("\\s+", " ");
     if(c==KeyEvent.VK_SPACE && space_count==0){
         super.insertString(offset, str, attr);

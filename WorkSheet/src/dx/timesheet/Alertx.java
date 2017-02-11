@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 public class Alertx extends javax.swing.JDialog {
 static Component c;
 private JFrame dialo;
+String message;
     /**
      * Creates new form InfoDialog
      */
@@ -32,10 +33,10 @@ private JFrame dialo;
     public Alertx(Component c, boolean modal) {
         
     }
-        
+    
     
     public void setInfo(String info){
-        lblInfo.setText(info);
+        message=info;
     }
     /**
     * KeyListener Implementation
@@ -166,6 +167,7 @@ private JFrame dialo;
                 dialog.setLocationRelativeTo(TaskPanel.panelforScrollPane);
                 dialog.setAlwaysOnTop(true);
                 dialog.setFocusableWindowState(true);
+                lblInfo.setText(message);
                 dialog.setVisible(true);
                 
             }

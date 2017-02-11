@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<domain>
+		<domain_setting>
+			<http>http://</http>
+			<domain_url>pms.designersx.us/</domain_url>
+		</domain_setting>
+		<description>
+			<version>1.1.0</version>
+			<url>pms.designersx.us</url>
+			<copyright>2016</copyright>
+			<company>DesignersX</company>
+			<logo_path>/dx/timesheet/logo.png</logo_path>
+			<company_url>www.designersx.com</company_url>
+		</description>
+	</domain>
+
