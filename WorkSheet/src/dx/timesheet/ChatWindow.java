@@ -28,7 +28,7 @@ public class ChatWindow extends javax.swing.JFrame implements MessageListener{
     int count=0;
     String cUserName;
     static XMPPConnection connection;
-    Chat chat;
+    Chat chat,chat1;
     
     
     public static void createXMPPConnection(){
@@ -63,27 +63,25 @@ public class ChatWindow extends javax.swing.JFrame implements MessageListener{
         
     }
     
+   
+    
     public ChatWindow(String name) throws XMPPException {
         initComponents();
-        
         System.out.println("Chat User..."+name);
         cUserName=name;
 
         name = name.toLowerCase();
-        chat = connection.getChatManager().createChat(name+"@112.196.23.228", this);
+        chat1 = connection.getChatManager().createChat(null+"@112.196.23.228", this);
+        //chat = connection.getChatManager().createChat(name+"@112.196.23.228", this);
          
     }
     
     public static XMPPConnection Connect() {
     
      System.out.println(" connecting to server...");
-    ConnectionConfiguration config = new ConnectionConfiguration(
-      "112.196.23.228", 5222);
+    ConnectionConfiguration config = new ConnectionConfiguration("112.196.23.228", 5222);
 
-    /*
-     * ConnectionConfiguration config = new ConnectionConfiguration(
-     * "192.163.2.200", 5222);
-     */
+  
     XMPPConnection connection = new XMPPConnection(config);
     try {
      connection.connect();
@@ -116,7 +114,7 @@ public class ChatWindow extends javax.swing.JFrame implements MessageListener{
         
         
         try {
-            chat.sendMessage(""+message);
+            chat1.sendMessage(""+message);
             jTextArea1.append(PopUpLogin.chatUserName+": "+message+"\n");
             System.out.println(" Send Message succesfully");
             
@@ -277,8 +275,8 @@ public class ChatWindow extends javax.swing.JFrame implements MessageListener{
             public void run() {
                 try {
                     createXMPPConnection();
-                    addXMPPAccount("Richa","welcome");
-                    ChatWindow user=new ChatWindow("Naman");
+                    addXMPPAccount("Naman","welcome");
+                    ChatWindow user=new ChatWindow("Richa");
                     user.setVisible(true);
 //                    user.receive();
                 } catch (XMPPException ex) {

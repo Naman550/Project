@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<domain>
+		<domain_setting>
+			<http>http://</http>
+			<domain_url>gnic.co.in/pms.greatjob.com.in/index.php/auth/userLogin</domain_url>
+			<image_url>gnic.co.in/pms.greatjob.com.in/index.php/users/userScreens</image_url>
+		</domain_setting>
+	
+	</domain>

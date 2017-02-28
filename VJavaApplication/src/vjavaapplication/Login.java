@@ -38,8 +38,8 @@ public class Login extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage("F:\\track.png"));
         setLocation(screenRect.width-(getWidth()+4), screenRect.height-(getHeight()+4));
         forgotPassword.addMouseListener(showHandCursor);
-        
-        
+        Config.setDomain();
+        forgotPassword.setText("<HTML><U>Forgot Password<U><HTML>");
     }
     
     
@@ -63,7 +63,7 @@ public class Login extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
         setAlwaysOnTop(true);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));

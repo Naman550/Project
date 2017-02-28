@@ -33,6 +33,7 @@ public class ForgotPassword extends javax.swing.JFrame {
          setIconImage(Toolkit.getDefaultToolkit().getImage("F:\\track.png"));
          setLocation(screenRect.width-(getWidth()+4), screenRect.height-(getHeight()+4));
          backToLogin.addMouseListener(showHandCursor);
+         backToLogin.setText("<HTML><U>Back To Login<U><HTML>");
     }
     
     public MouseListener showHandCursor = new MouseListener() {

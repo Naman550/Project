@@ -173,15 +173,34 @@ public class SelectChatUser extends javax.swing.JDialog {
             ChatAlert alert = new ChatAlert(dialo,true);
             alert.msgDialog();
         }
+        
         else
         {
-            dispose();
+            boolean checkUser=true;
+            if(!(ChattingWindow.openUser.isEmpty())){
+                int size=ChattingWindow.openUser.size();
+                String nameId;
+                for(int i=0; i<size;i++){
+                    nameId=ChattingWindow.openUser.get(i);
+                    if(chatUserId.equals(nameId)){
+                        ChatAlertUser alert = new ChatAlertUser(dialo,true);
+                        alert.msgDialog();
+                        checkUser=false;
+                    }
+                }
+            }
             
-            ChattingWindow ch =new ChattingWindow();
-            //ch.createXMPPConnection(); 
-            //ch.addXMPPAccount(PopUpLogin.chatUserName,"welcome");
-            ch.chatConnection(chatUserName);
-            ch.setVisible(true);
+            if(checkUser){
+            
+                dispose();
+                ChattingWindow ch =new ChattingWindow();
+                ch.getChat(PopUpLogin.userId, chatUserId,chatUserName);
+                //ch.createXMPPConnection(); 
+                //ch.addXMPPAccount(PopUpLogin.chatUserName,"welcome");
+                ch.chatConnection(chatUserName,chatUserId);
+
+                ch.setVisible(true);
+            }
             
         }    
         

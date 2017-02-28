@@ -136,20 +136,20 @@ import java.util.logging.Logger;
         // Build a new authorized API client service.
         Drive service = getDriveService();
             //image/jpeg, text/plain
-          insertFile(service, "hello", "ScreenShot Tracking","0B2mfptk7yb8rWnVVcHNyRnlIWG8" ,"image/png" ,"C://Services/" + "paytm" + ".png");
+          insertFile(service, "hello", "ScreenShot Tracking","0B2mfptk7yb8rWnVVcHNyRnlIWG8" ,"image/png" ,"C://Services/" + "paytm" + ".png","");
         
     }
     
-     public void main(String fileName, String folderName) throws IOException{
+     public void main(String fileName, String id) throws IOException{
     
         Drive service = getDriveService();
-        insertFile(service, fileName, "ScreenShot Tracking","0B2mfptk7yb8rWnVVcHNyRnlIWG8" ,"image/jpeg" ,"C://Services/" + fileName + ".jpg");
+        insertFile(service, fileName, "ScreenShot Tracking","0B2mfptk7yb8rWnVVcHNyRnlIWG8" ,"image/jpeg" ,"C://Services/" + fileName + ".jpg",id);
         
     }
     
     
     private static File insertFile(Drive service, String title, String description,
-        final String parentId, String mimeType, String filename) {
+        final String parentId, String mimeType, String filename, String id) {
       // File's metadata.
       File body = new File();
       body.setTitle(title);
@@ -175,6 +175,14 @@ import java.util.logging.Logger;
 
         // Uncomment the following line to print the File ID.
         final String fileId = file.getId();
+        
+        Config config =new Config();
+            config.setMap(id, title);
+            try {
+                config.sendImagePost();
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
         
          //URL url =new URL("Tasks/getScreen/"+""+"/"+""+"/"+parentId+"/"+fileId+"/"+percentage);
          

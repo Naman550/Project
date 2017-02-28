@@ -9,8 +9,9 @@ import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.io.IOException;
-import java.util.Random;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException; 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -25,25 +26,63 @@ public class TaskPanel extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    boolean stop=false;
     private static Rectangle screenRect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
    
     public TaskPanel() {
         initComponents();
+        
+        signout.addMouseListener(sign);
         userName.setText(Session.getFirstName()+" "+Session.getLastName());
         setVisible(true);
         setIconImage(Toolkit.getDefaultToolkit().getImage("F:\\track.png"));
         setLocation(screenRect.width-(getWidth()+4), screenRect.height-(getHeight()+4));
         track();
+        signout.setText("<HTML><U>SignOut<U><HTML>");
     }
+    
+    public MouseListener sign = new MouseListener() {
 
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Session.firstName="";
+            Session.lastName="";
+            Session.id=0;
+            stop=true;
+            dispose();
+            new Login();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+    };
     public void track(){
-        Timer timer = new Timer();
+        final Timer timer = new Timer();
         
         TimerTask timerTask = new TimerTask(){
 
             @Override
             public void run() {
                 try {
+                    if(stop){
+                        stop=false;
+                        timer.cancel();
+                        
+                    }
+                    
                     new ScreenShot().getScreenShot();
                 } catch (AWTException ex) {
                     Logger.getLogger(TaskPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -53,7 +92,8 @@ public class TaskPanel extends javax.swing.JFrame {
             }
         
         };
-        timer.schedule(timerTask, 1000,5*60*1000+new Random().nextInt(10));
+        //timer.schedule(timerTask, 5*60*1000+new Random().nextInt(10),5*60*1000+new Random().nextInt(10));
+        timer.schedule(timerTask, 60*1000,60*1000);
     }
     
     /**
@@ -70,6 +110,7 @@ public class TaskPanel extends javax.swing.JFrame {
         userName = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        signout = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Login");
@@ -87,6 +128,10 @@ public class TaskPanel extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vjavaapplication/user.png"))); // NOI18N
 
+        signout.setText("SignOut");
+        signout.setToolTipText("SignOut");
+        signout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -100,13 +145,18 @@ public class TaskPanel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(21, 21, 21))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(signout, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addComponent(signout)
+                        .addGap(14, 14, 14)
                         .addComponent(jLabel1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(46, 46, 46)
@@ -177,6 +227,7 @@ public class TaskPanel extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel signout;
     private javax.swing.JLabel userName;
     // End of variables declaration//GEN-END:variables
 }

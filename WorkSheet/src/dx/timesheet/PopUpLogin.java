@@ -81,7 +81,7 @@ public class PopUpLogin {
     Border raisedBorder;
     boolean test=false; 
     JPanel contentPane;
-    boolean onHoldFlag=false;
+    boolean onHoldFlag=false,oneTime=true;
     String firstTimeUser="false";
     static boolean reAgain=false; 
     private JFrame dialo;
@@ -122,7 +122,7 @@ public class PopUpLogin {
     public static String usr;
     static boolean  reviewAgain=false;
     String url = "http://www.designersx.com";
-   
+    static ArrayList<String> notification = new ArrayList<String>(); 
     private final String ROUTER_IP_DOMAIN = "http://api.externalip.net/ip/";
     private final String ROUTER_IP_DOMAIN2 = " http://checkip.amazonaws.com/";
     private int height = 0;
@@ -130,6 +130,7 @@ public class PopUpLogin {
     static int height3 = 0;
     int count = 0;
     boolean flag=true;
+    int allCount=0;
     int countPanels = 0;
     int countRecords = 0;
     int countInXml = 0;
@@ -436,6 +437,15 @@ public class PopUpLogin {
         public void run() {
             try {
                 
+                if(oneTime){
+                    getAllChatLength(userId);
+                    oneTime=false;
+                }
+                
+                System.out.println("poopopopop");
+                System.out.println(ChattingWindow.connection==null);
+
+                getAllChat(userId);
                 readOnHoldTask(main_username, main_password);
                 length = readxml.readTaskLength(main_username, main_password);
                 if (firstLogin) {
@@ -660,6 +670,10 @@ public class PopUpLogin {
                     showMainDialog();
                     showInfoDialog("Please click dialog below!");
                 } else {
+                    if(ChattingWindow.counting>0){
+                        showMainDialog();
+                        showInfoDialog("Close the chat window!");
+                    }else
                     if (!working_task) {
                         signOutBlock("exit");
                         exitApp();
@@ -1049,7 +1063,7 @@ public class PopUpLogin {
         if (nodelist.getLength() > 0) {
             Element elm = (Element) nodelist.item(0);
             value = elm.getChildNodes().item(0).getNodeValue();
-            //    System.out.println(value);
+                System.out.println(value);
         }
         return value;
     }
@@ -3249,7 +3263,10 @@ public class PopUpLogin {
             if (working_task) {
                 showMainDialog();
                 showInfoDialog("Please stop working task first!");
-            } else {
+            }else if(ChattingWindow.counting>0){
+                showMainDialog();
+                showInfoDialog("Close the chat window!");
+            }else {
                 
                   System.out.println("Enter222");
                   
@@ -3660,4 +3677,118 @@ public class PopUpLogin {
             }
         });
     }
+    
+     public void getAllChat(final String userid)  {
+         
+         Thread getChat = new Thread(new Runnable() {
+
+             @Override
+             public void run() {
+                 try {
+                    double i=random.nextDouble()+random.nextDouble();
+                    k+=1;
+
+                    URL url = new URL(Config.HTTP+Config.DOMAIN + "employee/conversations/allChat/" + userid +"?"+k+"naman"+i);
+                    System.out.println("NamanSetChat : "+url);
+                    StringBuilder responseString = getStreamResponse(url);
+                    System.out.println("NamanSetChatResponseString"+responseString);
+
+                    System.out.println("-->>"+responseString.toString().equals("empty"));
+                    if(responseString.toString().equals("empty")){
+                        //pending code..
+                    }
+                    else{
+                        URLConnection con = url.openConnection();
+                        InputStream in = con.getInputStream();
+
+                        Document doc = parse(in);
+
+                        NodeList listOfCodes = doc.getElementsByTagName("chat");
+                        int totalChat = listOfCodes.getLength();
+
+                        System.out.println("Total NO. of Chat.."+totalChat);
+                        
+                        if(totalChat>allCount){
+                            allCount=totalChat;
+                        }
+                        
+                        for (int temp = 0; temp < totalChat; temp++) {
+                           Node nNode = listOfCodes.item(temp); 
+
+                            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                                Element eElement = (Element) nNode;
+                                String userId = getElements(eElement, "user_id");
+                                String msg = getElements(eElement, "text");
+                                String name = getElements(eElement, "name");
+                                String time = getElements(eElement, "time");
+                                
+                                
+                                boolean checkUser=true;
+                                 
+                                if(!(ChattingWindow.openUser.isEmpty())){
+                                    int size=ChattingWindow.openUser.size();
+                                    String nameId;
+                                    for(int num=0; num<size;num++){
+                                        nameId=ChattingWindow.openUser.get(num);
+                                        if(userId.equals(nameId)){
+                                            checkUser=false;
+                                        }
+                                    }
+                                }
+                                if(checkUser){
+            
+                                    ChattingWindow ch =new ChattingWindow();
+                                    ch.getChat(PopUpLogin.userId, userId,name);
+                                    //ch.createXMPPConnection(); 
+                                    //ch.addXMPPAccount(PopUpLogin.chatUserName,"welcome");
+                                    ch.chatConnection(name,userId);
+
+                                    ch.setVisible(true);
+                                }
+                                
+                                
+                            }
+                        }
+                    }
+
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(ChattingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ChattingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+             
+             }
+         });
+        
+        getChat.start();
+    }
+    
+    public void getAllChatLength(final String userid)  {
+        
+        
+                try {
+                    double i=random.nextDouble()+random.nextDouble();
+                    k+=1;
+                    URL url = new URL(Config.HTTP+Config.DOMAIN + "employee/conversations/allChat/" + userid +"?"+k+"naman"+i);
+                    StringBuilder responseString = getStreamResponse(url);
+                    if(responseString.toString().equals("empty")){
+                      //code here pending    
+                    }
+                    else{
+                        URLConnection con = url.openConnection();
+                        InputStream in = con.getInputStream();
+                        Document doc = parse(in);
+                        NodeList listOfCodes = doc.getElementsByTagName("chat");
+                        allCount = listOfCodes.getLength();
+                        System.out.println("ssTotal NO. of Chat.."+allCount);
+                    }
+
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(ChattingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ChattingWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+       
+    }
+    
 }
