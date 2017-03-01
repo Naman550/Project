@@ -13,7 +13,7 @@ import javax.swing.JSpinner;
 
 /**
  *
- * @This class is used for Extend the deadline of user task
+ * @author Me
  */
 public class ExtendDeadlineDialog extends javax.swing.JDialog {
 
@@ -25,16 +25,11 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
     TaskPanel ts = new TaskPanel();
     static String flag = "";
     java.awt.Frame frame;
-    
-    /**
-    * this function is used to return the extend dead line time in hours
-    */
+
     public String getTimeInHour() {
         return timeInHour;
     }
-    /**
-    * this function is used to return the extend dead line time in Minutes
-    */
+
     public String getTimeInMin() {
         return timeInMin;
     }
@@ -55,28 +50,20 @@ public class ExtendDeadlineDialog extends javax.swing.JDialog {
         //    jPanel7.add(d_picker);
         //  frame.getContentPane().add(panel);
     }
-    /**
-    * this function is used to return the extend dead line date
-    */
+
     public String getDate() {
         System.out.println(comments);
         return comments;
     }
-    /**
-    * this function is used to return the flag extend dead line.
-    */
+
     public String getFlag() {
         return flag;
     }
-    /**
-    * this function is used to set the extend dead line date
-    */
+
     public void setDate(String s) {
         lblDeadline.setText(s);
     }
-    /**
-    * this function is used to set the extend dead line current date
-    */
+
     public void setCurrentDate() {
         d_picker.setDate(Calendar.getInstance().getTime());
     }

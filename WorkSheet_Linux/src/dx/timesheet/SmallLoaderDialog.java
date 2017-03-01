@@ -8,7 +8,7 @@ import java.awt.Color;
 
 /**
  *
- * @This class show Loader
+ * @author Me
  */
 public class SmallLoaderDialog extends javax.swing.JDialog {
 

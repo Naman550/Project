@@ -11,7 +11,7 @@ import javax.swing.text.PlainDocument;
 
 /**
  *
- * This class is used to prevent the Special symbol and Extra space in Text-Area in java dialog..
+ * @author Me
  */
 public class TxtDocument extends PlainDocument {
     int space_count=0;

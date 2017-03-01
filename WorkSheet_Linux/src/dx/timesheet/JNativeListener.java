@@ -93,6 +93,7 @@ import org.jnativehook.mouse.NativeMouseWheelListener;
     }
 
     public void nativeMouseClicked(NativeMouseEvent e) {
+        i=0;
     }
 
     public void nativeMousePressed(NativeMouseEvent e) {

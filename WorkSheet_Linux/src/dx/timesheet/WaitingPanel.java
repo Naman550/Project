@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * this class is used for waiting the user, when his/her Hardware is not added in server
+ * @author Me
  */
 public class WaitingPanel extends javax.swing.JPanel {
     private Image img;
@@ -30,24 +30,23 @@ public class WaitingPanel extends javax.swing.JPanel {
     setMinimumSize(size);
     setMaximumSize(size);
     setSize(size);
+ //       txtStartTime.setText(getCurrentTime());
+ //       txtDate.setText(getCurrentDate());
+//        txtEndTime.setText(getCurrentTime());
+        
     }
        @Override
     public void paintComponent(Graphics g) {
      super.paintComponent(g);
     g.drawImage(img, 0, 0, null);
   }
-    /**
-     * This function is used to return the current time. 
-     */
    public static String getCurrentTime() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
         return strDate;
     }
-   /**
-     * This function is used to return the current date. 
-     */
+
     public static String getCurrentDate() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd");//dd/MM/yyyy
         Date now = new Date();
@@ -57,13 +56,11 @@ public class WaitingPanel extends javax.swing.JPanel {
      class ImagePanel extends JPanel {
 
   private Image img;
-  
+
   public ImagePanel(String img) {
     this(new ImageIcon(img).getImage());
   }
-    /**
-     * This function is used to set the size of Image. 
-     */
+
   public ImagePanel(Image img) {
     this.img = img;
     Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));

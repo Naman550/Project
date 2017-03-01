@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @This class is used is for Read the XML from server and set the user list for Review time.
+ * @author Me
  */
 
 public class ReadXml {
@@ -60,11 +60,8 @@ public class ReadXml {
     static String  task_id;
     String id;
     private static String nTID;
-    /**
-     *This function is used for to set the user list for Review time.
-     * this function is only called when user try to review for first time
-     */
-    public void getUserList() {
+
+     public void getUserList() {
 
         try {
             nTID=null;
@@ -85,7 +82,6 @@ public class ReadXml {
             NodeList listOfUsers = doc.getElementsByTagName("user");
             System.out.println("Total users : " + listOfUsers.getLength());
             users = new String[listOfUsers.getLength()];
-            
             
             
             for (int temp = 0; temp < listOfUsers.getLength(); temp++) {
@@ -109,27 +105,22 @@ public class ReadXml {
                         }
                     });
                     listmodel.addElement(name);
-                    
                 }
             }
             System.out.println("Length s is>>" + s.size());
             String[] u = new String[s.size()];
-           
         } catch (IOException ex) {
             Logger.getLogger(ReadXml.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         printHashmap();
         ReviewDialog.listUserReview.setModel(listmodel);
+        System.out.print("listmodel "+listmodel);
+        SelectChatUser.chatList.setModel(listmodel);
     }
     
     
-   /**
-     *This function is used for to set the user list for Review time.
-     * this function is only called when user try to review for for second or more than second time
-     */ 
     public void getUserList2(String id) {
-            nTaskId=id;
+        nTaskId=id;
             
         try {
             double i=random.nextDouble()+random.nextDouble();
@@ -148,6 +139,7 @@ public class ReadXml {
             NodeList listOfUsers = doc.getElementsByTagName("user");
             System.out.println("Total users : " + listOfUsers.getLength());
             users = new String[listOfUsers.getLength()];
+            
             
             for (int temp = 0; temp < 1; temp++) {
                 Node nNode = listOfUsers.item(temp);
@@ -169,11 +161,13 @@ public class ReadXml {
                             put(id1, name);
                         }
                     });
-                    
+                  
                     listmodel.addElement(name);
-                    
+                   
                 }
             }
+            
+
             System.out.println("Length s is>>" + s.size());
             String[] u = new String[s.size()];
            
@@ -181,15 +175,14 @@ public class ReadXml {
             Logger.getLogger(ReadXml.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+       
         printHashmap();
         ReviewDialog.listUserReview.setModel(listmodel);
     }
 
-     /**
-     *This function is used to send the DeadLine Request to server
-     */
+   
     public String sendDeadlineRequest(String userid, String taskid, String date, String hour, String min) throws IOException {
-         double i=random.nextDouble()+random.nextDouble();
+        double i=random.nextDouble()+random.nextDouble();
         k+=1;
         URL url = new URL(DOMAIN + "tasks/extend/" + userid + "/" + taskid + "/" + date+"/"+hour+"/"+min+"?"+k+"naman"+i);
         System.out.println("\n\n\n\nextend url is>>>>>>>>>>>> " + url);
@@ -197,9 +190,7 @@ public class ReadXml {
         StringBuilder response_builder = getStreamResponse(url);
         return response_builder.toString();
     }
-    /**
-     *This function is used to get user Id from server
-     */
+
     public String getUser() {
         String userid = null;
         try {
@@ -210,9 +201,7 @@ public class ReadXml {
         }
         return userid;
     }
-    /**
-    *This function is used to get input String in base64
-    */
+
     public String getBase64String(String input) {
         byte[] encodedBytes = Base64.encodeBase64(input.getBytes());
         String newString = new String(encodedBytes);
@@ -220,9 +209,7 @@ public class ReadXml {
         System.out.println("encodedBytes " + newString);
         return newString;
     }
-    /**
-    *This function is used to get response from server
-    */
+
     public StringBuilder getStreamResponse(URL url) throws IOException {
         InputStream in = url.openStream();
         DataInputStream dis = new DataInputStream(new BufferedInputStream(in));
@@ -234,10 +221,9 @@ public class ReadXml {
         System.out.println("Naman - responseString - "+responseString);
         return responseString;
     }
-    /**
-    *This function is used to get status code from server
-    */
+
     public int getStatusCode(URL url) {
+        //  URL url = new URL("");
         int code = 0;
         URLConnection connection = null;
         try {
@@ -262,9 +248,7 @@ public class ReadXml {
         
         return code;
     }
-    /**
-    *This function is used to send Track Net Info from server
-    */
+
     public void sendTrackNetInfo(String content_type, String host, String request_url, String referer, String user_agent) throws IOException {
         if (!"application/ocsp-request".equals(content_type) && !user_agent.contains("Java/")) {
             Calendar now = Calendar.getInstance();
@@ -291,17 +275,13 @@ public class ReadXml {
         }
 
     }
-    /**
-    *This function is used to send Track Net Info from server
-    */
+
     public void printHashmap() {
         for (int i = 0; i < mylist.size(); i++) {
             System.out.println("Value in hashmap is>> " + this.mylist.get(i).keySet());
         }
     }
-    /**
-    *This function is used to get List model from server
-    */
+
     public ListModel getListModel() {
         for (int i = 0; i < listmodel.size(); i++) {
             System.out.println("Listmodel elements>>" + listmodel.get(i));
@@ -317,9 +297,7 @@ public class ReadXml {
         System.out.println("Length u in getUsers is>>" + u.length);
         return u;
     }
-    /**
-    *This function is used to read the total length of user XML from server
-    */
+
     public int readTaskLength(String usrname, String pwd) throws MalformedURLException, IOException {
         int totalTasks = 0;
         double i=random.nextDouble()+random.nextDouble();
@@ -346,9 +324,7 @@ public class ReadXml {
         return totalTasks;
 
     }
-    /**
-    *This function is used to parse the XML data of user
-    */
+
     public Document parse(InputStream is) {
         Document ret = null;
         DocumentBuilderFactory domFactory;
@@ -364,9 +340,7 @@ public class ReadXml {
         }
         return ret;
     }
-    /**
-    *This function is used to send the pause request from server
-    */
+
     public String sendPauseRequest(String userid, String taskid, String status) throws MalformedURLException, IOException, SQLException {
         double i=random.nextDouble()+random.nextDouble();
         k+=1;
@@ -377,12 +351,18 @@ public class ReadXml {
         StringBuilder response_builder = getStreamResponse(url);
 
         response = response_builder.toString();
-       
+        //    timesheet_response=responseString.toString();
+        // main_timeid=timesheet_id;
+        //       System.out.println("Before Inserting time id in db");
+        //     main_timeid = timesheet_id;
+        //    dbHandler.insertTimesheetId(main_timeid);
+
+        //      System.out.println(main_timeid);
+        //       System.out.println("After Inserting time id in db");
+        //      System.out.println(responseString);
         return response;
     }
-    /**
-    *This function is used to send the Play request from server
-    */
+
     public String sendDataForTimesheet(String userid, String taskid, String status, String timesheetid, String comment) throws MalformedURLException, IOException {
          double i=random.nextDouble()+random.nextDouble();
             k+=1;
@@ -399,9 +379,7 @@ public class ReadXml {
         //       System.out.println(responseString);
         return response1;
     }
-    /**
-    *This function is used to parse the JSON data
-    */
+
      public String jsonData(String data){
     
         JSONObject obj = new JSONObject(data);
@@ -415,9 +393,7 @@ public class ReadXml {
         databaseHandlerId.insertNewTaskID(task_id,userId1,tId);
         return response;
     }
-    /**
-    *This function is used to send the Review of user
-    */ 
+    
     public String sendReview(String user_id, String task_id, String loginUserId) throws MalformedURLException, IOException {
         double i=random.nextDouble()+random.nextDouble();
         k+=1;
@@ -446,16 +422,12 @@ public class ReadXml {
         userId1=null;
         return response;
     }
-    /**
-    *This function is used to set the response
-    */
+
     public void setResponse(String res) {
         response1 = res;
         System.out.println("Response is>> " + response1);
     }
-    /**
-    *This function is used to get the response
-    */
+
     public String getResponse() {
         System.out.println("Response is>> " + response1);
         return response1;

@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * This class is used to display the message on the TimeSheet
+ * @author Me
  */
 public class Alertx extends javax.swing.JDialog {
 static Component c;
@@ -38,9 +38,6 @@ private JFrame dialo;
     public void setInfo(String info){
         lblInfo.setText(info);
     }
-    /**
-    * KeyListener Implementation
-    */
     KeyListener kl=new KeyListener() {
 
         @Override

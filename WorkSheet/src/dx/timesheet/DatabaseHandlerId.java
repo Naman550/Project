@@ -34,8 +34,8 @@ public class DatabaseHandlerId {
 //                con = DriverManager.getConnection("jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=developer.mdb;");
 
 
-                String url = "jdbc:sqlite:E:/WorkSheet/developer.db";
-//                String url = "jdbc:sqlite:developer.db";
+//                String url = "jdbc:sqlite:E:/WorkSheet/developer.db";
+                String url = "jdbc:sqlite:developer.db";
                 
                 con = DriverManager.getConnection(url);                                  
                 stmt=con.createStatement();  

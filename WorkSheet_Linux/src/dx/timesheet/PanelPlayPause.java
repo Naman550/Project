@@ -4,11 +4,18 @@
  */
 package dx.timesheet;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.ProgressBarUI;
+import javax.swing.plaf.metal.MetalProgressBarUI;
 
 /**
  *
- * @this class show the Panel of Play, Pause, stop, Todo, Done the task in timeSheet
+ * @author Me
  */
 public class PanelPlayPause extends javax.swing.JPanel {
 

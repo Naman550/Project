@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 
 /**
  *
- * This class is used for , to open the task dialog like new task added
+ * @author Me
  */
 public class TaskAddedDialog extends javax.swing.JDialog {
 
@@ -22,16 +22,10 @@ public class TaskAddedDialog extends javax.swing.JDialog {
         
     }
 
-     /**
-     * This function is used for , to set the message in task dialog
-     */
+    
     public void setMsg(String msg){
         lblInfo.setText(msg);
     }
-    
-    /**
-     * we can added mouse listener (ml) in task dialog class to dispose the task dialog box.
-     */
     MouseListener ml=new MouseListener() {
 
         @Override

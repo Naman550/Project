@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * This class is used for Set the basic like user image, company logo, Signout, Refresh.. etc 
+ * @author Me
  */
 public class TaskPanel extends javax.swing.JPanel {
     private Image img;
@@ -59,9 +59,6 @@ public class TaskPanel extends javax.swing.JPanel {
      super.paintComponent(g);
     g.drawImage(img, 0, 0, null);
   }
-    /**
-     *This function is used for PARSE the user xml
-     */
     public static Document parse(InputStream is) {
         Document ret = null;
         DocumentBuilderFactory domFactory;
@@ -128,6 +125,8 @@ public class TaskPanel extends javax.swing.JPanel {
         lblUserName = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lblRefreshMain = new javax.swing.JLabel();
+        chat = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -215,6 +214,12 @@ public class TaskPanel extends javax.swing.JPanel {
         lblRefreshMain.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         lblRefreshMain.setText("Refresh");
 
+        chat.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
+        chat.setText("Chat");
+        chat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dx/timesheet/chat.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -224,10 +229,10 @@ public class TaskPanel extends javax.swing.JPanel {
             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(1, 1, 1)
-                .addComponent(panelforScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addComponent(panelforScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                 .addGap(3, 3, 3))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(114, Short.MAX_VALUE)
                 .addComponent(lblDx, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(83, 83, 83))
             .addGroup(layout.createSequentialGroup()
@@ -236,11 +241,18 @@ public class TaskPanel extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel1)
                         .addGap(0, 0, 0)
-                        .addComponent(lblUserName))
+                        .addComponent(lblUserName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4))
                     .addComponent(lblLogo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
-                .addComponent(lblSignOut2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblSignOut2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(chat, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -260,7 +272,10 @@ public class TaskPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(lblUserName)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblUserName)
+                                .addComponent(chat)
+                                .addComponent(jLabel4))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblSignOut2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -280,10 +295,12 @@ public class TaskPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JLabel chat;
     public javax.swing.JComboBox jComboBox1;
     public javax.swing.JInternalFrame jInternalFrame1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
     public javax.swing.JSeparator jSeparator2;
     public static javax.swing.JLabel lblClose3;

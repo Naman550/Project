@@ -17,7 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class is used to open the About Dialog Message
+ *
+ * @author Me
  */
 public class AboutDialog extends javax.swing.JDialog {
 
@@ -56,9 +57,7 @@ public class AboutDialog extends javax.swing.JDialog {
         }
     }
     
-    /**
-    * This Listener is used to click on the About Dialog frame
-    */
+    
     
     MouseListener ml=new MouseListener() {
 

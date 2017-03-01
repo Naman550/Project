@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 
 /**
  *
- * @this class take the error message from tester and send the task to ToDo
+ * @author Me
  */
 public class ErrorDescription extends javax.swing.JDialog implements KeyListener{
 
@@ -29,18 +29,21 @@ public class ErrorDescription extends javax.swing.JDialog implements KeyListener
         super(parent, modal);
         initComponents();
         textArea1.setDocument(new TxtDocument());
-        
+        //       d_picker=new JXDatePicker();
+        //      d_picker.setBounds(105, 65, 125, 25);
+        //      d_picker.setDate(Calendar.getInstance().getTime());
+       
+        //    d_picker.getMonthView().setFlaggedDates(new Date());
+        //  d_picker.getMonthView().set
+        //    jPanel7.add(d_picker);
+        //  frame.getContentPane().add(panel);
     }
-    /**
-    * this function is used to return comment of the user enter in errorMessageDialog box
-    */
+
     public String getComments() {
         System.out.println(comments);
         return comments;
     }
-    /**
-    * this function is used to return flag if flag is true then errorMessageDialog will display
-    */
+
     public String getFlag() {
         return flag;
     }

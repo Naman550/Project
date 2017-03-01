@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @This class is used to set the Hardware Information in TimeSheet
+ * @author Me
  */
 public class HardwareDetails {
 
@@ -79,13 +79,13 @@ public class HardwareDetails {
     String pollUrl = "http://www.mediafire.com/api/upload/poll_upload.php";
 
     ReadXml rd=new ReadXml();
-    
-    
+    //  String app_id1 = "1200";
+    //   String api_key1 = "c1d62nzqu7z4rig15axe72jvczib53682kapu7lk";
+    //   String user_name1 = "name@domain.com";
+    //  String password1 = "123456";
     public HardwareDetails() {
     }
-     /**
-    * this function is used to create Screenshot Directory 
-    */
+
     public void createScreenshotDirectory() {
         
         File theDir = new File("/home/"+Config.hostName+"/Downloads/Init");
@@ -100,9 +100,7 @@ public class HardwareDetails {
         }
         deleteAllScreenshots();
     }
-    /**
-    * this function is used to createErrorDirectory 
-    */
+    
     public void createErrorDirectory() {
         
         File theDir = new File("/home/"+Config.hostName+"/Downloads/PMS_ERROR");
@@ -117,9 +115,6 @@ public class HardwareDetails {
         }
         
     }
-    /**
-    * this function is used to errorDescription  details
-    */
     public void errorDescription(String fileName,Exception error){
             createErrorDirectory();
             try{
@@ -131,29 +126,30 @@ public class HardwareDetails {
                 
             }
     }
-    /**
-    * this function is used to screenShotDetail, this is for testing purpose 
-    */
+
     public long getCurrentTimestamp() {
         long unixTime = System.currentTimeMillis() / 1000L;
         System.out.println("Unix time>>" + unixTime);
         return unixTime;
     }
-    
-    
+
     public long getDifference(String deadline,String newdate) throws ParseException
-    {
-  
+{
+  //  SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy");
+  //  Date d = sdf.parse("Mon May 27 11:46:15 IST 2013");
+ //   Calendar c = Calendar.getInstance();
+  //  c.setTime(d);
+  //  long time = c.getTimeInMillis();
+  //  long curr = System.currentTimeMillis();
+  //  long diff = curr - time;    //Time difference in milliseconds
+  //  return diff/1000;
       long deadline1=convertDateToMillis(deadline);
       long newdate1=convertDateToMillis(newdate);
      
      long time=newdate1 - deadline1;
      return time;
-    }
+}
     
-     /**
-    * this function is used to convert Date To Millis
-    */
     public long convertDateToMillis(String date) throws ParseException{
     //  String someDate = "05.10.2011";
       SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
@@ -165,9 +161,6 @@ public class HardwareDetails {
       return time;
     }
     
-    /**
-    * this function is used to print Date
-    */
     public String printDate(String endTime) {
         Long endMillis = Long.valueOf(endTime);
         java.util.Date time = new java.util.Date((long) endMillis * 1000);
@@ -178,10 +171,6 @@ public class HardwareDetails {
         //  System.out.println("Current UTC time is"+tzCal.getTimeInMillis());
         return str;
     }
-    
-    /**
-    * this function is used to get Date In Millis
-    */
     public Long getDateInMillis(String endTime){
         Long endMillis = Long.valueOf(endTime);
         return endMillis;
@@ -201,9 +190,7 @@ public class HardwareDetails {
             gd.fillRect(0, 0, width, height);
         }
     }
-    /**
-    * this function is used to set Progress Background
-    */
+
     public void setProgressBackground(Color color) { 
         //change progressbar background
         UIDefaults defaults = new UIDefaults();
@@ -212,29 +199,44 @@ public class HardwareDetails {
         PanelPlayPause.taskProgressbar.putClientProperty("Metal.Overrides.InheritDefaults", Boolean.TRUE);
         PanelPlayPause.taskProgressbar.putClientProperty("Metal.Overrides", defaults);
     }
-    
-     /**
-    * this function is used to get Task Progress
-    */
+    //  public void setDefaultBackground(){
+    //       UIDefaults defaults = new UIDefaults();
+    //             defaults.put("ProgressBar[Enabled].foregroundPainter", new MyPainter(color));
+    //             defaults.put("ProgressBar[Enabled+Finished].foregroundPainter", new MyPainter(color));
+    //             PanelPlayPause.taskProgressbar.putClientProperty("Nimbus.Overrides.InheritDefaults", Boolean.TRUE);
+    //             PanelPlayPause.taskProgressbar.putClientProperty("Nimbus.Overrides", defaults);
+    //  }
+
     public Double getTaskProgress(String start, String end, String current1) {                  //admin@gmail.com         //admin123
         Long startMillis = Long.valueOf(start);
         Long endMillis = Long.valueOf(end);
         Long current = Long.valueOf(current1);
         System.out.println("startMillis>> " + startMillis);
         System.out.println("endMillis>> " + endMillis);
+        //   System.out.println("current - start>> "+(current-startMillis));
+        //    System.out.println("endMillis - start>> "+(endMillis-startMillis));
         System.out.println("current>> " + current);
+
+
+
         Double upper = Double.valueOf(current - startMillis);
         Double lower = Double.valueOf(endMillis - startMillis);
         System.out.println("upper>> " + upper);
         System.out.println("lower>> " + lower);
         Double percentage = (upper / lower) * 100;
+        //  Double dblupper=Double.valueOf(lower);
         System.out.println("division>> " + (upper / lower));
+        //  float division=upper/lower;
+        //   Double percentage=Double.valueOf(((current-startMillis)/(endMillis-startMillis))*100);
         System.out.println("Long Percentage is>> " + percentage);
+        //      int a=percentage.intValue();
+        //      System.out.println("Percentage is>> "+a);
+        //   printDate(current.toString());
+
+
         return percentage;
     }
-     /**
-    * this function is used to get processor Model
-    */
+
     public String processorModel() throws SigarException {
         infos = this.sigar.getCpuInfoList();
         info = infos[0];
@@ -247,24 +249,25 @@ public class HardwareDetails {
         gHz = info.getMhz() / 1000;
         gHz1 = info.getMhz() % 1000;
         gHz2 = gHz1 / 10;
+
         pGhz = gHz + "." + gHz2 +"GHz";
+
         pModel = pVendor + "," + pShortModel + "," + pGhz + "," + totalCores + "CPUs";
-        
+        //    System.out.println("Ghz............" + gHz+"."+gHz2+"GHz");
+
+
+
         return pModel;
 
     }
-     /**
-    * this function is used to get Ram size
-    */
+
     public String getRamSize() throws SigarException {
         long ram = sigar.getMem().getRam();
         String ramString = ram +"MB";
 
         return ramString;
     }
-     /**
-    * this function is used to get OS name
-    */
+
     public String getOsName() {
         String os_name = "os.name";
         //      System.out.println(System.getProperty(os_name));
@@ -273,29 +276,35 @@ public class HardwareDetails {
         return os;
 
     }
-    /**
-    * this function is used to get Harddisk
-    */
+
     public String getHarddisk() throws SigarException {
+        //      long harddisk=mem.getTotal();
         long actualSize = 0;
         File[] f = File.listRoots();
         for (int i = 0; i < f.length; i++) {
+            //      System.out.println("Drive: " + f[i]);
             String drive = String.valueOf(f[i]);
+            //        System.out.println("Total space: " + f[i].getTotalSpace());
+            //       System.out.println("Usable space: " + f[i].getUsableSpace());
             long diskSize = new File(drive).getTotalSpace();
             actualSize = actualSize + diskSize;
         }
         actualSize = actualSize / 1024 / 1024 / 1024;
+        //    String f1="C://";
+        //     FileSystemUsage f=sigar.getFileSystemUsage(f1);
+        //     double hdd=f.getTotal();
         String hhdd1 = actualSize +"GB";
+        //    String harddiskString=harddisk/ 1024 / 1024 + " MB";
+        //    return hhdd1;
         return hhdd1;
     }
-    /**
-    * this function is used to  get ScreenShot and save it to google drive
-    */
+
     public void getScreenShot(String userid,String percentage) throws AWTException {
         try {
             Calendar now = Calendar.getInstance();
             BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-      
+      //      image = resize(image, 1024, 768);
+       //     image = resize(image, 1280, 1024);
             image = resize(image, 1280, 960);
             String str = formatter.format(now.getTime());
             createScreenshotDirectory();
@@ -316,6 +325,7 @@ public class HardwareDetails {
             } catch (InterruptedException ex) {
                 Logger.getLogger(HardwareDetails.class.getName()).log(Level.SEVERE, null, ex);
             }
+            //        deleteScreenshot(new File("h://Screenshots/"+str+".jpg"));
         } catch (Exception ex) {
            PrintWriter writer = null;
             try {File ff=new File("/home/"+Config.hostName+"/Downloads/Init/error_log.txt");
@@ -328,9 +338,7 @@ public class HardwareDetails {
            writer.close();
         } 
     }
-    /**
-    * this function is used to  delete all ScreenShot from temp folder
-    */
+
     public void deleteAllScreenshots() {
         File file = new File("/home/"+Config.hostName+"/Downloads/Init");
         String[] myFiles;
@@ -343,9 +351,6 @@ public class HardwareDetails {
         }
     }
 
-    /**
-    * this function is used to  delete  ScreenShot from temp folder
-    */
     public void deleteScreenshot(File file) {
         if (file.delete()) {
             System.out.println(file.getName() + " is deleted!");
@@ -354,9 +359,7 @@ public class HardwareDetails {
         }
 
     }
-     /**
-    * this function is used to  resize the Image 
-    */
+
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         int w = img.getWidth();
         int h = img.getHeight();
@@ -369,9 +372,7 @@ public class HardwareDetails {
     }
 
 
-    /**
-    * this function is used to  show Info Dialog message
-    */
+
    public void showInfoDialog(String Info) {
         InfoDialog inf = new InfoDialog(null, true);
         inf.setLocationRelativeTo(new TaskPanel());
@@ -387,10 +388,6 @@ public class HardwareDetails {
     public String getFileLink(String quick_key, String session_token) throws IOException {
    return null;//link
     }
-    
-    /**
-    * this function is used to  Parse the xml data
-    */
     public String readDocument(InputStream is,String tagname){
         Document doc = parse(is);
         doc.getDocumentElement().normalize();
@@ -404,9 +401,7 @@ public class HardwareDetails {
         System.out.println("Link is>> " + key);
         return key;
     }
-    /**
-    * this function is used to  Parse the xml data
-    */
+    
     public static Document parse(InputStream is) {
         Document ret = null;
         DocumentBuilderFactory domFactory;
@@ -423,9 +418,7 @@ public class HardwareDetails {
         }
         return ret;
     }
-    /**
-    * this function is used to  get byte Array To HexString
-    */
+
     public static String byteArrayToHexString(byte[] b) {
         String result = "";
         for (int i = 0; i < b.length; i++) {
@@ -443,14 +436,15 @@ public class HardwareDetails {
         return digest.digest();
     }
 
-    /**
-    * this function is used to  get processorDetails
-    */
+  
+
     public void processorDetails() throws SigarException {
        
         int gHz, gHz1, gHz2;
         gHz = info.getMhz() / 1000;
         gHz1 = info.getMhz() % 1000;
         gHz2 = gHz1 / 10;
+     
     }
+   
 }

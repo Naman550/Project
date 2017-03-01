@@ -5,7 +5,8 @@
 package dx.timesheet;
 
 /**
- *This class will display the confirm dialog message in timeSheet@author Me
+ *
+ * @author Me
  */
 public class ConfirmDialog extends javax.swing.JDialog {
 
@@ -17,16 +18,9 @@ public class ConfirmDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
-    /**
-    * this function will set the String Info Message  
-    */
     public void setInfo(String info){
         lblInput3.setText(info);
-    }
-    
-    /**
-    * this function will get the String Info Message  
-    */
+     }
     public String getInput(){
         return comments1;
     }

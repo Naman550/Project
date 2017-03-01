@@ -695,6 +695,19 @@ public class ChattingWindow extends javax.swing.JFrame implements MessageListene
             String time = formatter.format(now.getTime());
             double i=random.nextDouble()+random.nextDouble();
             number+=1;
+            char str=message.charAt(0);
+            if(str=='?'){
+                message="qwert@"+message;
+            }
+            if(message.contains("/")){
+                message=message.replaceAll("/", "[--");
+                System.out.println("ppppppp------>>"+message);
+            }
+            if(message.contains(":")){
+                message=message.replaceAll(":", "]--");
+                System.out.println("ppppppp------>>"+message);
+            }
+            
             message = message.replaceAll(" ", "%20");
             URL url = new URL(Config.HTTP+Config.DOMAIN + "employee/conversations/setChat/" + userid + "/" + receiverId + "/" + message+ "/" +time+"?"+number+"naman"+i);
             System.out.println("NamanSetChat : "+url);

@@ -21,7 +21,7 @@ import javax.swing.ListCellRenderer;
 
 /**
  *
- * @This class Manages the Sub-task-Dialog
+ * @author Me
  */
 public class TaskWithSubtaskDialog extends javax.swing.JDialog {
 

@@ -7,7 +7,7 @@ package dx.timesheet;
 
 /**
  *
- * this class perform basic operation of database
+ * @author Developer
  */
 import java.sql.*;  
 import java.util.logging.Level;
@@ -21,9 +21,7 @@ public class DatabaseHandlerId {
     String gId;
     
     
-    /**
-    * this constructor is used for Load the database driver and get connection with database here the database is SQLite
-    */
+    
     public DatabaseHandlerId(){
         try{ 
 //                Class.forName("com.mysql.jdbc.Driver");  
@@ -43,9 +41,7 @@ public class DatabaseHandlerId {
                 Logger.getLogger(DatabaseHandlerId.class.getName()).log(Level.SEVERE, null, ex);
             } 
     }
-   /**
-    * this function is used to insert the user ID.
-    */
+   
     public void insertId(String id){
         try{
             deleteId();
@@ -65,9 +61,7 @@ public class DatabaseHandlerId {
             Logger.getLogger(DatabaseHandlerId.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /**
-    * this function is used to insertNew Task ID the user ID.
-    */
+    
     public void insertNewTaskID(String task_id, String login_userId, String nTid){
         try{
             
@@ -90,9 +84,7 @@ public class DatabaseHandlerId {
             Logger.getLogger(DatabaseHandlerId.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /**
-    * this function is used to insert Task in database.
-    */
+    
      public void insertTid(String id){
         try{
             String query="SELECT MAX(pId) FROM TID";
@@ -110,9 +102,7 @@ public class DatabaseHandlerId {
             Logger.getLogger(DatabaseHandlerId.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /**
-    * this function is used to delete data in database.
-    */
+    
      public void deleteId(){
         try{
             String insertQuery="DELETE FROM ServerId";
@@ -122,9 +112,8 @@ public class DatabaseHandlerId {
             Logger.getLogger(DatabaseHandlerId.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     /**
-    * this function is used to get new ServerID id in database.
-    */
+    
+    
     public String getId(){
         try {
             
@@ -143,9 +132,7 @@ public class DatabaseHandlerId {
         
         return gId;
     }
-     /**
-    * this function is used to get new Task id in database.
-    */
+    
     public String getTid(String tid){
         try {
             

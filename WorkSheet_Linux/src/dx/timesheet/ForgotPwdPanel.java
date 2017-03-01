@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @this class display the Forgot password frame
+ * @author Me
  */
 public class ForgotPwdPanel extends javax.swing.JPanel {
 private Image img;
@@ -42,9 +42,7 @@ private Image img;
   public ImagePanel(String img) {
     this(new ImageIcon(img).getImage());
   }
-  /**
-    * this function is used to set dimension size of Image
-    */
+
   public ImagePanel(Image img) {
     this.img = img;
     Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));

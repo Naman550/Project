@@ -5,8 +5,8 @@
 package dx.timesheet;
 
 /**
- * This class is used JNativeListner library in which we get IdleTime of user at system
- *  
+ *
+ * @author Me
  */
 import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 import java.text.DateFormat;
@@ -53,39 +53,27 @@ public class Win32IdleTime implements MouseListener{
     // tracker = Executors.newSingleThreadScheduledExecutor();
     boolean threadInterrupet=false;
     static boolean auto_pause=false;
-    /**
-     *This function is used to set the state of window
-     */
+    
     public void setState(String state) {
         window_state = state;
     }
-    /**
-     *This function is used to get the state of window
-     */
+
     public String getState() {
         return window_state;
     }
-    /**
-     *This function is used to set the Pause status
-     */
+
     public void setPauseStatus(boolean paused) {
         task_paused = paused;
     }
-    /**
-     *This function is used to get the Pause status
-     */
+
     public boolean getPauseStatus() {
         return task_paused;
     }
-     /**
-     *This function is used to set the Working task
-     */
+
     public void setWorkingStatus(boolean working) {
         task_working = working;
     }
-    /**
-     *This function is used to auto pause the working thread
-     */
+
     public void doIfUserIdle() {
         try {        
             dbHandler.connect();
@@ -121,9 +109,7 @@ public class Win32IdleTime implements MouseListener{
         }
         
     }
-     /**
-     *This function is used to sleep the thread
-     */
+
     public void sleepThread(final long millis) {
         
            
@@ -231,9 +217,7 @@ public class Win32IdleTime implements MouseListener{
     enum State {
         UNKNOWN, ONLINE, IDLE, AWAY
     };
-    /**
-     *This function is used to count the active Time of user
-     */
+    
     public void trackTime(){
     
         Thread t=new Thread(new Runnable() {
@@ -258,14 +242,13 @@ public class Win32IdleTime implements MouseListener{
         t.start();
     
     }
-    /**
-     *This function is used to count and track Time and send screenShot of user at server.
-     */
+    
     public void trackTime(String usr){
         addMouseListener(this);
         threadInterrupet=false;
         trackTime();
         State2 state1 = State2.UNKNOWN1;
+  //      DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
         long endTime = System.currentTimeMillis()+10000;
         System.out.println("NamanEndTime - "+endTime);
                long startTime=System.currentTimeMillis();
@@ -307,7 +290,9 @@ public class Win32IdleTime implements MouseListener{
                 }else{
                     one=1.0;
                 }
-          
+           //     if(j==10){
+            //        break;
+            //    }
                 System.out.println("j is "+j);
                  j++;
                  
@@ -373,10 +358,7 @@ public class Win32IdleTime implements MouseListener{
         }
         System.out.print("Exit from while");
     }
-     /**
-     *This function is used to check OS of system, check the status of the user 
-     * status will be ONLINE, IDLE, AWAY
-     */
+    // TEST
     public void getIdleTime() {
         if (!System.getProperty("os.name").contains("Linux")) {
             System.err.println(""
@@ -386,11 +368,14 @@ public class Win32IdleTime implements MouseListener{
         }
         State state = State.UNKNOWN;
         DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
-        
+        //  p=new PopUpLogin();
+
         for (;;) {
             int idleSec = getIdleTimeMillisWin32()/1000;
             State newState =
                     idleSec < 5*60 ? State.ONLINE : idleSec > 50*60 ? State.AWAY : State.IDLE;
+//                    System.out.println("\n\n\nidleSec  ---->>"+idleSec);
+//                    System.out.println("\n\n\nNew State  ---->>"+newState);
                     
             if (newState != state) {
                 state = newState;
@@ -405,16 +390,20 @@ public class Win32IdleTime implements MouseListener{
                     c = SwingUtilities.windowForComponent(TaskPanel.lblDx);
                     s = "TaskPanel";
                 }
+//                if (ForgotPwdPanel.lblDx.isDisplayable()) {
+//                    c = SwingUtilities.windowForComponent(ForgotPwdPanel.lblDx);
+//                    s = "ForgotPwdPanel";
+//                }
                 if (WaitingPanel.lblDx.isDisplayable()) {
                     c = SwingUtilities.windowForComponent(WaitingPanel.lblDx);
                     s = "WaitingPanel";
                 }
-                
+                //   Component c=SwingUtilities.windowForComponent(PopUpLogin.jLbl);
                 if (state.equals(State.IDLE)) {
                     if (task_working) {
                         doIfUserIdle();
                     }
-                      
+                       //    tracker.scheduleWithFixedDelay(doEvery10, 0, 10, TimeUnit.SECONDS);
                     System.out.println("Dialog visibility:" + c.isVisible() + " on " + s + " and height is " + c.getHeight());
                     System.out.println(/*dateFormat.format(new Date()) + " # " +*/state);
                 }
@@ -422,12 +411,27 @@ public class Win32IdleTime implements MouseListener{
                     System.out.println(state);
                 }
 
+
+                //
+                // just for fun, if the state is AWAY (screensaver is coming!)
+                // we move the mouse wheel using java.awt.Robot just a little bit to change
+                // the state and prevent the screen saver execution.
+                //
+                //        if (state == State.AWAY) {
+                //          System.out.println("Activate the mouse wheel to change state!");
                 java.awt.Robot robot;
                 try {
                     robot = new java.awt.Robot();
-                   
+                    //          robot.mouseWheel(-1);
+                    //     robot.mouseWheel(1);
+                    //        for(int i=0;i<10;i++){
+       //             robot.keyPress(KeyEvent.VK_ENTER);
+        //            robot.keyPress(KeyEvent.VK_T);
+
+                    //        }
+
                 } catch (AWTException ex) {
-                              Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
+                    //          Logger.getLogger(Win32IdleTime.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }

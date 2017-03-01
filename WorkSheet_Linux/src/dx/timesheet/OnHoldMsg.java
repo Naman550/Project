@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 
 /**
  *
- * @this class take the reason from user to start the task in timeSheet
+ * @author Me
  */
 public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
 
@@ -32,24 +32,14 @@ public class OnHoldMsg extends javax.swing.JDialog implements KeyListener{
        
        
     }
-    /**
-     * Creates Title String in ExtendDeadlineDialog
-     */
-    public void setString(String string){
-        lblInput3.setText(string);
-    }
     
-    /**
-    * this function is used get TODO reason from Tester
-    */
+    
 
     public String getComments() {
         System.out.println(comments);
         return comments;
     }
-    /**
-    * this function is used get Flag
-    */
+
     public String getFlag() {
         return flag;
     }

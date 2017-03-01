@@ -44,8 +44,8 @@ public class Config {
           
             
             
-            File fXmlFile = new File("E:\\WorkSheet\\src\\dx\\timesheet\\domain.xml");
-//            File fXmlFile = new File("domain.xml");
+//            File fXmlFile = new File("E:\\WorkSheet\\src\\dx\\timesheet\\domain.xml");
+            File fXmlFile = new File("domain.xml");
             
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

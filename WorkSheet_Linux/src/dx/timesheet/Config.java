@@ -9,6 +9,7 @@ package dx.timesheet;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -22,7 +23,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * This class set the Configuration of data like HTTP,Domain,version,URL.. in timeSheet
+ * @author dx
  */
 public class Config {
     public static  String HTTP = "";
@@ -49,12 +50,9 @@ public class Config {
             System.out.println(hostName);
         
             
-            /**
-            * set the path of XML file
-            */
             
-//         File fXmlFile = new File("/home/developer/Downloads/WorkSheet/src/dx/timesheet/domain.xml");
-           File fXmlFile = new File("domain.xml");
+//            File fXmlFile = new File("/home/developer/Downloads/WorkSheet/src/dx/timesheet/domain.xml");
+            File fXmlFile = new File("domain.xml");
             
             
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

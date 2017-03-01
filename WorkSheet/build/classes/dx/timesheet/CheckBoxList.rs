@@ -1,3 +1,0 @@
-dx.timesheet.CheckBoxListEntry
-dx.timesheet.CheckboxCellRenderer
-dx.timesheet.CheckBoxList

@@ -42,8 +42,8 @@ public class DatabaseHandler {
        //         + "LoginDetails.mdb");
          
          
-        String url = "jdbc:sqlite:E:/WorkSheet/LoginDetails.db";
-//        String url = "jdbc:sqlite:LoginDetails.db";
+//        String url = "jdbc:sqlite:E:/WorkSheet/LoginDetails.db";
+        String url = "jdbc:sqlite:LoginDetails.db";
         con = DriverManager.getConnection(url);              
         stmt = con.createStatement();
     }

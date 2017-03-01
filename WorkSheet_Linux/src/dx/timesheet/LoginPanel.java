@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @This class is used to display the Login Panel in TimeSheet 
+ * @author Me
  */
 public class LoginPanel extends javax.swing.JPanel {
 private Image img;
@@ -37,10 +37,7 @@ private BufferedImage image;
             Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     /**
-    *  Set Login-Panel Frame and set the dimension
-    */
-     public LoginPanel(Image img) {
+ public LoginPanel(Image img) {
    //     panelNew=new ImagePanel(new ImageIcon("top_img.p").getImage());
         initComponents();
         this.img = img;
@@ -53,45 +50,41 @@ private BufferedImage image;
         setSize(size);
     }
      
-     @Override
-        public void paintComponent(Graphics g) {
-         super.paintComponent(g);
-        g.drawImage(img, 0, 0, null);
-      }
-    /**
-    *  this function is used to set the sign-in status
-    */
-     public void setStatus(String txt){
-           lblStatus1.setText(txt);
-       } 
+ @Override
+    public void paintComponent(Graphics g) {
+     super.paintComponent(g);
+    g.drawImage(img, 0, 0, null);
+  }
+   
+ public void setStatus(String txt){
+       lblStatus1.setText(txt);
+   } 
 
-    /**
-    *  this function is used to set the Image
-    */
-     class ImagePanel extends JPanel {
+ 
+ class ImagePanel extends JPanel {
 
-      private Image img;
+  private Image img;
 
-      public ImagePanel(String img) {
-        this(new ImageIcon(img).getImage());
-      }
+  public ImagePanel(String img) {
+    this(new ImageIcon(img).getImage());
+  }
 
-      public ImagePanel(Image img) {
-        this.img = img;
-        Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
-        setPreferredSize(size);
-        setMinimumSize(size);
-        setMaximumSize(size);
-        setSize(size);
-       // setLayout(null);
-      }
+  public ImagePanel(Image img) {
+    this.img = img;
+    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+    setPreferredSize(size);
+    setMinimumSize(size);
+    setMaximumSize(size);
+    setSize(size);
+   // setLayout(null);
+  }
+  
+  public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+    g.drawImage(img, 0, 0, null);
+  }
 
-      public void paintComponent(Graphics g) {
-          super.paintComponent(g);
-        g.drawImage(img, 0, 0, null);
-      }
-
-    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
