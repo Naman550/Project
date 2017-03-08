@@ -9,13 +9,18 @@ import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
@@ -30,11 +35,12 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     private static Rectangle screenRect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-    
+    boolean stop=false;
      
     public Login() {
         initComponents();
         setVisible(true);
+        
         setIconImage(Toolkit.getDefaultToolkit().getImage("F:\\track.png"));
         setLocation(screenRect.width-(getWidth()+4), screenRect.height-(getHeight()+4));
         forgotPassword.addMouseListener(showHandCursor);
@@ -42,6 +48,62 @@ public class Login extends javax.swing.JFrame {
         forgotPassword.setText("<HTML><U>Forgot Password<U><HTML>");
     }
     
+   
+    
+//    public void loginFirst(){
+//        final Timer loginTimer = new Timer();
+//        
+//        TimerTask timerTask = new TimerTask() {
+//
+//            @Override
+//            public void run() {
+//                System.out.println("ppppp-->> "+PlzLogin.cond);
+//                if(PlzLogin.cond.equals("false")){
+//                    new PlzLogin( new JFrame(), true).msgDialog();
+//                }
+//                
+//                System.out.println(stop);
+//                if(stop==true){
+//                    loginTimer.cancel();
+//                    stop=false;
+//                }
+//            }
+//        };
+//        loginTimer.schedule(timerTask, 60*1000,60*1000);
+//    }
+    public void buttonClicked(){
+         // TODO add your handling code here:
+        String usrName = userId.getText();
+        String usrPassword = userPassword.getText();
+        int code=0;
+        
+        if(usrName.equals("")  || usrPassword.equals("")){
+            //JOptionPane.showMessageDialog(rootPane, "Invalid UserId or UserName", "Invalid", JOptionPane.WARNING_MESSAGE);
+            new ShowDialog(this, true).msgDialog();
+            userId.setText("");
+            userPassword.setText("");
+        }
+        else{
+            Config config =new Config();
+            config.setMap(usrName, usrPassword);
+            try {
+                code=config.sendPost();
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(code==200){
+                stop=true;
+                this.dispose();
+                new TaskPanel();
+            }
+            else{
+                new ShowDialog(this, true).msgDialog();
+                userId.setText("");
+                userPassword.setText("");
+            }
+            
+        }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -174,36 +236,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_userIdActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        String usrName = userId.getText();
-        String usrPassword = userPassword.getText();
-        int code=0;
-        
-        if(usrName.equals("")  || usrPassword.equals("")){
-            //JOptionPane.showMessageDialog(rootPane, "Invalid UserId or UserName", "Invalid", JOptionPane.WARNING_MESSAGE);
-            new ShowDialog(this, true).msgDialog();
-            userId.setText("");
-            userPassword.setText("");
-        }
-        else{
-            Config config =new Config();
-            config.setMap(usrName, usrPassword);
-            try {
-                code=config.sendPost();
-            } catch (IOException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if(code==200){
-                this.dispose();
-                new TaskPanel();
-            }
-            else{
-                new ShowDialog(this, true).msgDialog();
-                userId.setText("");
-                userPassword.setText("");
-            }
-            
-        }
+       buttonClicked();
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -291,4 +324,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField userId;
     private javax.swing.JPasswordField userPassword;
     // End of variables declaration//GEN-END:variables
+
+   
 }

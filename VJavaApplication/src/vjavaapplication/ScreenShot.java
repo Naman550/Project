@@ -61,7 +61,7 @@ public class ScreenShot {
                  System.out.println("DIR created");  
               }else{
                    System.out.println("DIR not created"); 
-               }
+              }
         }
         deleteAllScreenshots();
     }

@@ -208,16 +208,18 @@ public class Config {
     
         JSONObject obj = new JSONObject(data);
         int response = obj.getInt("response");
-        
-        JSONObject message = obj.getJSONObject("message");
-        int id = message.getInt("id");
-        String firstName = message.getString("firstname");
-        String lastname = message.getString("lastname");
-        System.out.println("lastname - "+lastname+" firstName "+firstName+" id "+id);
-        
-        Session.setId(id);
-        Session.setFirstName(firstName);
-        Session.setLastName(lastname);
+        System.out.println(response);
+        if(response==200){
+            JSONObject message = obj.getJSONObject("message");
+            int id = message.getInt("id");
+            String firstName = message.getString("firstname");
+            String lastname = message.getString("lastname");
+            System.out.println("lastname - "+lastname+" firstName "+firstName+" id "+id);
+
+            Session.setId(id);
+            Session.setFirstName(firstName);
+            Session.setLastName(lastname);
+        }
         
         return response;
     }

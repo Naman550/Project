@@ -176,26 +176,27 @@ import java.util.logging.Logger;
         // Uncomment the following line to print the File ID.
         final String fileId = file.getId();
         
-        Config config =new Config();
-            config.setMap(id, title);
-            try {
-                config.sendImagePost();
-            } catch (IOException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//        Config config =new Config();
+//        config.setImageMap(id, title);
+//        try {
+//            config.sendImagePost();
+//        } catch (IOException ex) {
+//            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         
-         //URL url =new URL("Tasks/getScreen/"+""+"/"+""+"/"+parentId+"/"+fileId+"/"+percentage);
-         
+        URL url =new URL(Config.HTTP+Config.IMAGE_DOMAIN+"/"+id+"/"+fileId);
+          System.out.println("Global ID-->> "+fileId);
         
-//         System.out.println("NamanScreenShotUrlIsHere  -  "+url);
+         System.out.println("ImageScreenShotUrlIsHere  -  "+url);
 //         
-//                  InputStream in = null;
-//
-//                  try {
-//                      in = url.openStream();
-//                  } catch (IOException ex) {
-////                      Logger.getLogger(PopUpLogin.class.getName()).log(Level.SEVERE, null, ex);
-//                  }
+                  InputStream in = null;
+
+                  try {
+                      in = url.openStream();
+                      System.out.println("ooppppss-->>>"+in);
+                  } catch (IOException ex) {
+                      System.out.println(ex);
+                  }
 //        
         
         
