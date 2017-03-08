@@ -45,8 +45,8 @@ public class Config {
     
     public static void setDomain(){
         try {
-            File fXmlFile = new File("C:\\Users\\naman\\Documents\\NetBeansProjects\\VJavaApplication\\src\\vjavaapplication\\domain.xml");
-//            File fXmlFile = new File("domain.xml");
+//            File fXmlFile = new File("C:\\Users\\naman\\Documents\\NetBeansProjects\\VJavaApplication\\src\\vjavaapplication\\domain.xml");
+            File fXmlFile = new File("domain.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);

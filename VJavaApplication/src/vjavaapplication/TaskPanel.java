@@ -12,6 +12,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException; 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -92,8 +93,8 @@ public class TaskPanel extends javax.swing.JFrame {
             }
         
         };
-        //timer.schedule(timerTask, 5*60*1000+new Random().nextInt(10),5*60*1000+new Random().nextInt(10));
-        timer.schedule(timerTask, 60*1000,60*1000);
+        timer.schedule(timerTask, 5*60*1000+new Random().nextInt(10),5*60*1000+new Random().nextInt(10));
+//        timer.schedule(timerTask, 60*1000,60*1000);
     }
     
     /**
